@@ -1135,7 +1135,7 @@ function App({ sessionId, initialMode, initialDomain }: AppProps = {}) {
           }
         >
           <img
-            src="/static/circle.gif"
+            src="/circle.gif"
             alt="Animated Circle - Click to start/stop"
             className="w-96 h-96 object-contain transition-all duration-300"
             style={{
