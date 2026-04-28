@@ -78,24 +78,49 @@ class RetrieveKeywordsResponse(BaseModel):
     keywords: List[str]
     total_found: int
 
-# Serve frontend static files at /static (not /)
-# Railway: The frontend dist is at /app/frontend/dist in Docker container
+# ---------------------------------------------------------------------------
+# Frontend static files — served from root /
+# Docker structure: /app/frontend/dist/{index.html, assets/, circle.gif, vite.svg}
+# ---------------------------------------------------------------------------
 frontend_dist = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'dist')
+frontend_dist = os.path.normpath(frontend_dist)
+
 if os.path.isdir(frontend_dist):
-    app.mount("/static", StaticFiles(directory=frontend_dist, html=True), name="frontend")
+    # Mount /assets for JS/CSS bundles
+    assets_dir = os.path.join(frontend_dist, 'assets')
+    if os.path.isdir(assets_dir):
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+    logger.info(f"Frontend dist mounted from {frontend_dist}")
 else:
     logger.warning(f"Frontend dist not found at {frontend_dist}")
 
-# Fallback route for SPA: serve index.html for any non-API route
-@app.get("/{full_path:path}")
-async def serve_spa(request: Request, full_path: str):
-    if full_path.startswith("api/"):
-        # Let API routes be handled normally
-        raise HTTPException(status_code=404, detail="API route not found.")
+
+@app.get("/")
+async def serve_index():
+    """Serve the SPA index.html at root."""
     index_path = os.path.join(frontend_dist, "index.html")
     if os.path.exists(index_path):
-        return FileResponse(index_path)
+        return FileResponse(index_path, media_type="text/html")
     raise HTTPException(status_code=404, detail="index.html not found.")
+
+
+@app.get("/{full_path:path}")
+async def serve_spa(request: Request, full_path: str):
+    """Serve static files from dist, or fallback to index.html for SPA routes."""
+    # Skip API routes
+    if full_path.startswith("api/"):
+        raise HTTPException(status_code=404, detail="API route not found.")
+
+    # Try to serve the exact file from dist (e.g. circle.gif, vite.svg)
+    file_path = os.path.join(frontend_dist, full_path)
+    if os.path.isfile(file_path):
+        return FileResponse(file_path)
+
+    # SPA fallback: serve index.html for client-side routes
+    index_path = os.path.join(frontend_dist, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path, media_type="text/html")
+    raise HTTPException(status_code=404, detail="Not found.")
 
 
 def _normalize_language(raw: str) -> str:

@@ -4,7 +4,7 @@ import TBMScreen from "./screens/TBMScreen";
 import HistoryScreen from "./screens/HistoryScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 
-const basename = "/static";
+const basename = "/";
 
 export default function Router() {
   return (
