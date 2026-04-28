@@ -80,7 +80,7 @@ class RetrieveKeywordsResponse(BaseModel):
 
 # Serve frontend static files at /static (not /)
 # Railway: The frontend dist is at /app/frontend/dist in Docker container
-frontend_dist = os.path.join(os.path.dirname(__file__), '..', '..', 'frontend', 'dist')
+frontend_dist = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'dist')
 if os.path.isdir(frontend_dist):
     app.mount("/static", StaticFiles(directory=frontend_dist, html=True), name="frontend")
 else:

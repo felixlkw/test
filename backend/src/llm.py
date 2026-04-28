@@ -1,15 +1,19 @@
 import os
 import httpx
 from fastapi import HTTPException
-import dotenv
 from loguru import logger
 import io
 import json
 from typing import List, Dict, Any
 
-from . import prompt
+# Load .env for local development; skip silently on Railway (no .env file)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
-dotenv.load_dotenv()
+from . import prompt
 
 
 # ---------------------------------------------------------------------------
