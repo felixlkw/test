@@ -12,25 +12,33 @@ from . import prompt
 dotenv.load_dotenv()
 
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-assert OPENAI_API_KEY, "OPENAI_API_KEY is not set"
-
-# Supported voices: 
-# alloy, ash, ballad, coral, echo, sage, shimmer, and verse
-
+# ---------------------------------------------------------------------------
+# Lazy initialization: do NOT crash at import time so /api/health works even
+# when OPENAI_API_KEY is missing or not yet injected by Railway.
+# ---------------------------------------------------------------------------
 OPENAI_REALTIME_SESSIONS_URL = "https://api.openai.com/v1/realtime/sessions"
 OPENAI_TRANSCRIPTION_URL = "https://api.openai.com/v1/audio/transcriptions"
 OPENAI_REALTIME_MODEL = "gpt-4o-realtime-preview"
 OPENAI_TRANSCRIPTION_MODEL = "whisper-1"
-# OPENAI_TRANSCRIPTION_MODEL = "gpt-4o-transcribe"
 OPENAI_REALTIME_VOICE = "ballad"
 OPENAI_REALTIME_SPEED = 1.35
 OPENAI_REALTIME_TIMEOUT = 10.0
 OPENAI_TRANSCRIPTION_TIMEOUT = 60.0
 
-HEADERS = {
-    "Authorization": f"Bearer {OPENAI_API_KEY}",
-}
+
+def _get_api_key() -> str:
+    """Return the OpenAI API key, raising HTTPException if missing."""
+    key = os.getenv("OPENAI_API_KEY")
+    if not key:
+        raise HTTPException(
+            status_code=500,
+            detail="OPENAI_API_KEY is not configured. Set it in Railway environment variables.",
+        )
+    return key
+
+
+def _get_headers() -> dict:
+    return {"Authorization": f"Bearer {_get_api_key()}"}
 
 # v0.2.0 — Domain-aware tool activation
 # Keys: domain strings + None (legacy / manufacturing have no extras)
@@ -116,6 +124,8 @@ async def generate_webrtc_key(
         extras = [t for t in domain_tools_schema if t["name"] in extra_names]
         tools = base + extras
     
+    headers = _get_headers()
+
     async with httpx.AsyncClient() as client:
         session_config = {
             "model": OPENAI_REALTIME_MODEL,
@@ -142,7 +152,7 @@ async def generate_webrtc_key(
         
         resp = await client.post(
             OPENAI_REALTIME_SESSIONS_URL,
-            headers=HEADERS,
+            headers=headers,
             json=session_config,
             timeout=OPENAI_REALTIME_TIMEOUT,
         )
@@ -159,12 +169,13 @@ async def transcribe_audio(
     file_bytes: bytes,
     content_type: str = 'audio/webm',
 ) -> dict:
+    headers = _get_headers()
     files = {'file': (filename, io.BytesIO(file_bytes), content_type)}
     data = {'model': OPENAI_TRANSCRIPTION_MODEL}
     async with httpx.AsyncClient() as client:
         resp = await client.post(
             OPENAI_TRANSCRIPTION_URL,
-            headers=HEADERS,
+            headers=headers,
             data=data,
             files=files,
             timeout=OPENAI_TRANSCRIPTION_TIMEOUT,
@@ -176,14 +187,25 @@ async def transcribe_audio(
         return data
 
 
-# Load the guideline data
-data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'guideline-summary.json')
-with open(data_path, 'r', encoding='utf-8') as f:
-    documents = json.load(f)
-    for doc in documents:
-        keywords = doc.get('keywords', [])
-        keywords = [kw.lower().replace(' ', '').strip() for kw in keywords]
-        doc['keywords'] = keywords
+# ---------------------------------------------------------------------------
+# Lazy-load the guideline data (22 MB) — only when first API call needs it.
+# ---------------------------------------------------------------------------
+_documents: List[Dict[str, Any]] | None = None
+
+
+def _get_documents() -> List[Dict[str, Any]]:
+    global _documents
+    if _documents is None:
+        data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'guideline-summary.json')
+        logger.info(f"Loading guideline data from {data_path}...")
+        with open(data_path, 'r', encoding='utf-8') as f:
+            _documents = json.load(f)
+            for doc in _documents:
+                keywords = doc.get('keywords', [])
+                keywords = [kw.lower().replace(' ', '').strip() for kw in keywords]
+                doc['keywords'] = keywords
+        logger.info(f"Loaded {len(_documents)} guideline documents.")
+    return _documents
 
 async def retrieve_documents(query: str, top_k: int = 4) -> List[Dict[str, Any]]:
     """
@@ -201,6 +223,8 @@ async def retrieve_documents(query: str, top_k: int = 4) -> List[Dict[str, Any]]
     if not query.strip():
         return []
     
+    documents = _get_documents()
+
     # Calculate document scores using TF-IDF-like approach
     doc_scores = []
     total_docs = len(documents)
@@ -315,6 +339,8 @@ async def retrieve_documents_by_keywords(
     if not normalized_keywords:
         return []
     
+    documents = _get_documents()
+
     # Calculate document scores using TF-IDF-like approach
     doc_scores = []
     total_docs = len(documents)
