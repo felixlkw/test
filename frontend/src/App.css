@@ -1,0 +1,437 @@
+#root {
+  /* max-width: 1280px; */
+  /* margin: 0 auto; */
+  /* padding: 2rem; */
+  text-align: center;
+}
+
+/* Mobile-specific styles */
+html, body {
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@supports (height: 100dvh) {
+  html, body {
+    height: 100dvh;
+  }
+}
+
+/* Prevent mobile scroll bounce and zoom */
+body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Prevent zoom on input focus */
+input, select, textarea, button {
+  font-size: 16px;
+}
+
+@media screen and (max-width: 768px) {
+  input, select, textarea, button {
+    font-size: 16px !important;
+  }
+}
+
+/* Root container mobile optimization */
+#root {
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* Modern, Fancy Voice Chat Button Styles */
+.voice-btn {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1428a0 60%, #1b2e6f 100%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 8px 32px 0 rgba(20,40,160,0.18), 0 0 0 0 rgba(20,40,160,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: box-shadow 0.3s, background 0.3s, border 0.3s, transform 0.2s;
+  position: relative;
+  outline: none;
+  margin: 32px 0 24px 0;
+  overflow: visible;
+}
+.voice-btn:hover:not(:disabled) {
+  transform: scale(1.06);
+  box-shadow: 0 12px 40px 0 rgba(20,40,160,0.28), 0 0 0 8px #1b2e6f44;
+}
+.voice-btn.active {
+  background: linear-gradient(135deg, #fff 60%, #e5e7eb 100%);
+  color: #1428a0;
+}
+.voice-btn.connecting {
+  opacity: 0.6;
+  pointer-events: none;
+}
+.voice-btn .glow-ring {
+  content: '';
+  position: absolute;
+  top: -18px;
+  left: -18px;
+  width: 156px;
+  height: 156px;
+  border-radius: 50%;
+  z-index: 1;
+  background: radial-gradient(rgba(20,40,160,0.18) 60%, transparent 100%);
+  opacity: 0.7;
+  pointer-events: none;
+  transition: box-shadow 0.3s, background 0.3s, opacity 0.3s;
+}
+.voice-btn.talking-user .glow-ring {
+  animation: glow-user 1s infinite;
+  background: radial-gradient(rgba(20,40,160,0.35) 60%, transparent 100%);
+  opacity: 1;
+}
+.voice-btn.talking-assistant .glow-ring {
+  animation: glow-assistant 1.1s infinite;
+  background: radial-gradient(rgba(255,255,200,0.55) 60%, transparent 100%);
+  opacity: 1;
+  box-shadow: 0 0 32px 8px #fffbe6, 0 0 16px 4px #ffe066;
+}
+@keyframes glow-user {
+  0% { box-shadow: 0 0 0 0 #1428a0aa; opacity: 1; }
+  50% { box-shadow: 0 0 32px 16px #1428a055; opacity: 0.8; }
+  100% { box-shadow: 0 0 0 0 #1428a0aa; opacity: 1; }
+}
+@keyframes glow-assistant {
+  0% { box-shadow: 0 0 0 0 #fffbe6; opacity: 1; }
+  50% { box-shadow: 0 0 32px 16px #ffe066; opacity: 0.8; }
+  100% { box-shadow: 0 0 0 0 #fffbe6; opacity: 1; }
+}
+.voice-btn-text {
+  z-index: 2;
+  font-size: 1.1rem;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.voice-btn .mic-icon {
+  display: block;
+  margin: 0 auto 6px auto;
+  width: 36px;
+  height: 36px;
+  fill: currentColor;
+  opacity: 0.92;
+}
+
+/* Pulse effect: multiple expanding rings for visible animation */
+.voice-btn .pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+}
+.voice-btn.talking-user .pulse-ring,
+.voice-btn.talking-assistant .pulse-ring {
+  opacity: 1;
+}
+.voice-btn.talking-user .pulse-ring {
+  animation: pulse-ring-user 1.2s infinite cubic-bezier(0.4,0,0.2,1);
+  background: radial-gradient(rgba(20,40,160,0.25) 60%, transparent 100%);
+}
+.voice-btn.talking-assistant .pulse-ring {
+  animation: pulse-ring-assistant 1.1s infinite cubic-bezier(0.4,0,0.2,1);
+  background: radial-gradient(rgba(255,255,200,0.85) 60%, transparent 100%);
+  box-shadow: 0 0 32px 8px #fffbe6, 0 0 16px 4px #ffe066;
+  border: 2px solid #ffe066;
+  opacity: 1;
+}
+@keyframes pulse-ring-user {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+  60% { transform: translate(-50%, -50%) scale(1.7); opacity: 0.25; }
+  100% { transform: translate(-50%, -50%) scale(2.1); opacity: 0; }
+}
+@keyframes pulse-ring-assistant {
+  0% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+  60% { transform: translate(-50%, -50%) scale(2.1); opacity: 0.5; }
+  100% { transform: translate(-50%, -50%) scale(2.7); opacity: 0; }
+}
+
+.voice-btn.talking-assistant {
+  box-shadow: 0 0 0 16px #fffbe6, 0 8px 32px 0 rgba(20,40,160,0.18), 0 0 32px 8px #ffe066;
+  border: 3px solid #ffe066;
+  background: linear-gradient(120deg, #fffbe6 0%, #ffe066 50%, #fffbe6 100%);
+  background-size: 200% 200%;
+  animation: ai-shimmer 1.1s linear infinite, glow-assistant 1.1s infinite;
+}
+@keyframes ai-shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.spinner svg {
+  animation: spinner-rotate 1s linear infinite;
+}
+@keyframes spinner-rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Compact Voice Button Styles - PwC Light Theme */
+.compact-voice-btn {
+  padding: 8px 14px;
+  border-radius: 4px;
+  background: #E0301E;
+  color: #FFFFFF;
+  border: 1px solid transparent;
+  box-shadow: 0 1px 2px rgba(30, 30, 30, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+  position: relative;
+  outline: none;
+}
+
+.compact-voice-btn:hover:not(:disabled) {
+  background: #AD1F14;
+}
+
+.compact-voice-btn.active {
+  background: #FFFFFF;
+  color: #E0301E;
+  border-color: #E0301E;
+}
+
+.compact-voice-btn.active:hover:not(:disabled) {
+  background: #FFF3EC;
+}
+
+.compact-voice-btn.connecting {
+  opacity: 0.6;
+  pointer-events: none;
+  background: #C8BEB6;
+  color: #FFFFFF;
+}
+
+.compact-voice-btn.talking-user {
+  background: #E0301E;
+  color: #FFFFFF;
+  animation: compact-glow-user 1.5s infinite ease-in-out;
+}
+
+.compact-voice-btn.talking-assistant {
+  background: #FFFFFF;
+  color: #E0301E;
+  border-color: #E0301E;
+  animation: compact-glow-assistant 1.2s infinite ease-in-out;
+}
+
+@keyframes compact-glow-user {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(224, 48, 30, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(224, 48, 30, 0);
+  }
+}
+
+@keyframes compact-glow-assistant {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(224, 48, 30, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(224, 48, 30, 0);
+  }
+}
+
+.compact-voice-btn-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  letter-spacing: 0.025em;
+}
+
+.compact-mic-icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.compact-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.compact-spinner svg {
+  animation: spinner-rotate 1s linear infinite;
+}
+
+/* Fade-in animation for panels */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* Slim Top Bar Progress (override if needed) */
+.slim-progress-bar {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+.slim-progress-bar-inner {
+  height: 100%;
+  background: linear-gradient(to right, #3b82f6, #1428a0);
+  transition: width 0.3s;
+}
+
+/* Booming effect for talking states */
+@keyframes pulse-boom {
+  0% { transform: scale(1); }
+  12% { transform: scale(1.08); }
+  23% { transform: scale(1.22); }
+  31% { transform: scale(1.05); }
+  44% { transform: scale(1.18); }
+  52% { transform: scale(1.28); }
+  63% { transform: scale(1.12); }
+  71% { transform: scale(1.02); }
+  82% { transform: scale(1.15); }
+  91% { transform: scale(1.07); }
+  100% { transform: scale(1); }
+}
+
+.animate-pulse-boom {
+  animation: pulse-boom 5.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+}
+
+/* Grid layout for panels */
+.app-grid-layout {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.panel-overlay {
+  grid-row: 2 / 3;
+  position: relative;
+  z-index: 10;
+}
+
+.panel-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+/* CSS custom properties for dynamic heights */
+:root {
+  --top-bar-height: 48px;
+  --bottom-bar-height: 80px;
+  --panel-height: calc(100vh - var(--top-bar-height) - var(--bottom-bar-height));
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --panel-height: calc(100dvh - var(--top-bar-height) - var(--bottom-bar-height));
+  }
+}
+
+/* Dynamic height calculation utility */
+.dynamic-panel-height {
+  top: var(--top-bar-height);
+  bottom: var(--bottom-bar-height);
+  height: var(--panel-height);
+}
