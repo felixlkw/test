@@ -1,0 +1,16 @@
+{
+  "version": "0.1.0",
+  "note": "c7 #2. domain_overrides 우선순위: domain match > base. min/max 둘 다 정의된 경우 둘 모두 위반 시 exceeds_threshold=true.",
+  "thresholds": {
+    "O2_concentration":  { "unit": "%",    "min": 19.5, "max": 23.5, "regulation": "산업안전보건기준규칙 §619" },
+    "H2S_concentration": { "unit": "ppm",  "max": 10,   "regulation": "OSHA 1910.146" },
+    "LEL":               { "unit": "%LEL", "max": 10,   "regulation": "KOSHA P-80" },
+    "wind_speed":        { "unit": "mps",  "max": 10,   "regulation": "산업안전보건기준규칙 §37",
+      "domain_overrides": { "heavy_industry": { "max": 15, "stop_max": 20 } } },
+    "heat_index":        { "unit": "C",    "max": 33,   "regulation": "추정: KOSHA H-XX, felix 검수 필요",
+      "domain_overrides": { "heavy_industry": { "max": 33, "action": "mandatory_rest" } } },
+    "SiH4_concentration":{ "unit": "ppm",  "max": 5,    "regulation": "SEMI F-40" },
+    "NF3_concentration": { "unit": "ppm",  "max": 25,   "regulation": "산업안전보건기준규칙 §420" },
+    "noise_level":       { "unit": "dB",   "max": 85,   "regulation": "산업안전보건기준규칙 §513" }
+  }
+}

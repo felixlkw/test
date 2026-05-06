@@ -1,0 +1,246 @@
+{
+  "domain": "construction",
+  "version": "0.2.0",
+  "note": "PR A placeholder catalog — 12 work types total (3 per domain). Phase 2.x PR-1: per-item scenarios/mitigations/ppe added inside each baseline. regulation 인용은 felix 검수 필요.",
+  "work_types": {
+    "WORKING_AT_HEIGHT": {
+      "label_ko": "고소작업",
+      "label_en": "Working at Height",
+      "baseline": [
+        {
+          "id": "WAH-01",
+          "content": "안전대 착용 및 생명줄(수평/수직) 연결 확인",
+          "regulation": "산업안전보건기준규칙 §42",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "WAH-01-SC-1", "content": "안전대 미체결 작업자가 균형 상실 시 추락 (4m 이상)" }
+          ],
+          "mitigations": [
+            { "id": "WAH-01-MIT-1", "content": "작업 시작 전 인원별 생명줄 체결 상태 1:1 확인 (추정: KOSHA G-49, felix 검수 필요)" }
+          ],
+          "ppe": [
+            { "id": "WAH-01-PPE-1", "content": "전신 안전대 (생명줄 일체형)" }
+          ]
+        },
+        {
+          "id": "WAH-02",
+          "content": "작업발판·안전난간 설치 상태 점검",
+          "regulation": "산업안전보건기준규칙 §13",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "WAH-02-SC-1", "content": "작업발판 미끄러짐 또는 결속 풀림으로 균형 상실 → 추락" }
+          ],
+          "mitigations": [
+            { "id": "WAH-02-MIT-1", "content": "발판 폭 40cm 이상 + 안전난간 90cm 설치 확인 후 작업 시작" }
+          ],
+          "ppe": [
+            { "id": "WAH-02-PPE-1", "content": "미끄럼 방지 안전화" }
+          ]
+        },
+        {
+          "id": "WAH-03",
+          "content": "추락방지망 설치 또는 개구부 덮개 확인",
+          "regulation": "산업안전보건기준규칙 §14",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "WAH-03-SC-1", "content": "개구부 덮개 미설치로 작업자/자재가 하부층으로 추락" }
+          ],
+          "mitigations": [
+            { "id": "WAH-03-MIT-1", "content": "개구부 덮개 고정 + 추락방지망(10m 이내) 이중 설치" }
+          ],
+          "ppe": [
+            { "id": "WAH-03-PPE-1", "content": "안전모 (턱끈 체결)" }
+          ]
+        },
+        {
+          "id": "WAH-04",
+          "content": "사다리·이동식 비계 사용 시 전도 방지 조치",
+          "regulation": "추정: KOSHA G-49, felix 검수 필요",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "WAH-04-SC-1", "content": "이동식 비계 캐스터 미고정 상태에서 작업자 이동 시 전도" }
+          ],
+          "mitigations": [
+            { "id": "WAH-04-MIT-1", "content": "캐스터 4개 모두 잠금 + 아웃리거 전개 후 승강" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "WAH-05",
+          "content": "공구·자재 낙하 방지(공구벨트, 낙하물 방지망)",
+          "regulation": "산업안전보건기준규칙 §14",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "WAH-05-SC-1", "content": "공구 낙하로 하부 작업자/통행자 충격 부상" }
+          ],
+          "mitigations": [
+            { "id": "WAH-05-MIT-1", "content": "공구벨트 스트랩 체결 + 낙하물 방지망 1차/2차 설치" }
+          ],
+          "ppe": [
+            { "id": "WAH-05-PPE-1", "content": "공구벨트(스트랩 일체형)" }
+          ]
+        }
+      ],
+      "conditional": [
+        {
+          "if": "wind_speed >= 10",
+          "add": {
+            "id": "WAH-W01",
+            "content": "강풍주의(10m/s 이상) — 작업속도 제한, 신호수 추가",
+            "regulation": "추정: KOSHA G-99, felix 검수 필요"
+          }
+        },
+        {
+          "if": "wind_speed >= 15",
+          "add": {
+            "id": "WAH-W02",
+            "content": "강풍 작업중단(15m/s 이상) — 외부 고소작업 금지",
+            "regulation": "산업안전보건기준규칙 §37"
+          }
+        }
+      ]
+    },
+    "HOT_WORK": {
+      "label_ko": "화기작업",
+      "label_en": "Hot Work",
+      "baseline": [
+        {
+          "id": "HW-01",
+          "content": "화기작업 허가서(PTW) 발급 및 유효기간 확인",
+          "regulation": "산업안전보건기준규칙 §241",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "HW-01-SC-1", "content": "허가서 없이 임의 용접 진행 → 가연물 인근 작업으로 화재" }
+          ],
+          "mitigations": [
+            { "id": "HW-01-MIT-1", "content": "PTW 사본 작업 위치 게시 + 유효시간 내 작업 종료" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "HW-02",
+          "content": "작업 반경 11m 이내 가연물 제거 또는 불연포 보양",
+          "regulation": "추정: KOSHA P-93, felix 검수 필요",
+          "evidence_required": "photo",
+          "scenarios": [
+            { "id": "HW-02-SC-1", "content": "가연물 잔존 상태 용접 불티 비산 → 화재 발생" }
+          ],
+          "mitigations": [
+            { "id": "HW-02-MIT-1", "content": "11m 이내 가연물 이동 + 불연포 2겹 보양 후 점화" }
+          ],
+          "ppe": [
+            { "id": "HW-02-PPE-1", "content": "용접용 가죽 앞치마" }
+          ]
+        },
+        {
+          "id": "HW-03",
+          "content": "소화기·소화전 작업장 인접 배치(2개 이상)",
+          "regulation": "산업안전보건기준규칙 §242",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "HW-03-SC-1", "content": "초동 진화 지연으로 소규모 화재가 인근 가연물로 확산" }
+          ],
+          "mitigations": [
+            { "id": "HW-03-MIT-1", "content": "ABC급 소화기 2개 + 소화전 호스 길이 확보 사전 배치" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "HW-04",
+          "content": "화재감시자 배치 및 작업 종료 후 30분 이상 잔불 점검",
+          "regulation": "산업안전보건기준규칙 §241",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "HW-04-SC-1", "content": "작업 종료 후 잔불 미확인으로 야간 재발화" }
+          ],
+          "mitigations": [
+            { "id": "HW-04-MIT-1", "content": "전담 화재감시자 + 종료 후 30분 잔불 순찰 기록" }
+          ],
+          "ppe": [
+            { "id": "HW-04-PPE-1", "content": "용접면(차광 등급 9 이상)" }
+          ]
+        }
+      ],
+      "conditional": [
+        {
+          "if": "confined_space == true",
+          "add": {
+            "id": "HW-CS01",
+            "content": "밀폐공간 화기작업 — 가스농도 측정 및 환기 확인",
+            "regulation": "산업안전보건기준규칙 §619"
+          }
+        }
+      ]
+    },
+    "EXCAVATION": {
+      "label_ko": "굴착작업",
+      "label_en": "Excavation",
+      "baseline": [
+        {
+          "id": "EX-01",
+          "content": "굴착작업 전 지하 매설물(전기·가스·통신) 사전조사 및 도면 확인",
+          "regulation": "산업안전보건기준규칙 §340",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "EX-01-SC-1", "content": "도면 미확인 굴착 시 가스관 손상 → 가스 누출/폭발" }
+          ],
+          "mitigations": [
+            { "id": "EX-01-MIT-1", "content": "관할 지자체 도면 + 시굴 점검 후 굴착 착수" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "EX-02",
+          "content": "흙막이 지보공 설치 또는 굴착면 기울기 준수(흙 종류별)",
+          "regulation": "산업안전보건기준규칙 §339",
+          "evidence_required": "photo",
+          "scenarios": [
+            { "id": "EX-02-SC-1", "content": "흙막이 미설치/기울기 미준수로 굴착면 붕괴 → 작업자 매몰" }
+          ],
+          "mitigations": [
+            { "id": "EX-02-MIT-1", "content": "토질 확인 후 기울기 1:1.2 이하 또는 흙막이 설치 후 진입" }
+          ],
+          "ppe": [
+            { "id": "EX-02-PPE-1", "content": "안전모 (턱끈 체결)" }
+          ]
+        },
+        {
+          "id": "EX-03",
+          "content": "굴착면 단부 안전난간 또는 출입금지 표시",
+          "regulation": "산업안전보건기준규칙 §340",
+          "evidence_required": "photo",
+          "scenarios": [
+            { "id": "EX-03-SC-1", "content": "야간/우천 시 굴착면 단부 미인지로 통행자 추락" }
+          ],
+          "mitigations": [
+            { "id": "EX-03-MIT-1", "content": "단부 90cm 안전난간 + 점멸 라이트 + 출입금지 표지 설치" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "EX-04",
+          "content": "굴착 깊이 1.5m 이상 시 승강설비(사다리) 확보",
+          "regulation": "추정: KOSHA C-104, felix 검수 필요",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "EX-04-SC-1", "content": "사다리 미설치 깊은 굴착부에서 비상 탈출 지연" }
+          ],
+          "mitigations": [
+            { "id": "EX-04-MIT-1", "content": "굴착 깊이 1.5m 이상 시 8m 이내 간격 사다리 1개 이상 확보" }
+          ],
+          "ppe": []
+        }
+      ],
+      "conditional": [
+        {
+          "if": "depth >= 2",
+          "add": {
+            "id": "EX-D01",
+            "content": "굴착 2m 이상 — 산소농도 측정 및 환기, 신호수 배치",
+            "regulation": "산업안전보건기준규칙 §619"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,273 @@
+{
+  "domain": "heavy_industry",
+  "version": "0.2.0",
+  "note": "PR A placeholder catalog — 3 work types. Phase 2.x PR-1: per-item scenarios/mitigations/ppe. regulation 인용은 felix 검수 필요.",
+  "work_types": {
+    "LIFTING": {
+      "label_ko": "양중작업",
+      "label_en": "Lifting / Hoisting",
+      "baseline": [
+        {
+          "id": "LIFT-01",
+          "content": "리프팅 플랜 검토 — 중량물 무게·중심·줄걸이 방법 확인",
+          "regulation": "산업안전보건기준규칙 §38",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "LIFT-01-SC-1", "content": "중심점 오판으로 양중 중 회전·기울어 인근 작업자 충돌" }
+          ],
+          "mitigations": [
+            { "id": "LIFT-01-MIT-1", "content": "리프팅 플랜에 무게 중심 표시 + 시양중(test lift) 1회 시행" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "LIFT-02",
+          "content": "크레인 정기점검 유효기간 및 SWL(safe working load) 확인",
+          "regulation": "산업안전보건기준규칙 §142",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "LIFT-02-SC-1", "content": "정격 초과 양중으로 크레인 전도 또는 와이어 절단" }
+          ],
+          "mitigations": [
+            { "id": "LIFT-02-MIT-1", "content": "양중물 중량 사전 측정 + SWL 80% 이내 운용 원칙 준수" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "LIFT-03",
+          "content": "줄걸이용구(슬링·체인·후크) 손상 점검 및 안전핀 결속",
+          "regulation": "추정: KOSHA G-91, felix 검수 필요",
+          "evidence_required": "photo",
+          "scenarios": [
+            { "id": "LIFT-03-SC-1", "content": "슬링 손상 미인지로 양중 중 절단 → 중량물 낙하" }
+          ],
+          "mitigations": [
+            { "id": "LIFT-03-MIT-1", "content": "교대 시작 시 슬링·후크 안전핀 시각 점검 + 색깔 라벨 갱신" }
+          ],
+          "ppe": [
+            { "id": "LIFT-03-PPE-1", "content": "안전모 (턱끈 체결)" }
+          ]
+        },
+        {
+          "id": "LIFT-04",
+          "content": "신호수 배치 및 신호체계(수신호/무전) 통일",
+          "regulation": "산업안전보건기준규칙 §146",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "LIFT-04-SC-1", "content": "신호 혼선 시 운전자가 잘못된 방향으로 양중 → 충돌" }
+          ],
+          "mitigations": [
+            { "id": "LIFT-04-MIT-1", "content": "전담 신호수 1명 지정 + 무전 채널 단일화" }
+          ],
+          "ppe": [
+            { "id": "LIFT-04-PPE-1", "content": "고시인성 반사조끼" }
+          ]
+        },
+        {
+          "id": "LIFT-05",
+          "content": "양중 반경 내 출입금지 구역 설정·표시",
+          "regulation": "산업안전보건기준규칙 §20",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "LIFT-05-SC-1", "content": "출입금지 표시 미준수로 작업자 양중 반경 진입 → 추돌/추락" }
+          ],
+          "mitigations": [
+            { "id": "LIFT-05-MIT-1", "content": "라바콘 + 점멸 라이트 + 출입금지 게시 후 양중 시작" }
+          ],
+          "ppe": []
+        }
+      ],
+      "conditional": [
+        {
+          "if": "wind_speed >= 15",
+          "add": {
+            "id": "LIFT-W01",
+            "content": "풍속 15m/s 이상 — 양중작업 중단, 스톰핀 체결",
+            "regulation": "추정: KOSHA Heavy-Industry P-XX, felix 검수 필요"
+          }
+        }
+      ]
+    },
+    "HOT_WORK": {
+      "label_ko": "화기작업",
+      "label_en": "Hot Work",
+      "baseline": [
+        {
+          "id": "HHW-01",
+          "content": "화기작업 허가서 발급 및 유효시간 확인(8시간 단위)",
+          "regulation": "산업안전보건기준규칙 §241",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "HHW-01-SC-1", "content": "허가 만료 후 추가 작업 강행 → 통제 외 화기 발생" }
+          ],
+          "mitigations": [
+            { "id": "HHW-01-MIT-1", "content": "PTW 만료 30분 전 알람 + 연장 발급 절차 명문화" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "HHW-02",
+          "content": "용접·용단 시 차광판·불티 비산 방지포 설치",
+          "regulation": "추정: KOSHA W-2, felix 검수 필요",
+          "evidence_required": "photo",
+          "scenarios": [
+            { "id": "HHW-02-SC-1", "content": "불티 비산으로 인근 가연물 발화 또는 통행자 화상" }
+          ],
+          "mitigations": [
+            { "id": "HHW-02-MIT-1", "content": "비산 반경 3m 차광판/불연포 2겹 + 통행자 우회 동선" }
+          ],
+          "ppe": [
+            { "id": "HHW-02-PPE-1", "content": "용접면 (차광 등급 9 이상)" },
+            { "id": "HHW-02-PPE-2", "content": "용접용 가죽 앞치마" }
+          ]
+        },
+        {
+          "id": "HHW-03",
+          "content": "용접흄 국소배기장치 가동 또는 송기마스크 착용",
+          "regulation": "산업안전보건기준규칙 §422",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "HHW-03-SC-1", "content": "용접흄 장기 노출로 작업자 호흡기·중금속 중독" }
+          ],
+          "mitigations": [
+            { "id": "HHW-03-MIT-1", "content": "국소배기 풍속 0.5m/s 이상 또는 송기마스크 의무 착용" }
+          ],
+          "ppe": [
+            { "id": "HHW-03-PPE-1", "content": "송기마스크 또는 방진방독 겸용 마스크" }
+          ]
+        },
+        {
+          "id": "HHW-04",
+          "content": "탱크·블록 내부 화기작업 시 가스농도(LEL) 측정",
+          "regulation": "산업안전보건기준규칙 §242",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "HHW-04-SC-1", "content": "탱크 잔류 가연성 가스 미측정 상태에서 화기 점화 → 폭발" }
+          ],
+          "mitigations": [
+            { "id": "HHW-04-MIT-1", "content": "작업 전·중 LEL 10% 미만 확인 (1시간 간격 재측정)" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "HHW-05",
+          "content": "화재감시자 배치 및 작업 종료 후 1시간 잔불 점검(중공업 야드 강화)",
+          "regulation": "추정: KOSHA G-2, felix 검수 필요",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "HHW-05-SC-1", "content": "야드 환경에서 잔불이 강풍에 의해 인접 자재로 비산" }
+          ],
+          "mitigations": [
+            { "id": "HHW-05-MIT-1", "content": "전담 화재감시자 + 종료 후 1시간 잔불 순찰 + 살수 처리" }
+          ],
+          "ppe": []
+        }
+      ],
+      "conditional": [
+        {
+          "if": "confined_space == true",
+          "add": {
+            "id": "HHW-CS01",
+            "content": "탱크 내부 화기작업 — 산소(19.5~23.5%)·가연성가스(LEL 10% 미만) 동시 측정",
+            "regulation": "산업안전보건기준규칙 §619"
+          }
+        }
+      ]
+    },
+    "CONFINED_SPACE": {
+      "label_ko": "밀폐공간 작업",
+      "label_en": "Confined Space Entry",
+      "baseline": [
+        {
+          "id": "CS-01",
+          "content": "밀폐공간 작업허가서 발급 및 위험요인(질식/화재/유해가스) 명기",
+          "regulation": "산업안전보건기준규칙 §619",
+          "evidence_required": "photo",
+          "scenarios": [
+            { "id": "CS-01-SC-1", "content": "허가서 위험요인 누락으로 작업자가 잠재 가스 미인지 진입" }
+          ],
+          "mitigations": [
+            { "id": "CS-01-MIT-1", "content": "위험요인 3종(질식/화재/유해가스) 별도 라인 명기 후 출력 게시" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "CS-02",
+          "content": "산소(19.5~23.5%)·가연성가스(LEL 10% 미만)·황화수소(10ppm 미만) 측정",
+          "regulation": "산업안전보건기준규칙 §619",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "CS-02-SC-1", "content": "산소 결핍 미감지 진입 → 질식 의식 상실" }
+          ],
+          "mitigations": [
+            { "id": "CS-02-MIT-1", "content": "휴대용 4-가스 검지기로 진입 직전 + 1시간 간격 측정" }
+          ],
+          "ppe": [
+            { "id": "CS-02-PPE-1", "content": "휴대용 4-가스 검지기 (O2/LEL/H2S/CO)" }
+          ]
+        },
+        {
+          "id": "CS-03",
+          "content": "송풍기 또는 강제환기 가동 및 작업 중 지속 환기",
+          "regulation": "산업안전보건기준규칙 §624",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "CS-03-SC-1", "content": "환기 중단 시 잔류 가스 농축으로 산소 결핍 재발생" }
+          ],
+          "mitigations": [
+            { "id": "CS-03-MIT-1", "content": "작업 종료 시까지 강제환기 지속 + 전원 차단 시 즉시 철수" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "CS-04",
+          "content": "감시인 배치 및 통신수단(무전기) 확보",
+          "regulation": "산업안전보건기준규칙 §621",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "CS-04-SC-1", "content": "감시인 부재 또는 통신 두절로 비상 상황 대응 지연" }
+          ],
+          "mitigations": [
+            { "id": "CS-04-MIT-1", "content": "감시인 1명 상주 + 5분 간격 호출 응답 절차" }
+          ],
+          "ppe": [
+            { "id": "CS-04-PPE-1", "content": "방수 무전기 (전용 채널)" }
+          ]
+        },
+        {
+          "id": "CS-05",
+          "content": "긴급구조용 SCBA(공기호흡기)·구명로프 비치",
+          "regulation": "산업안전보건기준규칙 §622",
+          "evidence_required": "photo",
+          "scenarios": [
+            { "id": "CS-05-SC-1", "content": "내부 작업자 의식 상실 시 구조자가 SCBA 없이 진입 → 2차 피해" }
+          ],
+          "mitigations": [
+            { "id": "CS-05-MIT-1", "content": "SCBA 1조 + 구명로프 입구 비치 + 구조자 사전 SCBA 훈련" }
+          ],
+          "ppe": [
+            { "id": "CS-05-PPE-1", "content": "SCBA (공기호흡기, 충전 상태)" }
+          ]
+        }
+      ],
+      "conditional": [
+        {
+          "if": "previous_incident_keywords contains 질식 OR 가스",
+          "add": {
+            "id": "CS-N01",
+            "content": "과거 질식·가스 사고 이력 — 진입 전 산소·황화수소·일산화탄소 3종 동시 측정 + 환기 30분 이상 선행",
+            "regulation": "산업안전보건기준규칙 §619"
+          }
+        },
+        {
+          "if": "shift == night OR special_notes contains 단독 작업",
+          "add": {
+            "id": "CS-N02",
+            "content": "야간·단독 작업 시 — 외부 감시인 2인 배치 + 무전 채널 상시 개방 + 30분 단위 안부 콜",
+            "regulation": "산업안전보건기준규칙 §622"
+          }
+        }
+      ]
+    }
+  }
+}

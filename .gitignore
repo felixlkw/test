@@ -36,3 +36,25 @@ __MACOSX/
 
 # --- Railway ---
 .railway/
+
+# --- _workspace dev notes ---
+# Cycle 리포트·prompt·draft는 미커밋. 사용자 매뉴얼 + 4 도메인 시나리오만 추적.
+_workspace/*
+!_workspace/user_manual.md
+!_workspace/manual_test_scenario_construction.md
+!_workspace/manual_test_scenario_heavy_industry.md
+!_workspace/manual_test_scenario_manufacturing.md
+!_workspace/manual_test_scenario_semiconductor.md
+
+# --- 미사용 NotoSansKR weights ---
+# 런타임 PDF는 Regular 1개만 임베드(pdfGenerate.ts:KO_FONT_URL).
+# 다른 weight는 디스크에 두면 빌드 시 dist 복사로 +50 MB 낭비.
+frontend/public/fonts/static/NotoSansKR-Black.ttf
+frontend/public/fonts/static/NotoSansKR-Bold.ttf
+frontend/public/fonts/static/NotoSansKR-ExtraBold.ttf
+frontend/public/fonts/static/NotoSansKR-ExtraLight.ttf
+frontend/public/fonts/static/NotoSansKR-Light.ttf
+frontend/public/fonts/static/NotoSansKR-Medium.ttf
+frontend/public/fonts/static/NotoSansKR-SemiBold.ttf
+frontend/public/fonts/static/NotoSansKR-Thin.ttf
+frontend/public/fonts/NotoSansKR-VariableFont_wght.ttf

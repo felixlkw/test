@@ -2,9 +2,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   getSession,
   listSessions,
+  listArchivedSessions,
   putSession,
   deleteSession as dbDeleteSession,
   clearAllSessions as dbClearAll,
+  archiveSession as dbArchive,
+  unarchiveSession as dbUnarchive,
   findLatestDraft,
 } from "../services/db";
 import type { Session } from "../services/sessionModel";
@@ -78,12 +81,46 @@ export function useSessionList() {
     [refresh],
   );
 
+  const archive = useCallback(
+    async (id: string) => {
+      await dbArchive(id);
+      await refresh();
+    },
+    [refresh],
+  );
+
+  const unarchive = useCallback(
+    async (id: string) => {
+      await dbUnarchive(id);
+      await refresh();
+    },
+    [refresh],
+  );
+
   const clearAll = useCallback(async () => {
     await dbClearAll();
     await refresh();
   }, [refresh]);
 
-  return { sessions, loading, refresh, remove, clearAll };
+  return { sessions, loading, refresh, remove, archive, unarchive, clearAll };
+}
+
+export function useArchivedSessionList() {
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    const list = await listArchivedSessions();
+    setSessions(list);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  return { sessions, loading, refresh };
 }
 
 export function useLatestDraft() {

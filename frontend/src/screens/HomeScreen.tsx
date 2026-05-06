@@ -1,13 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { putSession } from "../services/db";
 import { createEmptySession } from "../services/sessionModel";
 import type { SessionDomain } from "../services/sessionModel";
 import { useLatestDraft } from "../hooks/useSession";
+import { cleanupExpiredSessions } from "../services/retention";
 import CTAButton from "../components/CTAButton";
 import PwcMark from "../components/PwcMark";
 import RuleLine from "../components/RuleLine";
 import { IconSettings, IconChevronRight, IconArrowRight } from "../components/Icon";
+import { DomainBadge } from "../shared/ui/DomainBadge";
+
+// PR D Q8 — Settings 기본 도메인 키 (Settings와 동일 키).
+const DEFAULT_DOMAIN_KEY = "safemate.ui.defaultDomain";
+
+function readDefaultDomain(): SessionDomain | undefined {
+  try {
+    const v = localStorage.getItem(DEFAULT_DOMAIN_KEY);
+    if (
+      v === "manufacturing" ||
+      v === "construction" ||
+      v === "heavy_industry" ||
+      v === "semiconductor"
+    ) {
+      return v;
+    }
+    return undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 const DOMAIN_OPTIONS: { value: SessionDomain; label: string; hint: string }[] = [
   { value: "manufacturing", label: "제조", hint: "가전·금속·조립·포장 라인" },
@@ -21,17 +43,70 @@ export default function HomeScreen() {
   const { draft, loading } = useLatestDraft();
   const [showDomainSheet, setShowDomainSheet] = useState(false);
 
-  const startNewTbm = () => setShowDomainSheet(true);
+  // PR D Q8 — mount 시 1회 만료된 archived 세션 cleanup. retentionDays 미설정 시 no-op.
+  // 비영속 view state 영향 0 (invariant #10) — IndexedDB 삭제만 발생.
+  useEffect(() => {
+    void cleanupExpiredSessions().catch((err) => {
+      console.warn("[HomeScreen] retention cleanup failed:", err);
+    });
+  }, []);
+
+  // 2026-05-07 felix HITL — VoiceShell ModeSwitcher가 EHS→TBM 전환 시 default
+  // domain이 없으면 sessionStorage 플래그를 set한 뒤 navigate("/")로 보낸다.
+  // HomeScreen mount 시 플래그 감지하면 도메인 sheet를 즉시 자동 open — 사용자가
+  // "새 TBM 시작" 버튼을 따로 누르지 않아도 한 번에 흐름 진입. 1회용(consume).
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem("safemate.ui.openDomainSheetOnce") === "1") {
+        sessionStorage.removeItem("safemate.ui.openDomainSheetOnce");
+        setShowDomainSheet(true);
+      }
+    } catch {
+      // sessionStorage 비활성 — fallback: 사용자가 직접 "새 TBM 시작" 클릭.
+    }
+  }, []);
+
+  const startNewTbm = () => {
+    // PR D Q8 — 기본 도메인이 설정돼 있으면 도메인 시트 우회 + 즉시 PrepareScreen.
+    const defaultDomain = readDefaultDomain();
+    if (defaultDomain) {
+      void confirmDomain(defaultDomain);
+      return;
+    }
+    setShowDomainSheet(true);
+  };
 
   const confirmDomain = async (domain?: SessionDomain) => {
     setShowDomainSheet(false);
     const s = createEmptySession("TBM", "korean", undefined, { domain });
     await putSession(s);
-    navigate(`/tbm/${s.session_id}`);
+    // PR A — c6 영역 I+VII: domain이 지정된 새 TBM은 PrepareScreen을 거친다.
+    // domain 미지정(legacy "일반 TBM 시작")은 기존 RunScreen으로 직행 — invariant #9 보존.
+    if (domain) {
+      navigate(`/tbm/${s.session_id}/prepare`);
+    } else {
+      navigate(`/tbm/${s.session_id}`);
+    }
+  };
+
+  const startNewEhs = async () => {
+    // EHS Q&A 세션도 IndexedDB에 영속화 — 사진 첨부/분석을 위해 sessionId 필요
+    // (handlePhotoCaptured가 sessionId 가드로 인해 undefined일 때 분석 skip).
+    // History/Settings에서 EHS 세션도 동일하게 노출됨.
+    const s = createEmptySession("EHS", "korean");
+    await putSession(s);
+    navigate(`/ehs/${s.session_id}`);
   };
 
   const resumeDraft = () => {
-    if (draft) navigate(`/tbm/${draft.session_id}`);
+    if (!draft) return;
+    // PR B (c6 §3.VII) — RunScreen rename. work_type_id 있으면(prepare 완료) `/run`로,
+    // 없으면 legacy `/tbm/:id`로 — prepare 우회 흐름 또는 v0.2.0 세션 호환.
+    if (draft.work_type_id) {
+      navigate(`/tbm/${draft.session_id}/run`);
+    } else {
+      navigate(`/tbm/${draft.session_id}`);
+    }
   };
 
   return (
@@ -77,8 +152,13 @@ export default function HomeScreen() {
             className="w-full text-left bg-white border border-pwc-border rounded-pwc-lg shadow-pwc-card p-4 flex items-center justify-between hover:border-pwc-orange transition"
           >
             <div className="min-w-0">
-              <div className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold">
-                진행 중
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold">
+                  진행 중
+                </span>
+                {/* PR B+ Q9 (OLD-M15 / NEW-M3) — Resume Card 도메인 배지.
+                    invariant #9: domain undefined면 DomainBadge가 null 렌더. */}
+                <DomainBadge domain={draft.domain} />
               </div>
               <div className="text-base font-semibold truncate mt-0.5">
                 {draft.work_type || "TBM 세션"}
@@ -103,7 +183,7 @@ export default function HomeScreen() {
           <CTAButton onClick={startNewTbm} block>
             새 TBM 시작
           </CTAButton>
-          <CTAButton onClick={() => navigate("/ehs")} variant="outline" block>
+          <CTAButton onClick={() => void startNewEhs()} variant="outline" block>
             EHS 안전 질문하기
           </CTAButton>
         </div>
@@ -141,7 +221,7 @@ export default function HomeScreen() {
       </section>
 
       <footer className="mt-auto px-6 pb-6 text-[11px] text-pwc-ink-mute">
-        SafeMate · Samsung EHS Demo
+        SafeMate · 산업안전 데모
       </footer>
 
       {showDomainSheet && (

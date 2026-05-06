@@ -1,0 +1,264 @@
+{
+  "domain": "manufacturing",
+  "version": "0.2.0",
+  "note": "PR A placeholder catalog — 3 work types. Phase 2.x PR-1: per-item scenarios/mitigations/ppe. regulation 인용은 felix 검수 필요.",
+  "work_types": {
+    "ASSEMBLY_LINE": {
+      "label_ko": "조립라인 작업",
+      "label_en": "Assembly Line",
+      "baseline": [
+        {
+          "id": "AL-01",
+          "content": "컨베이어·구동부 방호덮개 설치 상태 확인",
+          "regulation": "산업안전보건기준규칙 §80",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "AL-01-SC-1", "content": "구동부 노출로 작업자 옷자락/면장갑 말림 → 협착" }
+          ],
+          "mitigations": [
+            { "id": "AL-01-MIT-1", "content": "방호덮개 잠금 상태 점검 + 손등 보호 장갑 사용" }
+          ],
+          "ppe": [
+            { "id": "AL-01-PPE-1", "content": "손등 보호 장갑 (말림 방지)" }
+          ]
+        },
+        {
+          "id": "AL-02",
+          "content": "라이트커튼·인터록 등 안전장치 정상작동 점검",
+          "regulation": "추정: KOSHA M-XX, felix 검수 필요",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "AL-02-SC-1", "content": "라이트커튼 차단 우회/오작동 시 작업자 신체 침입 미감지" }
+          ],
+          "mitigations": [
+            { "id": "AL-02-MIT-1", "content": "교대 시작 시 테스트 막대로 차단 동작 확인" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "AL-03",
+          "content": "작업자 PPE — 안전모·안전화·면장갑(말림 위험 작업은 손등 보호 권장)",
+          "regulation": "산업안전보건기준규칙 §32",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "AL-03-SC-1", "content": "PPE 미착용 상태에서 자재 낙하 시 발등/머리 부상" }
+          ],
+          "mitigations": [
+            { "id": "AL-03-MIT-1", "content": "라인 진입 전 PPE 자체 점검 체크리스트 통과" }
+          ],
+          "ppe": [
+            { "id": "AL-03-PPE-1", "content": "안전화 (강화 토캡)" },
+            { "id": "AL-03-PPE-2", "content": "안전모" }
+          ]
+        },
+        {
+          "id": "AL-04",
+          "content": "비상정지 버튼 위치·접근성 확인 및 작업자 인지",
+          "regulation": "산업안전보건기준규칙 §92",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "AL-04-SC-1", "content": "비상정지 위치 미인지로 협착 발생 시 정지 지연" }
+          ],
+          "mitigations": [
+            { "id": "AL-04-MIT-1", "content": "교대 직전 비상정지 위치 1:1 인수인계 + 모의 정지 1회" }
+          ],
+          "ppe": []
+        }
+      ],
+      "conditional": [
+        {
+          "if": "noise_level >= 85",
+          "add": {
+            "id": "AL-N01",
+            "content": "소음 85dB 이상 — 청력보호구(귀마개/귀덮개) 착용",
+            "regulation": "산업안전보건기준규칙 §513"
+          }
+        }
+      ]
+    },
+    "FORKLIFT_OPS": {
+      "label_ko": "지게차 운반작업",
+      "label_en": "Forklift Operations",
+      "baseline": [
+        {
+          "id": "FL-01",
+          "content": "지게차 운전자 자격증(소형건설기계/지게차) 확인",
+          "regulation": "산업안전보건기준규칙 §170",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "FL-01-SC-1", "content": "무자격 운전자가 운행 중 지게차 전도/충돌" }
+          ],
+          "mitigations": [
+            { "id": "FL-01-MIT-1", "content": "자격증 사본 작업 시작 전 확인 + 카드 키 발급제" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "FL-02",
+          "content": "운행 전 일상점검 — 헤드가드, 후사경, 경광등, 후진경보음",
+          "regulation": "산업안전보건기준규칙 §172",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "FL-02-SC-1", "content": "후진경보음 고장 상태에서 보행자 미인지 → 후방 충돌" }
+          ],
+          "mitigations": [
+            { "id": "FL-02-MIT-1", "content": "운행 전 일상점검 5종 (시동·브레이크·경광·경보·후사경) 시연" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "FL-03",
+          "content": "지게차 작업반경 5m 이내 작업자 출입금지 / 보행자 동선 분리",
+          "regulation": "산업안전보건기준규칙 §172",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "FL-03-SC-1", "content": "지게차 작업반경 진입 보행자가 사각지대로 충돌" }
+          ],
+          "mitigations": [
+            { "id": "FL-03-MIT-1", "content": "노면 마킹으로 보행자 동선 분리 + 신호수 배치" }
+          ],
+          "ppe": [
+            { "id": "FL-03-PPE-1", "content": "고시인성 반사조끼" }
+          ]
+        },
+        {
+          "id": "FL-04",
+          "content": "포크 적재 한도 준수 및 마스트 후경 상태 운행",
+          "regulation": "추정: KOSHA M-77, felix 검수 필요",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "FL-04-SC-1", "content": "정격 초과 적재로 균형 무너져 화물 낙하" }
+          ],
+          "mitigations": [
+            { "id": "FL-04-MIT-1", "content": "차량별 정격 표시 점검 + 마스트 후경 15° 유지 운행" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "FL-05",
+          "content": "급선회·급제동 금지, 옥내 제한속도(10km/h) 준수",
+          "regulation": "산업안전보건기준규칙 §172",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "FL-05-SC-1", "content": "급제동 시 적재물 관성 이탈로 인근 작업자 충격" }
+          ],
+          "mitigations": [
+            { "id": "FL-05-MIT-1", "content": "옥내 10km/h 표지 + 속도 위반 운전자 재교육" }
+          ],
+          "ppe": []
+        }
+      ],
+      "conditional": [
+        {
+          "if": "shift == night",
+          "add": {
+            "id": "FL-N01",
+            "content": "야간 운행 — 작업장 조명 200lux 이상 확보 + 후방 경광등 작동 확인",
+            "regulation": "산업안전보건기준규칙 §8"
+          }
+        },
+        {
+          "if": "previous_incident_keywords contains 충돌 OR 협착",
+          "add": {
+            "id": "FL-N02",
+            "content": "과거 충돌·협착 이력 — 보행자 통로 강화(가드레일/노면 채색) 및 진입 차단 검토",
+            "regulation": "산업안전보건기준규칙 §172"
+          }
+        }
+      ]
+    },
+    "PRESS_OPS": {
+      "label_ko": "프레스 작업",
+      "label_en": "Press Operations",
+      "baseline": [
+        {
+          "id": "PR-01",
+          "content": "프레스 양수기동장치(투핸드) 정상작동 점검",
+          "regulation": "산업안전보건기준규칙 §103",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "PR-01-SC-1", "content": "투핸드 우회 운전 시 한 손이 다이 영역에 들어가 협착" }
+          ],
+          "mitigations": [
+            { "id": "PR-01-MIT-1", "content": "교대 시작 시 양수기동 미작동 가동 차단 시연" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "PR-02",
+          "content": "광전자식 안전장치(라이트커튼) 작동거리·차단 시간 확인",
+          "regulation": "추정: KOSHA M-141, felix 검수 필요",
+          "evidence_required": "photo",
+          "scenarios": [
+            { "id": "PR-02-SC-1", "content": "차단 거리 부족으로 슬라이드 정지 전 신체 침입" }
+          ],
+          "mitigations": [
+            { "id": "PR-02-MIT-1", "content": "광전자 안전거리 = 정지시간 × 안전계수 산정 후 재배치" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "PR-03",
+          "content": "금형 교체 시 LOTO(전원/공압 차단·잠금·꼬리표) 시행",
+          "regulation": "산업안전보건기준규칙 §38",
+          "evidence_required": "photo",
+          "scenarios": [
+            { "id": "PR-03-SC-1", "content": "LOTO 미시행 중 동료 임의 가동 → 금형 교체 작업자 협착" }
+          ],
+          "mitigations": [
+            { "id": "PR-03-MIT-1", "content": "개인별 LOTO 락 + 꼬리표 작업자 이름 명기 후 교체 착수" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "PR-04",
+          "content": "방진마스크·보안경·안전화 착용",
+          "regulation": "산업안전보건기준규칙 §32",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "PR-04-SC-1", "content": "프레스 비산 분진/파편으로 안면/안구 부상" }
+          ],
+          "mitigations": [
+            { "id": "PR-04-MIT-1", "content": "구역 진입 전 PPE 3종 자체 점검 체크리스트 통과" }
+          ],
+          "ppe": [
+            { "id": "PR-04-PPE-1", "content": "방진마스크 (KF80 이상)" },
+            { "id": "PR-04-PPE-2", "content": "보안경" },
+            { "id": "PR-04-PPE-3", "content": "안전화" }
+          ]
+        },
+        {
+          "id": "PR-05",
+          "content": "슬라이드 하강 정지장치(브레이크) 정상작동 일상점검",
+          "regulation": "산업안전보건기준규칙 §103",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "PR-05-SC-1", "content": "브레이크 마모 상태 미점검으로 정지 지연 → 협착" }
+          ],
+          "mitigations": [
+            { "id": "PR-05-MIT-1", "content": "교대 시작 시 빈 가동 1회 후 정지 시간 측정 기록" }
+          ],
+          "ppe": []
+        }
+      ],
+      "conditional": [
+        {
+          "if": "special_notes contains 금형 교체 OR new_material exists",
+          "add": {
+            "id": "PR-N01",
+            "content": "금형 교체·신규 자재 시 — 본가동 전 빈 가동 1회 + 첫 가공품 외관/치수 검사",
+            "regulation": "산업안전보건기준규칙 §103"
+          }
+        },
+        {
+          "if": "previous_incident_keywords contains 협착 OR 면장갑",
+          "add": {
+            "id": "PR-N02",
+            "content": "과거 협착·면장갑 말림 이력 — 손등 보호 장갑 사용 + 라이트커튼 차단 거리 재산정",
+            "regulation": "산업안전보건기준규칙 §103"
+          }
+        }
+      ]
+    }
+  }
+}

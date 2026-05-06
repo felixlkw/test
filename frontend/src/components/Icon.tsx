@@ -97,6 +97,16 @@ export function IconTrash(props: IconProps) {
   );
 }
 
+export function IconArchive(props: IconProps) {
+  return (
+    <IconShell {...props}>
+      <rect x="3" y="4" width="18" height="4" rx="1" />
+      <path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8" />
+      <line x1="10" y1="13" x2="14" y2="13" />
+    </IconShell>
+  );
+}
+
 export function IconSettings(props: IconProps) {
   return (
     <IconShell {...props}>
@@ -161,6 +171,63 @@ export function IconChat(props: IconProps) {
       <path d="M4 5h16v11H8l-4 4z" />
       <line x1="8" y1="10" x2="16" y2="10" />
       <line x1="8" y1="13" x2="13" y2="13" />
+    </IconShell>
+  );
+}
+
+export function IconHome(props: IconProps) {
+  return (
+    <IconShell {...props}>
+      <path d="M3 11l9-7 9 7" />
+      <path d="M5 10v10h14V10" />
+      <path d="M10 20v-6h4v6" />
+    </IconShell>
+  );
+}
+
+// PR A: padlock — used to mark required baseline checklist items in PrepareScreen.
+export function IconLock(props: IconProps) {
+  return (
+    <IconShell {...props}>
+      <rect x="5" y="11" width="14" height="9" rx="2" />
+      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+      <line x1="12" y1="15" x2="12" y2="17" />
+    </IconShell>
+  );
+}
+
+// PR C — 카메라(InputDock 마이크 우측 / CameraCapture 모달).
+// 사각형 body + 렌즈 원형 + 우상단 셔터 표지 line-art.
+export function IconCamera(props: IconProps) {
+  return (
+    <IconShell {...props}>
+      <path d="M4 8h3l2-2h6l2 2h3v11H4z" />
+      <circle cx="12" cy="13" r="3.5" />
+    </IconShell>
+  );
+}
+
+// PR H — 사진 앨범/갤러리 아이콘. InputDock 카메라 버튼 우측 노출.
+// 사진 프레임 + 산(landscape) + 태양(원) 모티프 line-art.
+export function IconImage(props: IconProps) {
+  return (
+    <IconShell {...props}>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <circle cx="8.5" cy="10" r="1.5" />
+      <polyline points="4 17 10 12 14 15 20 10" />
+    </IconShell>
+  );
+}
+
+// PR A 보강: 새로고침(다시 받기) — PrepareScreen 위험 추천 헤더에서 사용.
+// 원형 화살표 2 segment + tip arrow.
+export function IconRefresh(props: IconProps) {
+  return (
+    <IconShell {...props}>
+      <path d="M4 12a8 8 0 0 1 14-5.3L20 9" />
+      <polyline points="20 4 20 9 15 9" />
+      <path d="M20 12a8 8 0 0 1-14 5.3L4 15" />
+      <polyline points="4 20 4 15 9 15" />
     </IconShell>
   );
 }

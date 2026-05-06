@@ -1,0 +1,265 @@
+{
+  "domain": "semiconductor",
+  "version": "0.2.0",
+  "note": "PR A placeholder catalog — 3 work types. Phase 2.x PR-1: per-item scenarios/mitigations/ppe. regulation 인용은 felix 검수 필요.",
+  "work_types": {
+    "CVD_PM": {
+      "label_ko": "CVD 챔버 PM",
+      "label_en": "CVD Chamber PM",
+      "baseline": [
+        {
+          "id": "CVD-01",
+          "content": "전원·RF·가스 LOTO 시행 및 잔류전압 검전",
+          "regulation": "산업안전보건기준규칙 §38",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "CVD-01-SC-1", "content": "RF 라인 LOTO 누락 상태에서 챔버 개방 → 감전" }
+          ],
+          "mitigations": [
+            { "id": "CVD-01-MIT-1", "content": "전원·RF·가스 3 분야 개별 LOTO + 검전기로 잔류전압 0V 확인" }
+          ],
+          "ppe": [
+            { "id": "CVD-01-PPE-1", "content": "절연 장갑 (전기용)" }
+          ]
+        },
+        {
+          "id": "CVD-02",
+          "content": "프로세스가스(SiH4·NH3 등) 라인 퍼지 완료 — 잔류농도 측정",
+          "regulation": "추정: SEMI S2 §17, felix 검수 필요",
+          "evidence_required": "photo",
+          "scenarios": [
+            { "id": "CVD-02-SC-1", "content": "퍼지 미완료 상태 챔버 개방으로 SiH4 자연발화" }
+          ],
+          "mitigations": [
+            { "id": "CVD-02-MIT-1", "content": "N2 퍼지 3회 이상 + 잔류농도 5ppm 미만 확인 후 개방" }
+          ],
+          "ppe": [
+            { "id": "CVD-02-PPE-1", "content": "휴대용 가스검지기 (SiH4/NH3 + O2)" }
+          ]
+        },
+        {
+          "id": "CVD-03",
+          "content": "PFC(증착부산물) 다량 챔버 개방 시 방독마스크/SCBA 착용",
+          "regulation": "추정: SEMI F-40, felix 검수 필요",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "CVD-03-SC-1", "content": "PFC 다량 노출로 호흡기 자극 또는 만성 노출 우려" }
+          ],
+          "mitigations": [
+            { "id": "CVD-03-MIT-1", "content": "PFC 농도 측정 후 임계 초과 시 SCBA 의무 + 작업시간 제한" }
+          ],
+          "ppe": [
+            { "id": "CVD-03-PPE-1", "content": "방독마스크 또는 SCBA" }
+          ]
+        },
+        {
+          "id": "CVD-04",
+          "content": "히터·라이너 잔열 확인(일정 온도 이하 강하 후 작업)",
+          "regulation": "추정: SEMI S2 §15, felix 검수 필요",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "CVD-04-SC-1", "content": "잔열 상태(60°C 이상) 라이너 접촉으로 화상" }
+          ],
+          "mitigations": [
+            { "id": "CVD-04-MIT-1", "content": "표면 온도 50°C 이하 강하 확인 후 진입 (적외선 측온계)" }
+          ],
+          "ppe": [
+            { "id": "CVD-04-PPE-1", "content": "내열 장갑" }
+          ]
+        },
+        {
+          "id": "CVD-05",
+          "content": "PM 작업 2인 1조 및 EHS 입회 확인",
+          "regulation": "추정: 사내 EHS 표준, felix 검수 필요",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "CVD-05-SC-1", "content": "단독 PM 작업 중 사고 발생 시 신속한 구조 어려움" }
+          ],
+          "mitigations": [
+            { "id": "CVD-05-MIT-1", "content": "2인 1조 (작업·감시) 명문화 + EHS 1회 입회 검증" }
+          ],
+          "ppe": []
+        }
+      ],
+      "conditional": [
+        {
+          "if": "SiH4_concentration > 0",
+          "add": {
+            "id": "CVD-G01",
+            "content": "SiH4 잔류 검출 — 즉시 작업중단·환기·재퍼지",
+            "regulation": "산업안전보건기준규칙 §420"
+          }
+        }
+      ]
+    },
+    "GAS_LINE_BREAK": {
+      "label_ko": "가스 라인 브레이크",
+      "label_en": "Gas Line Break",
+      "baseline": [
+        {
+          "id": "GLB-01",
+          "content": "Chemical Line Break 허가서 발급 및 가스 종류·농도 명기",
+          "regulation": "산업안전보건기준규칙 §241",
+          "evidence_required": "photo",
+          "scenarios": [
+            { "id": "GLB-01-SC-1", "content": "허가서 가스 종류 미특정으로 부적합 PPE 선택 → 노출" }
+          ],
+          "mitigations": [
+            { "id": "GLB-01-MIT-1", "content": "허가서에 가스 종류·농도·MSDS 번호 명기 후 PPE 매칭" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "GLB-02",
+          "content": "이중밸브 차단 + 잔압 배출 + 질소(N2) 퍼지 3회 이상",
+          "regulation": "추정: SEMI F-15, felix 검수 필요",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "GLB-02-SC-1", "content": "잔압/잔류가스 미배출 상태 플랜지 개방 → 가스 분출" }
+          ],
+          "mitigations": [
+            { "id": "GLB-02-MIT-1", "content": "이중밸브 잠금 + 잔압 게이지 0 확인 + N2 퍼지 3회 후 개방" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "GLB-03",
+          "content": "독성가스 작업자 풀페이스 SCBA 착용 + 비상 SCBA 1조 추가 비치",
+          "regulation": "산업안전보건기준규칙 §422",
+          "evidence_required": "photo",
+          "scenarios": [
+            { "id": "GLB-03-SC-1", "content": "SCBA 결함 발생 시 백업 부재로 대피 지연" }
+          ],
+          "mitigations": [
+            { "id": "GLB-03-MIT-1", "content": "작업자 SCBA + 비상 SCBA 1조 입구 비치 + 충전 상태 사전 확인" }
+          ],
+          "ppe": [
+            { "id": "GLB-03-PPE-1", "content": "풀페이스 SCBA (충전 완료)" },
+            { "id": "GLB-03-PPE-2", "content": "내화학 보호복" }
+          ]
+        },
+        {
+          "id": "GLB-04",
+          "content": "휴대용 가스검지기(타깃 가스 + O2 + LEL) 지속 측정",
+          "regulation": "산업안전보건기준규칙 §619",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "GLB-04-SC-1", "content": "가스 누출 미감지로 작업자 흡입 노출" }
+          ],
+          "mitigations": [
+            { "id": "GLB-04-MIT-1", "content": "타깃 가스 + O2 + LEL 3 채널 검지기 작업 내내 가동" }
+          ],
+          "ppe": [
+            { "id": "GLB-04-PPE-1", "content": "휴대용 다중 가스검지기" }
+          ]
+        },
+        {
+          "id": "GLB-05",
+          "content": "비상샤워·세안기 위치 확인, 비상통신 무전 채널 점검",
+          "regulation": "추정: SEMI S6, felix 검수 필요",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "GLB-05-SC-1", "content": "약품 비산 시 비상샤워 위치 미숙지로 응급 대응 지연" }
+          ],
+          "mitigations": [
+            { "id": "GLB-05-MIT-1", "content": "작업 시작 직전 비상샤워·세안기 위치 1:1 인지 + 무전 1회 통화 시험" }
+          ],
+          "ppe": []
+        }
+      ],
+      "conditional": [
+        {
+          "if": "gas_type == 'HF' || gas_type == 'BOE'",
+          "add": {
+            "id": "GLB-HF01",
+            "content": "HF/BOE — 칼슘글루코네이트 젤 비치 및 작업자 사전 사용법 숙지",
+            "regulation": "추정: 사내 화학물질 SOP, felix 검수 필요"
+          }
+        }
+      ]
+    },
+    "LITHO_PM": {
+      "label_ko": "리소 장비 PM",
+      "label_en": "Lithography PM",
+      "baseline": [
+        {
+          "id": "LIT-01",
+          "content": "광원(DUV/EUV) 셔터 차단 및 전원 LOTO",
+          "regulation": "추정: SEMI S2 §10, felix 검수 필요",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            { "id": "LIT-01-SC-1", "content": "셔터 미차단 상태 챔버 개방 시 광원 노출 → 안구 부상" }
+          ],
+          "mitigations": [
+            { "id": "LIT-01-MIT-1", "content": "셔터 차단 인터록 확인 + 전원 LOTO 후 챔버 진입" }
+          ],
+          "ppe": [
+            { "id": "LIT-01-PPE-1", "content": "광원 차광 보안경 (DUV/EUV 등급)" }
+          ]
+        },
+        {
+          "id": "LIT-02",
+          "content": "포토레지스트·현상액 누출 확인 및 보호장갑·보안경 착용",
+          "regulation": "산업안전보건기준규칙 §32",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "LIT-02-SC-1", "content": "현상액(TMAH) 피부 접촉 시 화학 화상" }
+          ],
+          "mitigations": [
+            { "id": "LIT-02-MIT-1", "content": "내화학 장갑 + 보안경 착용 + 누출 시 비상샤워 절차 숙지" }
+          ],
+          "ppe": [
+            { "id": "LIT-02-PPE-1", "content": "내화학 장갑 (니트릴 또는 부틸)" },
+            { "id": "LIT-02-PPE-2", "content": "보안경" }
+          ]
+        },
+        {
+          "id": "LIT-03",
+          "content": "EUV 진공 챔버 개방 전 압력 평형 + 수은램프 잔열 확인",
+          "regulation": "추정: SEMI S2 §15, felix 검수 필요",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "LIT-03-SC-1", "content": "압력 미평형 상태 챔버 개방으로 진공 흡입력 부상" }
+          ],
+          "mitigations": [
+            { "id": "LIT-03-MIT-1", "content": "압력 게이지 대기압 도달 + 수은램프 표면 50°C 이하 후 개방" }
+          ],
+          "ppe": []
+        },
+        {
+          "id": "LIT-04",
+          "content": "방사선 안전관리(EUV 부수 X-ray) 출입자 등록",
+          "regulation": "추정: 원자력안전법, felix 검수 필요",
+          "evidence_required": "verbal",
+          "scenarios": [
+            { "id": "LIT-04-SC-1", "content": "출입자 미등록으로 방사선 누적 노출 추적 불가" }
+          ],
+          "mitigations": [
+            { "id": "LIT-04-MIT-1", "content": "출입자별 TLD 배지 + 출입 로그 기록" }
+          ],
+          "ppe": [
+            { "id": "LIT-04-PPE-1", "content": "TLD 방사선 노출 배지" }
+          ]
+        }
+      ],
+      "conditional": [
+        {
+          "if": "special_notes contains EUV 광원 교체 OR special_notes contains 미러 교체",
+          "add": {
+            "id": "LIT-N01",
+            "content": "EUV 광원·미러 교체 시 — 광원 차단 인터록 LOTO 적용 + Sn 잔류 X-ray 검사 후 진입",
+            "regulation": "추정: 원자력안전법 §59 / 산업안전보건기준규칙 §38"
+          }
+        },
+        {
+          "if": "previous_incident_keywords contains 방사선 OR 노출",
+          "add": {
+            "id": "LIT-N02",
+            "content": "과거 방사선·노출 이력 — TLD 분기점검 + 출입자별 누적선량 5mSv/연 미만 한도 사전 확인",
+            "regulation": "추정: 원자력안전법 §95"
+          }
+        }
+      ]
+    }
+  }
+}
