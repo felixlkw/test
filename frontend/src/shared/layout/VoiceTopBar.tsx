@@ -14,6 +14,7 @@ import { LangChip } from "../ui/LangChip";
 import { LangDropdown } from "../portal/LangDropdown";
 import { Portal } from "../portal/PortalRoot";
 import { IconHome } from "../../components/Icon";
+import { getChatModeChip } from "../i18n/cueMessages";
 
 interface VoiceTopBarProps {
   sessionActive: boolean;
@@ -34,6 +35,8 @@ interface VoiceTopBarProps {
    * VoiceShell이 session.stopSessionPreserveState를 주입.
    */
   onLeaveToHome?: () => void;
+  /** Phase chat-PR3: 현재 트랜스포트. "chat" 일 때 우측에 작은 chip 표시. */
+  transport?: "voice" | "chat";
 }
 
 export function VoiceTopBar({
@@ -50,6 +53,7 @@ export function VoiceTopBar({
   onSelectLanguage,
   rightSlot,
   onLeaveToHome,
+  transport = "voice",
 }: VoiceTopBarProps) {
   const langChipRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
@@ -110,6 +114,14 @@ export function VoiceTopBar({
         />
       </div>
       <div className="flex-1 min-w-0"></div>
+      {transport === "chat" && (
+        <span
+          className="shrink-0 px-2 py-0.5 rounded-pwc text-[10px] sm:text-xs bg-pwc-bg-card text-pwc-ink-mute border border-pwc-border"
+          title={getChatModeChip(currentLanguage)}
+        >
+          {getChatModeChip(currentLanguage)}
+        </span>
+      )}
       {rightSlot && <div className="flex items-center shrink-0">{rightSlot}</div>}
 
       <Portal>

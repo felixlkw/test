@@ -1,10 +1,11 @@
 from fastapi import FastAPI, UploadFile, File, Form
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import HTTPException
 from fastapi import Request
 from pydantic import BaseModel
+import json as _json
 from loguru import logger
 import os
 import time
@@ -22,7 +23,7 @@ app = FastAPI()
 # ---------------------------------------------------------------------------
 @app.get("/api/health")
 async def health_check():
-    return {"status": "ok", "version": "0.2.0"}
+    return {"status": "ok", "version": "0.2.1"}
 
 
 # Allow CORS for local development
@@ -62,6 +63,33 @@ class WebRTCKeyRequest(BaseModel):
     # only for TBM mode; EHS ignores. Loose dict avoids brittle Pydantic
     # mismatches if the frontend later adds fields.
     prepared_summary: Optional[Dict[str, Any]] = None
+
+
+# ---------------------------------------------------------------------------
+# Phase chat-PR1 — /api/chat (text-only fallback transport).
+# - Pydantic models for request body. Mirrors WebRTCKeyRequest meta fields so
+#   the same prepare-stage payload reuses the same prompt builder downstream.
+# - Server is single source-of-truth for the system prompt; clients send only
+#   user/assistant messages. role='system' from the client is silently ignored
+#   (defensive — frontend already constrains to user|assistant via Literal).
+# - Sliding window enforcement (60 messages = 30 turns) lives in llm.py to
+#   keep main.py thin; main.py only validates request shape.
+# ---------------------------------------------------------------------------
+class ChatRequestMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str
+
+
+class ChatRequest(BaseModel):
+    mode: Literal["tbm", "ehs"]
+    language: str = "korean"
+    domain: Optional[SessionDomain] = None
+    work_type_id: Optional[str] = None
+    # TBM-only — webrtc-key와 동일 shape (loose dict for forward compat).
+    prepared_summary: Optional[Dict[str, Any]] = None
+    messages: List[ChatRequestMessage]
+    # 미래 확장용 — 무시되어도 클라가 깨지지 않도록 옵셔널 dict.
+    extras: Optional[Dict[str, Any]] = None
 
 
 # PR A — c7 #1: work-types catalog list response item
@@ -473,6 +501,96 @@ async def vision_analyze(
         language=norm_language,
         context_messages=context_messages,
         caption=caption,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Phase chat-PR1 — POST /api/chat (text-only fallback transport).
+#
+# Returns SSE stream:
+#   event: delta       data: {"text": "..."}
+#   event: done        data: {"finish_reason": "stop"}
+#   event: error       data: {"code": "...", "message": "..."}
+#
+# Pre-stream validation errors (422 / 413 / 400) return JSON, not SSE — the
+# client must handle both paths (chat_mode_plan.md §1.5).
+# ---------------------------------------------------------------------------
+_CHAT_TOTAL_CHARS_LIMIT = 80_000
+
+
+@app.post("/api/chat")
+async def chat_endpoint(request: ChatRequest):
+    """Chat-completions stream for users whose voice transport is blocked.
+
+    Validates request shape, delegates system-prompt build + sliding window
+    + OpenAI streaming to llm.chat_completion, and serializes each yielded
+    {event, data} tuple as one SSE block. The producer is responsible for
+    emitting an explicit `error` event on failure — this handler does not
+    swallow exceptions silently.
+    """
+    # ── input validation ───────────────────────────────────────────────
+    if not request.messages:
+        raise HTTPException(status_code=422, detail="messages must not be empty.")
+    if request.messages[-1].role != "user":
+        raise HTTPException(
+            status_code=422,
+            detail="last message must have role='user'.",
+        )
+    total_chars = sum(len(m.content) for m in request.messages)
+    if total_chars > _CHAT_TOTAL_CHARS_LIMIT:
+        raise HTTPException(
+            status_code=413,
+            detail=f"messages total length exceeds {_CHAT_TOTAL_CHARS_LIMIT} chars.",
+        )
+
+    # mode normalization (Literal["tbm","ehs"] already filters most, but
+    # defensive lower() for forward compat).
+    mode = request.mode.lower()
+    if mode not in ("tbm", "ehs"):
+        raise HTTPException(status_code=400, detail="Mode must be 'tbm' or 'ehs'")
+
+    language = _normalize_language(request.language)
+    domain = _normalize_domain(request.domain)
+    work_type_id = request.work_type_id or None
+
+    # Drop client-sent role='system' just in case (Literal already excludes it,
+    # but pydantic_v2 may coerce on subclassed payloads in the future).
+    user_messages: List[Dict[str, Any]] = [
+        {"role": m.role, "content": m.content}
+        for m in request.messages
+        if m.role in ("user", "assistant")
+    ]
+
+    async def _sse_producer():
+        try:
+            async for evt in llm.chat_completion(
+                mode=mode,
+                language=language,
+                domain=domain,
+                work_type_id=work_type_id,
+                prepared_summary=request.prepared_summary,
+                messages=user_messages,
+            ):
+                event_name = evt.get("event", "delta")
+                data = evt.get("data", {})
+                payload = _json.dumps(data, ensure_ascii=False)
+                yield f"event: {event_name}\ndata: {payload}\n\n".encode("utf-8")
+        except Exception as exc:  # last-resort guard
+            logger.exception(f"chat_endpoint: unexpected error: {exc!r}")
+            err_payload = _json.dumps(
+                {"code": "internal", "message": "내부 오류가 발생했습니다."},
+                ensure_ascii=False,
+            )
+            yield f"event: error\ndata: {err_payload}\n\n".encode("utf-8")
+
+    return StreamingResponse(
+        _sse_producer(),
+        media_type="text/event-stream; charset=utf-8",
+        headers={
+            "Cache-Control": "no-cache, no-transform",
+            "X-Accel-Buffering": "no",
+            "Connection": "keep-alive",
+        },
     )
 
 

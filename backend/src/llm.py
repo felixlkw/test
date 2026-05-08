@@ -1,3 +1,4 @@
+import asyncio
 import base64
 import os
 import httpx
@@ -7,7 +8,7 @@ import io
 import json
 import time
 from datetime import datetime, timezone
-from typing import List, Dict, Any
+from typing import List, Dict, Any, AsyncIterator, Optional
 
 # Load .env for local development; skip silently on Railway (no .env file)
 try:
@@ -29,6 +30,10 @@ OPENAI_CHAT_COMPLETIONS_URL = "https://api.openai.com/v1/chat/completions"
 OPENAI_REALTIME_MODEL = "gpt-4o-realtime-preview"
 OPENAI_TRANSCRIPTION_MODEL = "whisper-1"
 OPENAI_CHAT_MODEL = "gpt-4o"
+# Phase chat-PR1 — text-only fallback transport. Per chat_mode_prompt_adaptation §E,
+# the default model is gpt-4o-mini (cost優先 + 1~3문단 chat 응답 품질 충분).
+# Operators can override per-call via chat_completion(model=...).
+OPENAI_CHAT_MINI_MODEL = "gpt-4o-mini"
 OPENAI_REALTIME_VOICE = "ballad"
 OPENAI_REALTIME_SPEED = 1.35
 OPENAI_REALTIME_TIMEOUT = 10.0
@@ -1190,6 +1195,279 @@ async def generate_webrtc_key(
         data = resp.json()
         key = data.get("client_secret", {}).get("value")
         return key
+
+
+# ---------------------------------------------------------------------------
+# Phase chat-PR1 — text-only fallback chat transport.
+#
+# chat_completion is an async generator that yields {"event", "data"} dicts.
+# The HTTP handler in main.py serializes them as SSE blocks. We do not yield
+# raw SSE strings here so this function stays unit-testable from pytest
+# without an HTTP layer.
+#
+# Single-responsibility split (mobile-app-engineer decision per chat_mode_plan §1.6):
+#   - main.py validates request shape, normalizes mode/language/domain.
+#   - llm.chat_completion owns: system-prompt build, sliding window,
+#     OpenAI call, SSE chunk parse, error mapping.
+#   - prompt.get_system_prompt is called with transport="chat" so prompt.py
+#     can suppress voice/cue language. If the running prompt.py is older
+#     (no transport kwarg yet — race with llm-specialist PR-1), we fall back
+#     to the legacy signature so import never fails. The behavior gap (voice
+#     wording in chat output) is acceptable until both PRs land together.
+# ---------------------------------------------------------------------------
+_CHAT_SLIDING_WINDOW_MESSAGES = 60   # 30 turns × (user + assistant)
+_CHAT_MAX_OUTPUT_TOKENS = 1200       # chat answers should stay short (cf. recommend = 4000)
+
+
+def _build_chat_system_prompt(
+    *,
+    mode: str,
+    language: str,
+    domain: Optional[str],
+    work_type_id: Optional[str],
+    prepared_summary: Optional[dict],
+) -> str:
+    """Build the chat-mode system prompt with graceful fallback.
+
+    During the rollout window where llm-specialist's prompt.py changes have
+    not yet landed, the `transport` kwarg may be unrecognized. The TypeError
+    fallback chain mirrors generate_webrtc_key's pattern (see L1107-1118).
+    """
+    try:
+        return prompt.get_system_prompt(
+            mode,
+            language,
+            domain,
+            work_type_id,
+            prepared_summary=prepared_summary,
+            transport="chat",
+        )
+    except TypeError:
+        # Legacy prompt.py without transport kwarg — fall back to voice prompt.
+        # llm-specialist's PR-1 lands the transport kwarg + chat branch; until
+        # then we still serve a usable (but voice-toned) system prompt.
+        try:
+            return prompt.get_system_prompt(
+                mode, language, domain, work_type_id, prepared_summary=prepared_summary
+            )
+        except TypeError:
+            try:
+                return prompt.get_system_prompt(mode, language, domain, work_type_id)
+            except TypeError:
+                try:
+                    return prompt.get_system_prompt(mode, language, domain)
+                except TypeError:
+                    return prompt.get_system_prompt(mode, language)
+
+
+async def chat_completion(
+    *,
+    mode: str,
+    language: str,
+    domain: str | None,
+    work_type_id: str | None,
+    prepared_summary: dict | None,
+    messages: list[dict],
+    model: str | None = None,
+) -> AsyncIterator[dict]:
+    """Stream a chat completion as {event, data} tuples.
+
+    Args:
+        mode: "tbm" | "ehs" (already validated upstream).
+        language: 5-language enum string (already normalized upstream).
+        domain: SessionDomain | None (already normalized upstream).
+        work_type_id: optional catalog id.
+        prepared_summary: optional prepare-stage payload (TBM only).
+        messages: list of {"role": "user"|"assistant", "content": str}.
+                  Server applies sliding window (most recent 60 messages).
+        model: override; default = OPENAI_CHAT_MINI_MODEL.
+
+    Yields:
+        {"event": "delta", "data": {"text": "..."}}     — token chunks
+        {"event": "done",  "data": {"finish_reason": "stop"}}
+        {"event": "error", "data": {"code": "...", "message": "..."}}
+
+    Error codes:
+        - openai_timeout      — httpx Timeout / asyncio.TimeoutError
+        - openai_auth         — 401 / 403 (key missing or invalid)
+        - openai_rate_limit   — 429
+        - openai_unavailable  — 5xx
+        - internal            — anything else
+    """
+    chosen_model = model or OPENAI_CHAT_MINI_MODEL
+
+    # ── system prompt ──────────────────────────────────────────────────
+    try:
+        system_text = _build_chat_system_prompt(
+            mode=mode,
+            language=language,
+            domain=domain,
+            work_type_id=work_type_id,
+            prepared_summary=prepared_summary,
+        )
+    except Exception as exc:
+        logger.exception(f"chat_completion: prompt build failed: {exc!r}")
+        yield {
+            "event": "error",
+            "data": {"code": "internal", "message": "내부 오류가 발생했습니다."},
+        }
+        return
+
+    # ── sliding window (server-side; cf. chat_mode_prompt_adaptation.md §D) ──
+    if len(messages) > _CHAT_SLIDING_WINDOW_MESSAGES:
+        windowed = messages[-_CHAT_SLIDING_WINDOW_MESSAGES:]
+    else:
+        windowed = list(messages)
+
+    payload_messages = [{"role": "system", "content": system_text}, *windowed]
+
+    body = {
+        "model": chosen_model,
+        "messages": payload_messages,
+        "temperature": OPENAI_CHAT_TEMPERATURE,
+        "max_tokens": _CHAT_MAX_OUTPUT_TOKENS,
+        "stream": True,
+    }
+
+    # ── OpenAI key (lazy — yield error event instead of HTTPException) ──
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        logger.warning("chat_completion: OPENAI_API_KEY not configured.")
+        yield {
+            "event": "error",
+            "data": {
+                "code": "openai_auth",
+                "message": "OpenAI API 키가 설정되지 않았습니다.",
+            },
+        }
+        return
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+
+    # ── streaming POST ─────────────────────────────────────────────────
+    try:
+        async with httpx.AsyncClient(timeout=OPENAI_CHAT_TIMEOUT) as client:
+            async with client.stream(
+                "POST",
+                OPENAI_CHAT_COMPLETIONS_URL,
+                headers=headers,
+                json=body,
+            ) as resp:
+                if resp.status_code != 200:
+                    # Drain body for logging/debug, then map status → code.
+                    try:
+                        err_text = (await resp.aread()).decode("utf-8", errors="replace")
+                    except Exception:
+                        err_text = ""
+                    logger.error(
+                        f"chat_completion: OpenAI {resp.status_code} — {err_text[:500]}"
+                    )
+                    if resp.status_code in (401, 403):
+                        code = "openai_auth"
+                        msg = "OpenAI 인증에 실패했습니다."
+                    elif resp.status_code == 429:
+                        code = "openai_rate_limit"
+                        msg = "요청이 너무 많습니다. 잠시 후 다시 시도해주세요."
+                    elif 500 <= resp.status_code < 600:
+                        code = "openai_unavailable"
+                        msg = "잠시 후 다시 시도해주세요."
+                    else:
+                        code = "internal"
+                        msg = "내부 오류가 발생했습니다."
+                    yield {"event": "error", "data": {"code": code, "message": msg}}
+                    return
+
+                # SSE parse — OpenAI emits one `data: <json>\n\n` per chunk,
+                # ending with `data: [DONE]\n\n`.
+                async for raw_line in resp.aiter_lines():
+                    if not raw_line:
+                        continue
+                    line = raw_line.strip()
+                    if not line.startswith("data:"):
+                        continue
+                    payload_str = line[len("data:"):].strip()
+                    if payload_str == "[DONE]":
+                        yield {
+                            "event": "done",
+                            "data": {"finish_reason": "stop"},
+                        }
+                        return
+                    try:
+                        chunk = json.loads(payload_str)
+                    except json.JSONDecodeError:
+                        # Skip malformed chunk — usually a keepalive comment.
+                        logger.debug(
+                            f"chat_completion: skip non-JSON chunk: {payload_str[:120]!r}"
+                        )
+                        continue
+                    try:
+                        choices = chunk.get("choices") or []
+                        if not choices:
+                            continue
+                        delta = choices[0].get("delta") or {}
+                        text = delta.get("content")
+                        finish_reason = choices[0].get("finish_reason")
+                    except (AttributeError, IndexError, TypeError):
+                        continue
+                    if text:
+                        yield {"event": "delta", "data": {"text": text}}
+                    if finish_reason and finish_reason != "stop":
+                        # length / content_filter — surface as done with reason.
+                        yield {
+                            "event": "done",
+                            "data": {"finish_reason": finish_reason},
+                        }
+                        return
+                # Stream ended without [DONE] marker — emit synthetic done.
+                yield {"event": "done", "data": {"finish_reason": "stop"}}
+                return
+    except (httpx.TimeoutException, asyncio.TimeoutError):
+        logger.warning("chat_completion: OpenAI timeout.")
+        yield {
+            "event": "error",
+            "data": {
+                "code": "openai_timeout",
+                "message": "잠시 후 다시 시도해주세요.",
+            },
+        }
+        return
+    except httpx.HTTPStatusError as exc:
+        status = exc.response.status_code if exc.response is not None else 0
+        logger.error(f"chat_completion: HTTPStatusError {status}: {exc!r}")
+        if status in (401, 403):
+            code = "openai_auth"
+            msg = "OpenAI 인증에 실패했습니다."
+        elif status == 429:
+            code = "openai_rate_limit"
+            msg = "요청이 너무 많습니다. 잠시 후 다시 시도해주세요."
+        elif 500 <= status < 600:
+            code = "openai_unavailable"
+            msg = "잠시 후 다시 시도해주세요."
+        else:
+            code = "internal"
+            msg = "내부 오류가 발생했습니다."
+        yield {"event": "error", "data": {"code": code, "message": msg}}
+        return
+    except httpx.HTTPError as exc:
+        logger.error(f"chat_completion: httpx error: {exc!r}")
+        yield {
+            "event": "error",
+            "data": {
+                "code": "openai_unavailable",
+                "message": "잠시 후 다시 시도해주세요.",
+            },
+        }
+        return
+    except Exception as exc:
+        logger.exception(f"chat_completion: unexpected error: {exc!r}")
+        yield {
+            "event": "error",
+            "data": {"code": "internal", "message": "내부 오류가 발생했습니다."},
+        }
+        return
 
 
 async def transcribe_audio(

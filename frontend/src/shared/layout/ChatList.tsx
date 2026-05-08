@@ -44,6 +44,11 @@ interface ChatListProps {
   /** structured.hazards 자동 보강 + undo 핸들러 — VoiceShell이 owner. */
   onAddDetectionToStructured?: (detectionId: string) => void;
   onUndoDetectionFromStructured?: (detectionId: string) => void;
+  /** Phase chat-PR3: 메시지 actions 클릭 핸들러. messageIdx + actionId. */
+  onMessageAction?: (
+    messageIdx: number,
+    actionId: "retry_voice" | "continue_chat",
+  ) => void;
 }
 
 export function ChatList({
@@ -64,6 +69,7 @@ export function ChatList({
   attachments,
   hazardDetections,
   onAddDetectionToStructured,
+  onMessageAction,
   onUndoDetectionFromStructured,
 }: ChatListProps) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -175,6 +181,26 @@ export function ChatList({
                   >
                     {msg.text}
                   </div>
+                  {/* Phase chat-PR3: 메시지 actions 버튼 inline. 음성 폴백
+                       안내 메시지의 [다시 시도] / [채팅으로 계속] 버튼. */}
+                  {isAssistant && msg.actions && msg.actions.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-1.5">
+                      {msg.actions.map((act) => (
+                        <button
+                          key={act.id}
+                          type="button"
+                          onClick={() => onMessageAction?.(i, act.id)}
+                          className={`px-3 py-1.5 rounded-pwc text-xs font-semibold border transition-colors ${
+                            act.id === "retry_voice"
+                              ? "bg-pwc-orange text-white border-pwc-orange-deep hover:bg-pwc-orange-deep"
+                              : "bg-pwc-bg-card text-pwc-ink-mute border-pwc-border hover:text-pwc-orange hover:bg-pwc-orange-wash"
+                          }`}
+                        >
+                          {act.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 

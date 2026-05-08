@@ -47,14 +47,21 @@ import type {
   CitationDisplay,
   PriorInformation,
 } from "../../features/tbm/types";
-import { getInitialCueMessage } from "../i18n/cueMessages";
+import {
+  getInitialCueMessage,
+  getChatFallbackWarning,
+  getChatFallbackWarningAuthQuota,
+  getRetryVoiceLabel,
+  getContinueChatLabel,
+} from "../i18n/cueMessages";
 import { useSessionPersistence } from "../hooks/useSessionPersistence";
 import { useChecklistProgress } from "../../features/tbm/useChecklistProgress";
 import { useStructuredProgress } from "../../features/tbm/useStructuredProgress";
 import { useInterruption } from "../../features/tbm/useInterruption";
 import { useWebRTCEvents } from "../../features/tbm/useWebRTCEvents";
 import { useBroadcastReadiness } from "../../features/tbm/useBroadcastReadiness";
-import { useTbmSession } from "../../features/tbm/useTbmSession";
+import { useTbmSession, type UseTbmSessionResult } from "../../features/tbm/useTbmSession";
+import { useChatSession } from "../../features/chat/useChatSession";
 import { useEhsSession } from "../../features/ehs/useEhsSession";
 import { useRecommendedQuestions } from "../../features/ehs/useRecommendedQuestions";
 
@@ -159,6 +166,11 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
   const [reportError, setReportError] = useState<string | null>(null);
   // Cycle 3: 마이크 토글 상태(view-only). 자동 시작 시 OFF.
   const [micEnabled, setMicEnabled] = useState(false);
+  // Phase chat-PR2: 채팅 폴백 트랜스포트. 메모리 only — 영속 X (invariant #10,
+  // 사용자 결정 §3: 세션별 결정. 다음 세션은 다시 voice 자동시도). voice
+  // 자동시도 catch 에서 setTransport("chat") 으로 전환되며, 사용자가 마이크
+  // 버튼으로 다시 voice 시도 가능 (PR-3 에서 핸들러 추가).
+  const [transport, setTransport] = useState<"voice" | "chat">("voice");
   // PR B+ NEW-H4: 첫 임프레션 마이크 토글 안내. localStorage `safemate.ui.micHintDismissed`
   // 미설정이고 micEnabled=false일 때만 노출. 닫으면 다시 안 뜸 (영구 dismiss).
   // invariant #10: localStorage `safemate.ui.*` 네임스페이스 — IndexedDB 미유출.
@@ -276,7 +288,10 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
   });
 
   // ── voice session ───────────────────────────────────
-  const session = useTbmSession({
+  // Phase chat-PR2: 이름만 voiceSession 으로 변경. session 변수는 chatSession
+  // 마운트 후 transport 에 따라 swap 된다. EHS 추천 질문 click handler 는 본 PR
+  // 단계에서 voiceSession 을 그대로 사용 — chat 모드 호환은 PR-3 에서 추가.
+  const voiceSession = useTbmSession({
     audioRef,
     sessionRef,
     currentMode,
@@ -298,6 +313,14 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     onEvent: events.onEvent,
     resetRecommendedQuestions,
     setTalking,
+    // Phase chat-PR2: voice 자동 시작 실패 시 chat 트랜스포트로 폴백.
+    // PR-3 에서 워닝 메시지 push + 액션 버튼 부착이 추가된다.
+    onConnectionFailed: useCallback(
+      (_kind: "auth_quota" | "network", _msg: string) => {
+        setTransport("chat");
+      },
+      [],
+    ),
   });
 
   // ── progress ────────────────────────────────────────
@@ -339,13 +362,15 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
   );
 
   // ── EHS click handler ─────────────────────────────
+  // Phase chat-PR2: voiceSession 을 직접 참조. chat 모드에서의 추천 질문 동작
+  // 호환은 PR-3 에서 transport 분기와 함께 추가된다.
   const ehs = useEhsSession({
     sessionRef,
-    sessionActive: session.sessionActive,
+    sessionActive: voiceSession.sessionActive,
     talking,
     setMessages,
     setShowRecommendedQuestions,
-    startSession: session.startSession,
+    startSession: voiceSession.startSession,
   });
 
   // ── language change cue 초기화 ─────────────────────
@@ -407,17 +432,55 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     currentWorkTypeLabel,
   ]);
 
+  // ── chat session (Phase chat-PR2) ──────────────────────
+  // voice 자동 시도 실패(또는 사용자 명시 선택) 시 swap 되는 트랜스포트.
+  // useTbmSession 의 UseTbmSessionResult 시그니처와 호환되어 같은 session
+  // 변수로 사용 가능. preparedSummary 는 매 렌더 derive — useChatSession
+  // 내부 useEffect 가 ref 동기화하므로 첫 렌더 undefined 도 안전.
+  const chatSession = useChatSession({
+    currentMode,
+    currentLanguage,
+    currentDomain,
+    currentWorkTypeId,
+    preparedSummary,
+    setCurrentMode,
+    setMessages,
+    setChecklist,
+    setPriorInfo,
+    setCitations,
+    setStructured,
+    setHazardSuggestions,
+    setFinalSummary,
+    setPermits,
+    setCueMessage,
+    setShowLanguageSelector,
+    setTalking,
+    dismissInterruption: interruption.dismissInterruption,
+    resetRecommendedQuestions,
+  });
+
+  // Phase chat-PR2: transport 에 따라 swap. 본 PR 까지는 setTransport 트리거가
+  // useTbmSession 의 onConnectionFailed 콜백 1곳뿐. PR-3 에서 사용자 토글
+  // (마이크 버튼 → 음성 재시도, 워닝 액션 버튼) 이 추가된다.
+  const session: UseTbmSessionResult =
+    transport === "voice" ? voiceSession : chatSession;
+
   // ── Cycle 3 + PR A_v2-4: 자동 시작 ─────────────────────
   // mount 후 1회만 호출. 이미 sessionActive면 useTbmSession.startSession 내부 가드가 처리.
   // mic은 OFF로 시작 — 사용자가 InputDock 토글로 ON.
   // PR A_v2-4: hydrated=true 까지 대기 — IndexedDB에서 prepared_baseline/context를
   // 채운 뒤 preparedSummary가 정상 derive되도록. autoStartedRef는 1회만 통과.
+  // Phase chat-PR2: 자동 시작은 voice 우선. 실패 시 onConnectionFailed →
+  // setTransport("chat"). chat 으로 폴백된 후엔 별도 startSession 호출 불필요
+  // (사용자 첫 입력 시 sendTextMessage 가 자동 시작). PR-3 에서 자동 폴백
+  // 직후 TBM + preparedSummary 케이스에 한해 chatSession.requestInitialBriefing
+  // 호출이 추가된다.
   const autoStartedRef = useRef(false);
   useEffect(() => {
     if (autoStartedRef.current) return;
     if (!hydrated) return;
     autoStartedRef.current = true;
-    void session.startSession(null, null, {
+    void voiceSession.startSession(null, null, {
       micInitiallyEnabled: false,
       preparedSummary,
     });
@@ -554,19 +617,77 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     currentWorkTypeId,
   ]);
 
-  // ── Cycle 3: 마이크 권한 거부 → chat에 system 메시지로 표시 ──
+  // ── Cycle 3 + Phase chat-PR3: 마이크 / 음성 세션 실패 → chat 폴백 안내 ──
+  // 변경: 기존엔 voiceSession.micError 를 보고 단순 [안내] 메시지를 push 했음.
+  // PR-3 부터는 voiceSession.micError 발생 시:
+  //   1) 5언어 카피로 안내 메시지 push (auth_quota 와 일반 network 분기)
+  //   2) [다시 시도] / [채팅으로 계속] 액션 버튼 부착 (영속화 X — invariant #10)
+  //   3) clearMicError
+  //   4) TBM + preparedSummary 가 있으면 chatSession.requestInitialBriefing()
+  //      자동 호출 — 사용자가 빈 화면을 보고 멈추는 경우 방지.
+  // transport 전환 자체는 useTbmSession 의 onConnectionFailed 콜백이 이미 처리.
+  // session 은 chatSession 으로 swap 되어 있음.
+  const chatFallbackPushedRef = useRef(false);
   useEffect(() => {
-    if (!session.micError) return;
+    if (!voiceSession.micError) return;
+    if (chatFallbackPushedRef.current) {
+      // 이미 동일 폴백 이벤트로 1회 push 한 상태 — 중복 push 차단. retry voice
+      // 시 ref 리셋(handleRetryVoice 에서 처리).
+      voiceSession.clearMicError();
+      return;
+    }
+    const isAuthQuota = voiceSession.micError.includes(
+      "일시적으로 접근할 수 없습니다",
+    );
+    const text = isAuthQuota
+      ? `[안내] ${getChatFallbackWarningAuthQuota(currentLanguage)}`
+      : `[안내] ${getChatFallbackWarning(currentLanguage)}`;
     setMessages((prev) => [
       ...prev,
-      { role: "assistant", text: `[안내] ${session.micError}` },
+      {
+        role: "assistant",
+        text,
+        actions: [
+          { id: "retry_voice", label: getRetryVoiceLabel(currentLanguage) },
+          { id: "continue_chat", label: getContinueChatLabel(currentLanguage) },
+        ],
+      },
     ]);
-    session.clearMicError();
-  }, [session.micError, session.clearMicError, setMessages]);
+    chatFallbackPushedRef.current = true;
+    voiceSession.clearMicError();
+    if (currentMode === "TBM" && preparedSummary) {
+      void chatSession.requestInitialBriefing();
+    }
+  }, [
+    voiceSession,
+    chatSession,
+    currentMode,
+    preparedSummary,
+    currentLanguage,
+    setMessages,
+  ]);
 
-  // ── Cycle 3: 마이크 토글 핸들러 ─────────────────────
+  // ── Phase chat-PR3: voice 재시도 핸들러 (chat → voice) ──
+  // chat 모드로 폴백된 사용자가 음성 회복을 시도. 워닝 메시지의 [다시 시도]
+  // 버튼과 InputDock 마이크 버튼 chat 모드 클릭이 모두 이 함수를 호출.
+  const handleRetryVoice = useCallback(() => {
+    setTransport("voice");
+    chatFallbackPushedRef.current = false;
+    void voiceSession.startSession(null, null, {
+      micInitiallyEnabled: true,
+      preparedSummary,
+    });
+    setMicEnabled(true);
+  }, [voiceSession, preparedSummary]);
+
+  // ── Cycle 3 + Phase chat-PR3: 마이크 토글 핸들러 ─────────────
   // 세션 active면 즉시 track.enabled 반전. 아니면 startSession을 mic ON으로 재시작.
+  // chat 모드면 음성 재시도(handleRetryVoice).
   const handleToggleMic = useCallback(() => {
+    if (transport === "chat") {
+      handleRetryVoice();
+      return;
+    }
     if (!session.sessionActive) {
       // 세션이 아직 안 떴거나 종료됨 → mic ON으로 시작.
       // PR A_v2-4: preparedSummary inject (TBM only — useTbmSession이 mode 분기).
@@ -580,7 +701,29 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     const next = !micEnabled;
     sessionRef.current?.setMicEnabled(next);
     setMicEnabled(next);
-  }, [session, micEnabled, preparedSummary]);
+  }, [transport, handleRetryVoice, session, micEnabled, preparedSummary]);
+
+  // ── Phase chat-PR3: ChatList 액션 버튼 클릭 핸들러 ───────────
+  // 메시지에 부착된 [다시 시도] / [채팅으로 계속] 버튼 클릭. messageIdx 는
+  // 클릭된 메시지의 인덱스, actionId 는 ChatMessageAction.id.
+  const handleMessageAction = useCallback(
+    (messageIdx: number, actionId: "retry_voice" | "continue_chat") => {
+      if (actionId === "retry_voice") {
+        handleRetryVoice();
+      }
+      // 클릭된 메시지에서 actions 제거 (한 번 누르면 사라짐).
+      setMessages((prev) => {
+        if (!prev[messageIdx]) return prev;
+        const next = [...prev];
+        const cur = next[messageIdx];
+        const { actions: _drop, ...rest } = cur;
+        void _drop;
+        next[messageIdx] = { ...rest };
+        return next;
+      });
+    },
+    [handleRetryVoice, setMessages],
+  );
 
   // ── 세션이 꺼질 때 mic 토글 상태 리셋 ───────────────
   useEffect(() => {
@@ -900,12 +1043,32 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     }
   }, [micEnabled, micHintVisible, dismissMicHint]);
 
-  // 추천질문 클릭 wrapper — chat list 안 chip 클릭은 ehs handler 그대로 사용.
+  // 추천질문 클릭 wrapper — chat list 안 chip 클릭. transport 분기:
+  //   voice: 기존 ehs handler — sessionRef.sendTextMessage 또는 startSession.
+  //   chat (Phase chat-PR3): chatSession.sendTextMessage 직접 호출.
+  // chat 분기에서 setShowRecommendedQuestions(false) 는 handleClick 내부에서 직접
+  // 처리. retrieve(citations) 는 chatSession.sendTextMessage 가 내부에서 호출.
   const handleClickRecommendedQuestion = useCallback(
     (q: string) => {
+      if (transport === "chat") {
+        setShowRecommendedQuestions(false);
+        void chatSession.sendTextMessage(
+          q,
+          "idle",
+          () => {},
+          events.logRetrieveForUserMessage,
+        );
+        return;
+      }
       void ehs.handleRecommendedQuestionClick(q);
     },
-    [ehs],
+    [
+      transport,
+      chatSession,
+      ehs,
+      events.logRetrieveForUserMessage,
+      setShowRecommendedQuestions,
+    ],
   );
 
   // ── Phase 2.x PR-5 — handleAttestationConfirmed ──────────────────
@@ -1220,6 +1383,8 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
         currentLanguage={currentLanguage}
         showLanguageSelector={showLanguageSelector}
         setShowLanguageSelector={setShowLanguageSelector}
+        // Phase chat-PR3: 채팅 모드 chip 표시.
+        transport={transport}
         onClickStart={() => session.startSession(null, null, { preparedSummary })}
         onClickStop={session.stopSession}
         onLeaveToHome={session.stopSessionPreserveState}
@@ -1430,11 +1595,14 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
         onUndoDetectionFromStructured={
           currentMode === "TBM" ? handleUndoDetectionFromStructured : undefined
         }
+        // Phase chat-PR3: 메시지 actions 클릭 핸들러.
+        onMessageAction={handleMessageAction}
       />
 
       {/* PR B+ NEW-H4: 자동 시작 후 마이크 OFF default — 첫 임프레션에 토글 위치 안내.
-           localStorage로 영구 dismiss(invariant #10 — `safemate.ui.*` 네임스페이스). */}
-      {micHintVisible && !micEnabled && (
+           localStorage로 영구 dismiss(invariant #10 — `safemate.ui.*` 네임스페이스).
+           Phase chat-PR3: chat 모드에선 마이크 안내 무의미 → 숨김. */}
+      {transport === "voice" && micHintVisible && !micEnabled && (
         <div className="px-3 pb-2 shrink-0">
           <div
             role="status"
@@ -1475,13 +1643,17 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
         micEnabled={micEnabled}
         onToggleMic={handleToggleMic}
         // 세션 active이거나 비active(권한 거부 후 재시도용 startSession)이면 클릭 가능.
-        // connecting 중일 때만 비활성.
-        canToggleMic={!session.connecting}
+        // connecting 중일 때만 비활성. chat 모드에선 항상 클릭 가능 (재시도 트리거).
+        canToggleMic={transport === "chat" || !session.connecting}
         // FIX (felix HITL "음성대화 시작 반응이 느려"): connecting 시각화.
         // 자동시작은 hydrated 후 발동되며 getUserMedia + WebRTC + ephemeral key
         // + OpenAI POST가 sequential ~3-5초 소요. 사용자 인지 latency를 줄이려고
         // 마이크 버튼에 spinner + "연결 중" tooltip을 명시.
         connecting={session.connecting}
+        // Phase chat-PR3: chat 폴백 트랜스포트면 마이크 버튼이 "음성 모드 시도"
+        // 로 라벨 변경되고 클릭 시 handleRetryVoice 호출.
+        chatTransport={transport === "chat"}
+        currentLanguage={currentLanguage}
         // PR C — 카메라 노출 + 사진 캡처 핸들러.
         currentDomain={currentDomain}
         onPhotoCaptured={handlePhotoCaptured}

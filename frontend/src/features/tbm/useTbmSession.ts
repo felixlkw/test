@@ -47,6 +47,13 @@ export interface UseTbmSessionOptions {
   dismissInterruption: () => void;
   onEvent: (event: unknown) => void;
   resetRecommendedQuestions: () => void;
+  /** Phase chat-PR2: voice 세션 시작이 실패했을 때 shell 이 chat 트랜스포트로
+   *  전환하기 위한 콜백. micError set 과 동시에 호출된다. 미주입이어도 기존
+   *  voice 단독 동작은 그대로 유지(콜백 호출은 옵셔널). */
+  onConnectionFailed?: (
+    kind: "auth_quota" | "network",
+    message: string,
+  ) => void;
 }
 
 export interface StartSessionOptions {
@@ -105,6 +112,7 @@ export function useTbmSession(opts: UseTbmSessionOptions): UseTbmSessionResult {
     dismissInterruption,
     onEvent,
     resetRecommendedQuestions,
+    onConnectionFailed,
   } = opts;
 
   const [sessionActive, setSessionActive] = useState(false);
@@ -221,6 +229,9 @@ export function useTbmSession(opts: UseTbmSessionOptions): UseTbmSessionResult {
           ? "음성 서비스에 일시적으로 접근할 수 없습니다 (서버 인증/한도). 잠시 후 다시 시도하거나 운영자에게 문의하세요."
           : "음성 세션 연결에 실패했습니다. 네트워크 상태를 확인하고 다시 시도해주세요.";
         setMicError(msg);
+        // Phase chat-PR2: shell 에 chat 폴백 신호. 콜백 미주입이면 voice 단독
+        // 동작 유지(기존 회귀 0).
+        onConnectionFailed?.(isAuthOrQuota ? "auth_quota" : "network", msg);
         return;
       }
 

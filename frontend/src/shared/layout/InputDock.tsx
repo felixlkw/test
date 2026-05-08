@@ -10,8 +10,9 @@
 import { useCallback, useRef, useState } from "react";
 import type { Dispatch, SetStateAction, MutableRefObject } from "react";
 import type { WebRTCSession } from "../../services/webrtc";
-import type { SessionDomain } from "../../services/sessionModel";
+import type { SessionDomain, SessionLanguage } from "../../services/sessionModel";
 import { IconCamera, IconImage, IconMic } from "../../components/Icon";
+import { getMicRetryVoiceTooltip } from "../i18n/cueMessages";
 import {
   hasCameraConsent,
   isCameraEnabled,
@@ -37,6 +38,11 @@ interface InputDockProps {
    *  실 latency보다 시각 피드백 부재 — connecting=true이면 마이크 버튼에 spin
    *  + "연결 중" tooltip을 명시해 사용자 인지 latency를 줄인다. */
   connecting?: boolean;
+  /** Phase chat-PR3: 채팅 폴백 트랜스포트 여부. true 면 마이크 버튼이 "음성 모드
+   *  시도" 라벨로 변경되며 클릭 시 onToggleMic 가 voice 재시도를 트리거한다. */
+  chatTransport?: boolean;
+  /** chat 모드 tooltip / aria-label 의 5언어 분기를 위해 현재 언어 prop 으로 주입. */
+  currentLanguage?: SessionLanguage;
   // ── PR C — 카메라 ───────────────────────────────────────────────────
   /** 현재 도메인. 미지정이면 카메라 버튼 노출(legacy 후방호환). */
   currentDomain?: SessionDomain;
@@ -61,6 +67,8 @@ export function InputDock({
   onToggleMic,
   canToggleMic,
   connecting = false,
+  chatTransport = false,
+  currentLanguage = "korean",
   currentDomain,
   onPhotoCaptured,
 }: InputDockProps) {
@@ -155,36 +163,43 @@ export function InputDock({
           // 2026-05-06 felix HITL — connecting 시 회전 테두리(rounded 사각형에 border-t-transparent + animate-spin)가
           // 비대칭으로 돌아가 어색했음. 부드러운 pulse(버튼 자체 opacity 호흡)로 교체하고 micEnabled의
           // ping ring과 시각적으로 분리. 두 상태 모두 자연스럽고 명확.
+          // Phase chat-PR3: chat 모드면 dashed 테두리 + 흐릿한 회색 + 클릭 시 음성 재시도.
           className={`relative w-10 h-10 shrink-0 flex items-center justify-center rounded-pwc transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-pwc-orange disabled:cursor-not-allowed ${
-            connecting
-              ? "bg-pwc-orange-wash text-pwc-orange-deep border border-pwc-orange animate-pulse"
-              : micEnabled
-                ? "bg-pwc-orange text-white border border-pwc-orange-deep"
-                : "bg-pwc-bg-card text-pwc-ink-mute border border-pwc-border hover:text-pwc-orange hover:bg-pwc-orange-wash disabled:opacity-50"
+            chatTransport
+              ? "bg-pwc-bg-card text-pwc-ink-mute border border-dashed border-pwc-border hover:text-pwc-orange hover:bg-pwc-orange-wash"
+              : connecting
+                ? "bg-pwc-orange-wash text-pwc-orange-deep border border-pwc-orange animate-pulse"
+                : micEnabled
+                  ? "bg-pwc-orange text-white border border-pwc-orange-deep"
+                  : "bg-pwc-bg-card text-pwc-ink-mute border border-pwc-border hover:text-pwc-orange hover:bg-pwc-orange-wash disabled:opacity-50"
           }`}
           onClick={onToggleMic}
           disabled={!canToggleMic}
           aria-label={
-            connecting
-              ? "연결 중"
-              : micEnabled
-                ? "마이크 끄기"
-                : "마이크 켜기"
-          }
-          aria-pressed={micEnabled}
-          aria-busy={connecting}
-          title={
-            connecting
-              ? "음성 세션 연결 중... (보통 3-5초)"
-              : !canToggleMic
-                ? "음성 세션 준비 중"
+            chatTransport
+              ? getMicRetryVoiceTooltip(currentLanguage)
+              : connecting
+                ? "연결 중"
                 : micEnabled
-                  ? "마이크 켜짐 (클릭하여 끄기)"
-                  : "마이크 꺼짐 (클릭하여 켜기)"
+                  ? "마이크 끄기"
+                  : "마이크 켜기"
+          }
+          aria-pressed={!chatTransport && micEnabled}
+          aria-busy={!chatTransport && connecting}
+          title={
+            chatTransport
+              ? getMicRetryVoiceTooltip(currentLanguage)
+              : connecting
+                ? "음성 세션 연결 중... (보통 3-5초)"
+                : !canToggleMic
+                  ? "음성 세션 준비 중"
+                  : micEnabled
+                    ? "마이크 켜짐 (클릭하여 끄기)"
+                    : "마이크 꺼짐 (클릭하여 켜기)"
           }
         >
           <IconMic size={18} />
-          {!connecting && micEnabled && (
+          {!chatTransport && !connecting && micEnabled && (
             <span className="absolute inset-0 rounded-pwc border-2 border-pwc-orange animate-ping pointer-events-none" />
           )}
         </button>
