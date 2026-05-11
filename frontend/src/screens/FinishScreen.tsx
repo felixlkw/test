@@ -222,7 +222,9 @@ export default function FinishScreen() {
         setActionError("세션 저장 실패");
         return;
       }
-      const blob = await generateSessionPdf(saved, attendees);
+      // PR-6b: 세션 언어를 전달해 PDF가 해당 언어 폰트 + pickContent 분기를 사용.
+      // saved.language 미지정(legacy) → generateSessionPdf 내부 기본값 "korean".
+      const blob = await generateSessionPdf(saved, attendees, saved.language);
       const reportId = await saveReport(saved.session_id, blob, "application/pdf");
       // Session.report_ids 갱신
       const nextReportIds = [...(saved.report_ids ?? []), reportId];

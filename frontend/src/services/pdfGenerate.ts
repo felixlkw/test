@@ -28,12 +28,14 @@ import {
 import fontkit from "@pdf-lib/fontkit";
 import type {
   Session,
+  SessionLanguage,
   Attendee,
   LeaderAttestation,
   PreparedBaselineItem,
   StructuredChecklist,
 } from "./sessionModel";
 import type { ChecklistItem } from "./checklist";
+import { pickContent } from "./catalogI18n";
 
 // PwC 토큰 (tailwind.config.js 1:1 매핑).
 const PWC_ORANGE = rgb(0xe0 / 255, 0x30 / 255, 0x1e / 255);
@@ -48,13 +50,34 @@ const PAGE_H = 842;
 const MARGIN_X = 48;
 const MARGIN_Y = 56;
 
-// 한글 폰트 정적 자산 경로. static(non-variable) TTF 사용 — pdf-lib + fontkit가
-// Variable Font의 axis 인스턴스화를 완전 지원하지 않아 일부 글리프 누락 발생
-// (2026-05-06 수정). 정적 Regular는 표준 TrueType이라 subset 임베드 정상.
-// 6.18 MB 1회 fetch → 브라우저 캐시. PDF 결과물에는 사용 글리프만 임베드되어
-// 실제 PDF 사이즈는 ~수십~수백 KB.
-// 미존재 시 fetch 실패 → Helvetica fallback (한글은 ascii 치환).
+// 폰트 정적 자산 경로 — 언어별로 다른 TTF를 fetch.
+// 모두 static(non-variable) TTF — pdf-lib + fontkit가 Variable Font의 axis
+// 인스턴스화를 완전 지원하지 않아 글리프 누락 발생 (2026-05-06 수정). 정적
+// Regular는 표준 TrueType이라 subset 임베드 정상.
+// 미존재 시 fetch 실패 → Helvetica fallback (비-라틴은 ascii 치환).
+//
+// PR-6b (2026-05-10) — 다국어 폰트 폴백 체인:
+//   ko/ja/zh  → NotoSansKR (기존, ~6.18 MB, 한·중·일 풀 글리프)
+//   th        → NotoSansThai (신규, ~21 KB, 태국어 글리프)
+//   en/vi/id  → NotoSans Latin (신규, ~431 KB, Latin Extended-A/B + 베트남 diacritic)
 const KO_FONT_URL = "/fonts/static/NotoSansKR-Regular.ttf";
+const TH_FONT_URL = "/fonts/static/NotoSansThai-Regular.ttf";
+const LATIN_FONT_URL = "/fonts/static/NotoSans-Regular.ttf";
+
+/** 언어 → 정적 폰트 URL. PR-6b. 미지정/legacy 호출자는 "korean" 기본값 → 기존 KR. */
+function getPdfFontUrl(language: SessionLanguage): string {
+  switch (language) {
+    case "thai":
+      return TH_FONT_URL;
+    case "vietnamese":
+    case "english":
+    case "indonesian":
+      return LATIN_FONT_URL;
+    case "korean":
+    default:
+      return KO_FONT_URL;
+  }
+}
 
 const DOMAIN_LABEL_KO_LOCAL: Record<string, string> = {
   manufacturing: "제조",
@@ -64,11 +87,15 @@ const DOMAIN_LABEL_KO_LOCAL: Record<string, string> = {
 };
 
 interface FontPair {
-  /** 한글/한자/유니코드 — 가능하면 NotoSansKR, 실패 시 latin과 동일. */
+  /** 사용자 언어 풀 글리프 폰트(NotoSansKR/NotoSansThai/NotoSans Latin 중 1).
+   *  PR-6b 이전엔 항상 NotoSansKR이었으나 현재는 language별 분기. 로드 실패
+   *  시 latin과 동일(Helvetica). */
   uni: PDFFont;
-  /** 헬베티카 fallback (영문/숫자/기호). */
+  /** 헬베티카 fallback (영문/숫자/기호 + URL 같은 latin 한정 영역). */
   latin: PDFFont;
-  /** 한글 폰트 로드 성공 여부. UI에 안내. */
+  /** uni 폰트 로드 성공 여부. UI 표지에 [FONT WARNING] 노출 가드 +
+   *  drawText sanitizeForLatin 분기. PR-6b 이전 이름은 hasKorean이었으나
+   *  의미는 "uni 폰트 로드됨"으로 일반화. 호출처 변경 회피 위해 명칭 유지. */
   hasKorean: boolean;
 }
 
@@ -89,33 +116,34 @@ function looksLikeFont(bytes: Uint8Array): boolean {
   );
 }
 
-async function loadFonts(doc: PDFDocument): Promise<FontPair> {
+async function loadFonts(
+  doc: PDFDocument,
+  language: SessionLanguage = "korean",
+): Promise<FontPair> {
   // fontkit 등록 — 커스텀 TTF 임베드 필수.
   // pdf-lib 단독으로는 StandardFonts(Helvetica 등)만 임베드 가능하므로
-  // 한글 폰트 시도 전 1회 등록.
+  // uni 폰트 시도 전 1회 등록.
   doc.registerFontkit(fontkit);
 
   const helv = await doc.embedFont(StandardFonts.Helvetica);
   let uni = helv;
   let hasKorean = false;
 
-  // 2026-05-07 felix HITL — 한글 ??? 모두 출력 회귀 발생.
-  // 원인 후보:
-  //   (A) fetch가 SPA fallback으로 index.html을 받음 → embedFont가 throw OR magic 불일치
-  //   (B) embedFont(6.18MB, {subset:false})가 브라우저 컨텍스트에서 throw (Node는 통과)
-  //   (C) 네트워크/MIME 이슈로 arrayBuffer가 빈 또는 손상된 데이터
-  // 해결: 다단 fallback + 진단 로그.
+  // PR-6b — 언어별 폰트 URL 동적 선택. 한국어 외 언어도 동일 다단 fallback 패턴.
+  // 다단 fallback (이전 한국어 폰트 흐름과 동일, 진단 로그에 lang prefix 추가):
   //   1. fetch + content 검증(매직 바이트 + 크기 sanity).
-  //   2. embedFont(bytes, {subset: false}) 시도 — 글리프 손상 0(2026-05-06 fix).
-  //   3. 실패 시 embedFont(bytes, {subset: true}) — 일부 글리프 손상 가능하나 모두 ???보다 양호.
-  //   4. 두 시도 모두 실패 시 Helvetica + ASCII sanitize.
-  // 모든 단계에서 console.error/warn로 어디서 끊겼는지 명확히 노출 → DevTools에서 즉시 진단.
+  //   2. embedFont(bytes, {subset: false}) 시도 — 글리프 손상 0.
+  //   3. 실패 시 embedFont(bytes, {subset: true}) — 일부 글리프 손상 가능.
+  //   4. 두 시도 모두 실패 시 Helvetica + ASCII sanitize fallback.
+  // 모든 단계에서 console.error/warn 로 어디서 끊겼는지 명확히 노출.
+  const fontUrl = getPdfFontUrl(language);
+  const tag = `[pdfGenerate] (${language})`;
   try {
     const t0 = performance.now();
-    const res = await fetch(KO_FONT_URL);
+    const res = await fetch(fontUrl);
     if (!res.ok) {
       console.error(
-        `[pdfGenerate] Korean font fetch returned ${res.status} ${res.statusText} for ${KO_FONT_URL} — falling back to Helvetica.`,
+        `${tag} font fetch returned ${res.status} ${res.statusText} for ${fontUrl} — falling back to Helvetica.`,
       );
       return { uni, latin: helv, hasKorean: false };
     }
@@ -123,11 +151,11 @@ async function loadFonts(doc: PDFDocument): Promise<FontPair> {
     const cl = res.headers.get("content-length") || "(none)";
     const bytes = new Uint8Array(await res.arrayBuffer());
     console.log(
-      `[pdfGenerate] Korean font fetched: ${bytes.length.toLocaleString()} bytes (content-type: ${ct}, content-length: ${cl}) in ${(performance.now() - t0).toFixed(0)}ms`,
+      `${tag} font fetched: ${bytes.length.toLocaleString()} bytes (content-type: ${ct}, content-length: ${cl}) in ${(performance.now() - t0).toFixed(0)}ms`,
     );
     if (!looksLikeFont(bytes)) {
       console.error(
-        `[pdfGenerate] Fetched bytes are NOT a valid TTF/OTF (magic mismatch). Likely SPA fallback returned index.html. First 16 bytes: ${Array.from(
+        `${tag} Fetched bytes are NOT a valid TTF/OTF (magic mismatch). Likely SPA fallback returned index.html. First 16 bytes: ${Array.from(
           bytes.slice(0, 16),
         )
           .map((b) => b.toString(16).padStart(2, "0"))
@@ -142,12 +170,12 @@ async function loadFonts(doc: PDFDocument): Promise<FontPair> {
       uni = await doc.embedFont(bytes, { subset: false });
       hasKorean = true;
       console.log(
-        `[pdfGenerate] Korean font embedded (subset: false) in ${(performance.now() - tEmbed).toFixed(0)}ms`,
+        `${tag} font embedded (subset: false) in ${(performance.now() - tEmbed).toFixed(0)}ms`,
       );
       return { uni, latin: helv, hasKorean };
     } catch (e1) {
       console.warn(
-        "[pdfGenerate] embedFont(subset:false) failed — retrying with subset:true:",
+        `${tag} embedFont(subset:false) failed — retrying with subset:true:`,
         e1,
       );
     }
@@ -158,20 +186,17 @@ async function loadFonts(doc: PDFDocument): Promise<FontPair> {
       uni = await doc.embedFont(bytes, { subset: true });
       hasKorean = true;
       console.warn(
-        `[pdfGenerate] Korean font embedded (subset: true, partial-glyph risk) in ${(performance.now() - tEmbed).toFixed(0)}ms`,
+        `${tag} font embedded (subset: true, partial-glyph risk) in ${(performance.now() - tEmbed).toFixed(0)}ms`,
       );
       return { uni, latin: helv, hasKorean };
     } catch (e2) {
       console.error(
-        "[pdfGenerate] embedFont(subset:true) also failed — falling back to Helvetica + ASCII sanitize:",
+        `${tag} embedFont(subset:true) also failed — falling back to Helvetica + ASCII sanitize:`,
         e2,
       );
     }
   } catch (err) {
-    console.error(
-      "[pdfGenerate] Korean font load failed (fetch / arrayBuffer):",
-      err,
-    );
+    console.error(`${tag} font load failed (fetch / arrayBuffer):`, err);
   }
   return { uni, latin: helv, hasKorean };
 }
@@ -436,13 +461,22 @@ async function drawAttendeeRow(
   return c;
 }
 
-/** 메인 export — 세션 + 참석자 → PDF Blob. */
+/** 메인 export — 세션 + 참석자 → PDF Blob.
+ *
+ *  PR-6b: `language` 옵셔널 인자 추가. 미지정 시 "korean" 기본값 → 기존 호출자
+ *  동일 동작(NotoSansKR + 한국어 카탈로그 텍스트). 비-한국어 호출 시 해당 언어
+ *  폰트(NotoSansThai / NotoSans Latin) 동적 로드 + 카탈로그 텍스트 picker
+ *  `pickContent` 적용. 실제 영속된 prepared_baseline[i].content 등은 PrepareScreen
+ *  시점에 이미 사용자 언어로 해소된 string이므로 pickContent는 정상 동작 시
+ *  no-op (현지어 필드 부재 → ko 폴백 = 영속 content 그대로). 미래 셰이프 안전망. */
 export async function generateSessionPdf(
   session: Session,
   attendees: Attendee[],
+  language?: SessionLanguage,
 ): Promise<Blob> {
+  const lang: SessionLanguage = language ?? "korean";
   const doc = await PDFDocument.create();
-  const fonts = await loadFonts(doc);
+  const fonts = await loadFonts(doc, lang);
   const sanitize = !fonts.hasKorean;
   const font = fonts.hasKorean ? fonts.uni : fonts.latin;
 
@@ -496,12 +530,18 @@ export async function generateSessionPdf(
   );
   if (!fonts.hasKorean) {
     cursor.y -= 6;
-    cursor = drawText(doc, cursor, "[FONT WARNING] Korean font not loaded — install /fonts/NotoSansKR-VariableFont_wght.ttf for full Korean rendering.", {
-      font: fonts.latin,
-      size: 8,
-      color: PWC_INK_MUTE,
-      sanitizeForLatin: true,
-    });
+    const fontUrl = getPdfFontUrl(lang);
+    cursor = drawText(
+      doc,
+      cursor,
+      `[FONT WARNING] Localized font for '${lang}' not loaded — install ${fontUrl} for full glyph rendering.`,
+      {
+        font: fonts.latin,
+        size: 8,
+        color: PWC_INK_MUTE,
+        sanitizeForLatin: true,
+      },
+    );
   }
 
   // ── §1. 사전 정보 ──────────────────────────────────────────
@@ -557,7 +597,10 @@ export async function generateSessionPdf(
     for (const it of items) {
       const mark = getChecklistMark(it);
       const skipLabel = it.skipped ? " (건너뜀)" : "";
-      cursor = drawText(doc, cursor, `${mark} ${it.content}${skipLabel}`, {
+      // PR-6b: pickContent — 영속 ChecklistItem.content는 prepare 시점에 이미
+      // 사용자 언어로 해소된 string. pickContent 폴백으로 동일 결과(no-op).
+      const text = pickContent(it, lang) || it.content;
+      cursor = drawText(doc, cursor, `${mark} ${text}${skipLabel}`, {
         font,
         size: 11,
         color: it.skipped ? PWC_INK_MUTE : PWC_INK,
@@ -740,13 +783,19 @@ function drawPreparedContextTable(
 
 /** §4 hazards/scenarios/mitigations/ppe + per-item 매핑(PR-1).
  *  prepared_baseline[i].scenarios/mitigations/ppe가 있으면 hazards 항목별로
- *  하위 1~2개 bullet로 표시. 없으면 structured.* flat 배열만. */
+ *  하위 1~2개 bullet로 표시. 없으면 structured.* flat 배열만.
+ *
+ *  PR-6b: language 인자 추가(옵셔널, 기본 "korean"). baseline/scenarios/
+ *  mitigations/ppe 각각에 pickContent 적용. 영속 데이터는 prepare 시점에 이미
+ *  사용자 언어로 해소된 string이라 picker는 no-op으로 동일 결과 반환(미래
+ *  셰이프 안전망). */
 function drawStructuredWithMapping(
   doc: PDFDocument,
   start: DrawCursor,
   s: StructuredChecklist,
   baseline: PreparedBaselineItem[] | undefined,
   fonts: FontPair,
+  language: SessionLanguage = "korean",
 ): DrawCursor {
   let c = start;
   const font = fonts.hasKorean ? fonts.uni : fonts.latin;
@@ -766,7 +815,9 @@ function drawStructuredWithMapping(
   } else if (baselineHasMapping && baseline) {
     // baseline 순으로 정렬 — content 매칭. matched 항목에 sub-bullet.
     for (const b of baseline) {
-      c = drawText(doc, c, `• ${b.content}`, {
+      // PR-6b: baseline content + per-item content에 pickContent 적용.
+      const bContent = pickContent(b, language) || b.content;
+      c = drawText(doc, c, `• ${bContent}`, {
         font,
         size: 11,
         color: PWC_INK,
@@ -774,9 +825,18 @@ function drawStructuredWithMapping(
         sanitizeForLatin: sanitize,
       });
       const subItems: string[] = [];
-      for (const sc of b.scenarios ?? []) subItems.push(`시나리오: ${sc.content}`);
-      for (const m of b.mitigations ?? []) subItems.push(`대응: ${m.content}`);
-      for (const p of b.ppe ?? []) subItems.push(`PPE: ${p.content}`);
+      for (const sc of b.scenarios ?? []) {
+        const scContent = pickContent(sc, language) || sc.content;
+        subItems.push(`시나리오: ${scContent}`);
+      }
+      for (const m of b.mitigations ?? []) {
+        const mContent = pickContent(m, language) || m.content;
+        subItems.push(`대응: ${mContent}`);
+      }
+      for (const p of b.ppe ?? []) {
+        const pContent = pickContent(p, language) || p.content;
+        subItems.push(`PPE: ${pContent}`);
+      }
       for (const sub of subItems) {
         c = drawText(doc, c, `  – ${sub}`, {
           font,
@@ -788,7 +848,10 @@ function drawStructuredWithMapping(
       }
     }
     // baseline 외 추가 hazards (수동 추가된 항목) flat list로.
-    const baselineContents = new Set((baseline ?? []).map((b) => b.content));
+    // 매칭은 영속 content 기준 — pickContent 적용해도 ko 폴백으로 동일 결과.
+    const baselineContents = new Set(
+      (baseline ?? []).map((b) => pickContent(b, language) || b.content),
+    );
     const extras = hazardArr.filter((h) => !baselineContents.has(h));
     for (const e of extras) {
       c = drawText(doc, c, `• ${e}`, {
@@ -837,12 +900,16 @@ function drawStructuredWithMapping(
   return c;
 }
 
-/** §5 체크리스트 진행 — 항목별 ✓ + checkedAt + utterance. */
+/** §5 체크리스트 진행 — 항목별 ✓ + checkedAt + utterance.
+ *  PR-6b: language 인자 추가(옵셔널, 기본 "korean"). ChecklistItem.content에
+ *  pickContent 적용. 영속 ChecklistItem.content는 prepare 시점에 이미 사용자
+ *  언어로 해소된 string이라 picker는 no-op으로 동일 결과 반환. */
 function drawChecklistProgress(
   doc: PDFDocument,
   start: DrawCursor,
   items: ChecklistItem[],
   fonts: FontPair,
+  language: SessionLanguage = "korean",
 ): DrawCursor {
   let c = start;
   const font = fonts.hasKorean ? fonts.uni : fonts.latin;
@@ -876,7 +943,8 @@ function drawChecklistProgress(
     const mark = getChecklistMark(it);
     const baselineLabel = it.is_baseline ? " (필수)" : "";
     const skipLabel = it.skipped ? " (건너뜀)" : "";
-    c = drawText(doc, c, `${mark} ${it.content}${baselineLabel}${skipLabel}`, {
+    const text = pickContent(it, language) || it.content;
+    c = drawText(doc, c, `${mark} ${text}${baselineLabel}${skipLabel}`, {
       font,
       size: 11,
       color: it.skipped ? PWC_INK_MUTE : PWC_INK,
@@ -999,14 +1067,20 @@ async function drawLeaderSignature(
   return c;
 }
 
-/** Broadcast 전파 확인서 PDF 생성. PR-6 메인 export. */
+/** Broadcast 전파 확인서 PDF 생성. PR-6 메인 export.
+ *
+ *  PR-6b: `language` 옵셔널 인자 추가. 미지정 시 "korean" 기본값 → 기존 호출자
+ *  동일 동작. 비-한국어 호출 시 해당 언어 폰트(NotoSansThai / NotoSans Latin)
+ *  동적 로드 + drawStructuredWithMapping / drawChecklistProgress에 language 전파. */
 export async function generateBroadcastReportPdf(
   session: Session,
   attestation: LeaderAttestation,
   signatureBlob: Blob,
+  language?: SessionLanguage,
 ): Promise<Blob> {
+  const lang: SessionLanguage = language ?? "korean";
   const doc = await PDFDocument.create();
-  const fonts = await loadFonts(doc);
+  const fonts = await loadFonts(doc, lang);
   const sanitize = !fonts.hasKorean;
   const font = fonts.hasKorean ? fonts.uni : fonts.latin;
 
@@ -1046,10 +1120,11 @@ export async function generateBroadcastReportPdf(
   );
   if (!fonts.hasKorean) {
     cursor.y -= 6;
+    const fontUrl = getPdfFontUrl(lang);
     cursor = drawText(
       doc,
       cursor,
-      "[FONT WARNING] Korean font not installed — ASCII fallback applied. Install /fonts/NotoSansKR-VariableFont_wght.ttf for full Korean rendering.",
+      `[FONT WARNING] Localized font for '${lang}' not installed — ASCII fallback applied. Install ${fontUrl} for full glyph rendering.`,
       {
         font: fonts.latin,
         size: 8,
@@ -1098,11 +1173,12 @@ export async function generateBroadcastReportPdf(
     session.structured ?? {},
     session.prepared_baseline,
     fonts,
+    lang,
   );
 
   // ── §5. 체크리스트 진행 ───────────────────────────────────
   cursor = drawSectionHeader(doc, cursor, "4. 체크리스트 진행 (CHECKLIST)", fonts);
-  cursor = drawChecklistProgress(doc, cursor, session.checklist_items ?? [], fonts);
+  cursor = drawChecklistProgress(doc, cursor, session.checklist_items ?? [], fonts, lang);
 
   // ── §6. 특이사항 ──────────────────────────────────────────
   cursor = drawSectionHeader(doc, cursor, "5. 특이사항 (SPECIAL NOTES)", fonts);

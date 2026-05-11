@@ -1460,10 +1460,13 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
           setReportError("서명 이미지를 찾을 수 없습니다.");
           return;
         }
+        // PR-6b: 세션 언어를 전달해 PDF가 해당 언어 폰트 + pickContent 분기를 사용.
+        // sess.language 미지정(legacy) → generateBroadcastReportPdf 내부 기본값 "korean".
         const pdf = await generateBroadcastReportPdf(
           sess,
           sess.leader_attestation,
           sigBlob,
+          sess.language,
         );
         if (cancelled) return;
         const filename = buildBroadcastReportFilename(sess);
