@@ -168,7 +168,7 @@ export class WebRTCSession {
       },
     };
     this.dataChannel.send(JSON.stringify(event));
-    
+
     // Create response with appropriate modalities
     const responseEvent = {
       type: 'response.create',
@@ -177,6 +177,37 @@ export class WebRTCSession {
       }
     };
     this.dataChannel.send(JSON.stringify(responseEvent));
+  }
+
+  /**
+   * PR-feedback-3 (v0.2.3) — system context inject without triggering response.
+   *
+   * sendTextMessage와 달리 response.create를 발사하지 않는다. LLM이 다음
+   * 사용자 응답을 처리할 때 conversation 컨텍스트로 자연 활용. [Slot Status]
+   * 와 [Closing Reminder] 같은 메타 블록을 사용자 발화에 echo 시키지 않으면서
+   * 프롬프트 사이드에서 가시화하는 패턴. dataChannel이 닫혔거나 빈 텍스트면
+   * silently noop — 세션 미연결/종료 후 호출 안전.
+   *
+   * 회귀 가드: 기존 sendTextMessage / sendToolResult 흐름은 본 메서드 추가에
+   * 영향 받지 않음. 본 메서드는 호출되지 않으면 기존 v0.2.2 동작과 동일.
+   */
+  injectSystemContext(text: string) {
+    if (!this.dataChannel || !text.trim()) return;
+    if (this.dataChannel.readyState !== 'open') return;
+    const event = {
+      type: 'conversation.item.create',
+      item: {
+        type: 'message',
+        role: 'system',
+        content: [{ type: 'input_text', text }],
+      },
+    };
+    try {
+      this.dataChannel.send(JSON.stringify(event));
+    } catch {
+      // dataChannel이 race로 닫히는 경우 — silently noop. 인젝트 실패는 다음
+      // 발화 사이클에서 자연 회복(매 턴 inject라 단발 누락 무시 가능).
+    }
   }
 
   sendToolResult(callId: string, result: object) {

@@ -1,5 +1,12 @@
 // ChecklistPanel — App.tsx L1421-1572 이전.
 // toggleChecklistItem 로직(L876-918)도 자체 보유.
+//
+// PR-feedback-3 (v0.2.3) 변경:
+//   - PriorRow에 슬라이드 인 + 0.5s 오렌지 펄스 애니메이션 (filled 상태 전환 직후).
+//   - skip 항목 (`item.skipped === true`): 흐릿한 표시 + "건너뜀" 칩.
+//   - 옵셔널 prop `missingOnly?: boolean` — true면 미완(완료 X + skip X)만 필터.
+//     ClosingBanner의 "자세히 보기" 클릭 시 본 모드로 패널 open.
+import { useEffect, useRef, useState } from "react";
 import type { MutableRefObject } from "react";
 import { IconClose, IconShield, IconLock } from "../../components/Icon";
 import type { WebRTCSession } from "../../services/webrtc";
@@ -14,6 +21,8 @@ interface ChecklistPanelProps {
   priorInfo: PriorInformation;
   completedCount: number;
   sessionRef: MutableRefObject<WebRTCSession | null>;
+  /** PR-feedback-3 — true면 미완(completed=false && skipped=false)만 표시. */
+  missingOnly?: boolean;
 }
 
 export function ChecklistPanel({
@@ -24,6 +33,7 @@ export function ChecklistPanel({
   priorInfo,
   completedCount,
   sessionRef,
+  missingOnly = false,
 }: ChecklistPanelProps) {
   if (!show) return null;
 
@@ -130,6 +140,13 @@ export function ChecklistPanel({
           </div>
 
           {/* Safety Checklist Section */}
+          {(() => {
+            // PR-feedback-3 — missingOnly 모드: 미완 + skip 안 한 항목만.
+            const visibleItems = missingOnly
+              ? checklist.filter((it) => !it.completed && !it.skipped)
+              : checklist;
+            const skippedCount = checklist.filter((it) => it.skipped).length;
+            return (
           <div className="px-6 py-4">
             <div className="flex items-center gap-2 mb-4">
               <svg
@@ -145,21 +162,40 @@ export function ChecklistPanel({
                   d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                 />
               </svg>
-              <h3 className="font-semibold text-pwc-orange text-lg">안전 체크리스트</h3>
+              <h3 className="font-semibold text-pwc-orange text-lg">
+                안전 체크리스트
+                {missingOnly && (
+                  <span className="ml-2 text-[10px] uppercase tracking-wider text-pwc-orange-deep bg-pwc-orange/15 px-1.5 py-0.5 rounded-full border border-pwc-orange/30 font-bold align-middle">
+                    미기입만
+                  </span>
+                )}
+              </h3>
               <div className="ml-auto bg-pwc-orange/20 px-3 py-1 rounded-full border border-pwc-orange/30">
                 <span className="text-xs font-semibold text-pwc-ink">
                   {completedCount}/{checklist.length} 완료
+                  {skippedCount > 0 && (
+                    <span className="ml-1 text-pwc-ink-mute font-normal">
+                      · 건너뜀 {skippedCount}
+                    </span>
+                  )}
                 </span>
               </div>
             </div>
+            {missingOnly && visibleItems.length === 0 && (
+              <p className="text-xs text-pwc-ink-mute italic py-3">
+                미기입 항목이 없습니다.
+              </p>
+            )}
             <ul className="space-y-3">
-              {checklist.map((item) => (
+              {visibleItems.map((item) => (
                 <li
                   key={item.index}
                   className={`p-4 rounded-xl border transition-all duration-200 cursor-pointer select-none ${
-                    item.completed
-                      ? "bg-pwc-orange/10 border-pwc-orange/30 shadow-lg shadow-pwc-orange/5 hover:bg-pwc-orange/15"
-                      : "bg-pwc-bg-card border-pwc-border hover:border-pwc-orange/50 hover:bg-pwc-orange-wash"
+                    item.skipped
+                      ? "bg-pwc-bg-card/60 border-pwc-border opacity-60 hover:opacity-80"
+                      : item.completed
+                        ? "bg-pwc-orange/10 border-pwc-orange/30 shadow-lg shadow-pwc-orange/5 hover:bg-pwc-orange/15"
+                        : "bg-pwc-bg-card border-pwc-border hover:border-pwc-orange/50 hover:bg-pwc-orange-wash"
                   }`}
                   onClick={(e) => {
                     e.preventDefault();
@@ -170,12 +206,18 @@ export function ChecklistPanel({
                   <div className="flex items-start gap-4">
                     <div
                       className={`mt-0.5 w-7 h-7 flex items-center justify-center rounded-full border-2 transition-all ${
-                        item.completed
-                          ? "bg-pwc-orange border-pwc-orange text-white"
-                          : "bg-transparent border-pwc-border text-pwc-ink-mute hover:border-pwc-orange/50 hover:bg-pwc-orange/10"
+                        item.skipped
+                          ? "bg-pwc-bg-card border-pwc-border-strong text-pwc-ink-mute"
+                          : item.completed
+                            ? "bg-pwc-orange border-pwc-orange text-white"
+                            : "bg-transparent border-pwc-border text-pwc-ink-mute hover:border-pwc-orange/50 hover:bg-pwc-orange/10"
                       }`}
                     >
-                      {item.completed ? (
+                      {item.skipped ? (
+                        <span className="text-[10px] font-bold" aria-hidden="true">
+                          —
+                        </span>
+                      ) : item.completed ? (
                         <svg
                           className="w-4 h-4"
                           fill="none"
@@ -193,11 +235,24 @@ export function ChecklistPanel({
                       <div className="flex items-start gap-2 flex-wrap">
                         <span
                           className={`font-medium block ${
-                            item.completed ? "text-pwc-ink" : "text-pwc-ink-soft"
+                            item.skipped
+                              ? "text-pwc-ink-mute italic"
+                              : item.completed
+                                ? "text-pwc-ink"
+                                : "text-pwc-ink-soft"
                           }`}
                         >
                           {item.content}
                         </span>
+                        {item.skipped && (
+                          <span
+                            className="inline-flex items-center gap-1 shrink-0 mt-[2px] px-1.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold bg-pwc-bg-card text-pwc-ink-mute border border-pwc-border-strong"
+                            title="사용자가 명시적으로 건너뛴 항목 — 리포트에 표기됨"
+                            aria-label="건너뜀"
+                          >
+                            건너뜀
+                          </span>
+                        )}
                         {item.is_baseline && (
                           <span
                             className="inline-flex items-center gap-1 shrink-0 mt-[2px] px-1.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold bg-pwc-orange/15 text-pwc-orange-deep border border-pwc-orange/30"
@@ -251,6 +306,8 @@ export function ChecklistPanel({
               ))}
             </ul>
           </div>
+            );
+          })()}
         </div>
       </div>
     </div>
@@ -259,9 +316,22 @@ export function ChecklistPanel({
 
 function PriorRow({ label, value }: { label: string; value?: string }) {
   const filled = !!value;
+  // PR-feedback-3 — slot이 unfilled → filled로 전환된 직후 1회 펄스 + 슬라이드 인.
+  // useRef로 이전 filled 상태 추적 → 전환 시점에만 animation key를 update.
+  const prevFilledRef = useRef<boolean>(filled);
+  const [pulseKey, setPulseKey] = useState<number>(0);
+  useEffect(() => {
+    if (!prevFilledRef.current && filled) {
+      setPulseKey((k) => k + 1);
+    }
+    prevFilledRef.current = filled;
+  }, [filled]);
   return (
     <div
+      key={pulseKey > 0 ? `filled-${pulseKey}` : "unfilled"}
       className={`p-3 rounded-xl border transition-colors ${
+        pulseKey > 0 && filled ? "animate-slot-pulse animate-slot-slide-in " : ""
+      }${
         filled ? "bg-pwc-orange/10 border-pwc-orange/30" : "bg-pwc-bg-card border-pwc-border"
       }`}
     >

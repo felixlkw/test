@@ -122,3 +122,28 @@ export function getMicRetryVoiceTooltip(language: SessionLanguage): string {
       return "음성 모드 다시 시도";
   }
 }
+
+// ── v0.2.4 PR-feedback-2: 비-한국어 카탈로그 폴백 마이크로카피 ───────────
+// 1차 release는 카탈로그 콘텐츠가 ko-only. 비-한국어 사용자에게는 1단 카드가
+// 한국어로 노출됨을 안내 + AI 보강이 곧 도착함을 알림. 다국어 카탈로그는
+// 별도 PR.
+
+/** 비-한국어 사용자에게 노출되는 1단 카탈로그 ko-fallback 안내. 4 언어 +
+ *  korean default(빈 문자열 — 한국어 사용자에게는 노출되지 않음). */
+export function getPrepareNonKoFallbackMicrocopy(
+  language: SessionLanguage,
+): string {
+  switch (language) {
+    case "english":
+      return "Showing the Korean catalog. AI will refine the recommendations in English shortly.";
+    case "vietnamese":
+      return "Đang hiển thị danh mục tiếng Hàn. AI sẽ tinh chỉnh khuyến nghị bằng tiếng Việt sau ít phút.";
+    case "thai":
+      return "กำลังแสดงแคตตาล็อกภาษาเกาหลี AI จะปรับปรุงคำแนะนำเป็นภาษาไทยในไม่ช้า";
+    case "indonesian":
+      return "Menampilkan katalog Korea. AI akan menyempurnakan rekomendasi dalam Bahasa Indonesia sebentar lagi.";
+    case "korean":
+    default:
+      return "";
+  }
+}

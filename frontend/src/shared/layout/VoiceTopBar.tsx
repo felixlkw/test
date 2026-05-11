@@ -37,6 +37,11 @@ interface VoiceTopBarProps {
   onLeaveToHome?: () => void;
   /** Phase chat-PR3: 현재 트랜스포트. "chat" 일 때 우측에 작은 chip 표시. */
   transport?: "voice" | "chat";
+  /** PR-feedback-3 — 컴팩트 인디케이터 "사전 N/4 · 체크 M/T". TBM 모드 + 값 주입 시만. */
+  priorFilled?: number;
+  priorTotal?: number;
+  checklistCompleted?: number;
+  checklistTotal?: number;
 }
 
 export function VoiceTopBar({
@@ -54,6 +59,10 @@ export function VoiceTopBar({
   rightSlot,
   onLeaveToHome,
   transport = "voice",
+  priorFilled,
+  priorTotal,
+  checklistCompleted,
+  checklistTotal,
 }: VoiceTopBarProps) {
   const langChipRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
@@ -114,6 +123,27 @@ export function VoiceTopBar({
         />
       </div>
       <div className="flex-1 min-w-0"></div>
+      {/* PR-feedback-3 — TBM 모드 + slot/체크 카운트 주입 시 컴팩트 인디케이터.
+          모바일에서는 좁아 숨김(sm 이상에서 노출). 본 칩은 read-only. */}
+      {currentMode === "TBM" &&
+        priorTotal !== undefined &&
+        checklistTotal !== undefined && (
+          <span
+            className="hidden sm:inline-flex shrink-0 items-center gap-1 px-2 py-0.5 rounded-pwc text-[10px] sm:text-[11px] bg-pwc-bg-card text-pwc-ink-soft border border-pwc-border whitespace-nowrap"
+            title="사전정보 슬롯 · 체크리스트 진행"
+            aria-label={`사전정보 ${priorFilled ?? 0} / ${priorTotal} 채움, 체크리스트 ${checklistCompleted ?? 0} / ${checklistTotal} 완료`}
+          >
+            <span className="text-pwc-ink-mute">사전</span>
+            <span className="font-semibold text-pwc-ink">
+              {priorFilled ?? 0}/{priorTotal}
+            </span>
+            <span aria-hidden="true" className="text-pwc-border-strong">·</span>
+            <span className="text-pwc-ink-mute">체크</span>
+            <span className="font-semibold text-pwc-ink">
+              {checklistCompleted ?? 0}/{checklistTotal}
+            </span>
+          </span>
+        )}
       {transport === "chat" && (
         <span
           className="shrink-0 px-2 py-0.5 rounded-pwc text-[10px] sm:text-xs bg-pwc-bg-card text-pwc-ink-mute border border-pwc-border"

@@ -331,6 +331,27 @@ function drawKv(
   return c;
 }
 
+/** 체크리스트 항목의 3상태(완료/건너뜀/미완료)에 대응하는 단일문자 마크.
+ *  - completed && !skipped → "[O]" (완료, 기존 동일)
+ *  - skipped               → "[~]" (건너뜀, 명시 표기 — 감사 무결성)
+ *  - 그 외                 → "[ ]" (미완료, 기존 동일)
+ *  PR-6a: ReportPreview의 "(건너뜀)" 라벨과 일관성을 유지하기 위해 도입.
+ *  pdfGenerate 내부 두 호출자(§3 체크리스트 / drawChecklistProgress) 공유. */
+function getChecklistMark(item: ChecklistItem): string {
+  if (item.skipped) return "[~]";
+  if (item.completed) return "[O]";
+  return "[ ]";
+}
+
+/** 체크리스트 status 분류 — 표지/섹션 헤더 카운트 라인 + 항목 라벨에 일관 사용.
+ *  skipped가 true면 completed 여부와 무관하게 skipped로 판단(skipped 우선). */
+type ChecklistStatus = "completed" | "skipped" | "incomplete";
+function getChecklistStatus(item: ChecklistItem): ChecklistStatus {
+  if (item.skipped) return "skipped";
+  if (item.completed) return "completed";
+  return "incomplete";
+}
+
 /** PNG data URL → Uint8Array decode. */
 function dataUrlToBytes(dataUrl: string): Uint8Array | null {
   try {
@@ -505,7 +526,8 @@ export async function generateSessionPdf(
     });
   }
 
-  // ── §3. 체크리스트 (completed) ─────────────────────────────
+  // ── §3. 체크리스트 (completed / skipped / incomplete) ──────
+  // PR-6a: skipped 항목을 "[~] ... (건너뜀)"으로 명시. ReportPreview와 일관성 유지.
   cursor = drawSectionHeader(doc, cursor, "3. 체크리스트 (CHECKLIST)", fonts);
   const items = session.checklist_items ?? [];
   if (items.length === 0) {
@@ -516,12 +538,29 @@ export async function generateSessionPdf(
       sanitizeForLatin: sanitize,
     });
   } else {
+    // 카운트 요약 — "완료 N / 건너뜀 K / 미완료 L" (합계 = items.length)
+    const completedCount = items.filter((it) => getChecklistStatus(it) === "completed").length;
+    const skippedCount = items.filter((it) => getChecklistStatus(it) === "skipped").length;
+    const incompleteCount = items.filter((it) => getChecklistStatus(it) === "incomplete").length;
+    cursor = drawText(
+      doc,
+      cursor,
+      `완료 ${completedCount} / 건너뜀 ${skippedCount} / 미완료 ${incompleteCount} (총 ${items.length})`,
+      {
+        font,
+        size: 10,
+        color: PWC_INK_MUTE,
+        sanitizeForLatin: sanitize,
+      },
+    );
+    cursor.y -= 2;
     for (const it of items) {
-      const mark = it.completed ? "[O]" : "[ ]";
-      cursor = drawText(doc, cursor, `${mark} ${it.content}`, {
+      const mark = getChecklistMark(it);
+      const skipLabel = it.skipped ? " (건너뜀)" : "";
+      cursor = drawText(doc, cursor, `${mark} ${it.content}${skipLabel}`, {
         font,
         size: 11,
-        color: PWC_INK,
+        color: it.skipped ? PWC_INK_MUTE : PWC_INK,
         indent: 6,
         sanitizeForLatin: sanitize,
       });
@@ -817,17 +856,35 @@ function drawChecklistProgress(
     });
     return c;
   }
+  // PR-6a: skipped 항목 명시 표기 + 카운트 요약. ReportPreview의 "(건너뜀)" 라벨과 일관.
+  const completedCount = items.filter((it) => getChecklistStatus(it) === "completed").length;
+  const skippedCount = items.filter((it) => getChecklistStatus(it) === "skipped").length;
+  const incompleteCount = items.filter((it) => getChecklistStatus(it) === "incomplete").length;
+  c = drawText(
+    doc,
+    c,
+    `완료 ${completedCount} / 건너뜀 ${skippedCount} / 미완료 ${incompleteCount} (총 ${items.length})`,
+    {
+      font,
+      size: 10,
+      color: PWC_INK_MUTE,
+      sanitizeForLatin: sanitize,
+    },
+  );
+  c.y -= 2;
   for (const it of items) {
-    const mark = it.completed ? "[O]" : "[ ]";
+    const mark = getChecklistMark(it);
     const baselineLabel = it.is_baseline ? " (필수)" : "";
-    c = drawText(doc, c, `${mark} ${it.content}${baselineLabel}`, {
+    const skipLabel = it.skipped ? " (건너뜀)" : "";
+    c = drawText(doc, c, `${mark} ${it.content}${baselineLabel}${skipLabel}`, {
       font,
       size: 11,
-      color: PWC_INK,
+      color: it.skipped ? PWC_INK_MUTE : PWC_INK,
       indent: 6,
       sanitizeForLatin: sanitize,
     });
-    if (it.completed) {
+    if (it.completed && !it.skipped) {
+      // 완료 항목만 timestamp/utterance 메타 노출 — skipped는 체크 이벤트가 없으므로 생략.
       const time = it.checkedAt ? formatHhmm(it.checkedAt) : "";
       const meta: string[] = [];
       if (time) meta.push(time);

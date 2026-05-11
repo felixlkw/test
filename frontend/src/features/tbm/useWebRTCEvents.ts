@@ -44,6 +44,11 @@ export interface UseWebRTCEventsArgs {
   // setBroadcastPulsing(true)로 펄스 트리거. 옵셔널 — 미전달 시 no-op.
   // 사용자 통제권 보존 (felix Q5=A) — 자동 모달은 호출하지 않음.
   onBroadcastReady?: (summary?: string) => void;
+  // PR-feedback-3 (v0.2.3) — finalize_tbm 호출 시 일부 미완 상태(slot/체크리스트
+  // 미기입)이면 명시 confirm 모달을 띄우기 위한 hook. 미전달이면 기존 동작
+  // (setFinalSummary + setShowSummaryDrawer) 유지. 본 콜백이 true 반환 시
+  // 기본 처리(setFinalSummary 등)를 skip — VoiceShell이 confirm 후 직접 처리.
+  onFinalizeRequested?: (summary: string) => boolean;
 }
 
 const VALID_PERMIT_TYPES: PermitType[] = [
@@ -77,6 +82,7 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
     setCitations,
     showInterruptionMessage,
     onBroadcastReady,
+    onFinalizeRequested,
   } = args;
 
   const onFunctionCall = useCallback(
@@ -183,13 +189,21 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
       }
 
       switch (functionName) {
-        case "complete_checklist_item":
+        case "complete_checklist_item": {
+          // PR-feedback-3 (v0.2.3) — skipped 옵셔널 처리.
+          //   args.skipped === true → completed=false + skipped=true (사용자가
+          //     "다음에/건너뛸게" 응답 시 LLM이 본 호출). 감사 무결성: "안 한 걸
+          //     했다고 거짓 기록" 방지.
+          //   args.skipped === false 또는 미지정 → 기존 동작(completed=true).
+          // checkedAt은 두 케이스 모두 stamp — 사용자 인지 시점 기록.
+          const skipped = args.skipped === true;
           setChecklist((prev) =>
             prev.map((item) =>
               item.index === Number(args.index)
                 ? {
                     ...item,
-                    completed: true,
+                    completed: !skipped,
+                    skipped: skipped ? true : item.skipped,
                     utterance: args.utterance as string,
                     checkedAt: new Date().toISOString(),
                   }
@@ -198,6 +212,7 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
           );
           sessionRef.current?.sendToolResult(callId, { result: "success" });
           return;
+        }
 
         case "collect_prior_information": {
           const update: PriorInformation = {};
@@ -347,8 +362,16 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
 
         case "finalize_tbm": {
           const summary = (args.final_summary as string) || "";
-          setFinalSummary(summary);
-          setShowSummaryDrawer(true);
+          // PR-feedback-3 — 일부 미완 상태(slot/체크리스트)이면 onFinalizeRequested
+          // 가 true를 반환해 confirm 모달 흐름으로 위임. 모두 완료 또는 콜백
+          // 미주입 시 기존 동작 유지(setFinalSummary + setShowSummaryDrawer).
+          const intercepted = onFinalizeRequested
+            ? onFinalizeRequested(summary)
+            : false;
+          if (!intercepted) {
+            setFinalSummary(summary);
+            setShowSummaryDrawer(true);
+          }
           sessionRef.current?.sendToolResult(callId, { result: "success" });
           return;
         }
@@ -427,6 +450,7 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
       setCitations,
       showInterruptionMessage,
       onBroadcastReady,
+      onFinalizeRequested,
     ],
   );
 

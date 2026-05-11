@@ -1,82 +1,203 @@
 {
   "domain": "semiconductor",
-  "version": "0.2.0",
-  "note": "PR A placeholder catalog — 3 work types. Phase 2.x PR-1: per-item scenarios/mitigations/ppe. regulation 인용은 felix 검수 필요.",
+  "version": "0.3.0",
+  "note": "PR A placeholder catalog — 3 work types. Phase 2.x PR-1: per-item scenarios/mitigations/ppe. v0.3.0: i18n fields (en/vi/th/id) added. regulation 인용은 felix 검수 필요.",
   "work_types": {
     "CVD_PM": {
       "label_ko": "CVD 챔버 PM",
       "label_en": "CVD Chamber PM",
+      "label_vi": "Bảo trì phòng ngừa (PM) buồng CVD",
+      "label_th": "งานบำรุงรักษาเชิงป้องกัน (PM) ห้อง CVD",
+      "label_id": "Pemeliharaan Preventif (PM) Chamber CVD",
       "baseline": [
         {
           "id": "CVD-01",
           "content": "전원·RF·가스 LOTO 시행 및 잔류전압 검전",
+          "content_en": "Apply LOTO to power, RF, and gas sources; verify zero residual voltage",
+          "content_vi": "Áp dụng LOTO cho nguồn điện, RF và khí; kiểm tra điện áp dư bằng 0",
+          "content_th": "ดำเนินการ LOTO กับแหล่งจ่ายไฟ, RF และก๊าซ; ตรวจสอบแรงดันคงค้างเป็นศูนย์",
+          "content_id": "Terapkan LOTO pada sumber daya listrik, RF, dan gas; verifikasi tegangan sisa nol",
           "regulation": "산업안전보건기준규칙 §38",
           "evidence_required": "photo|verbal",
           "scenarios": [
-            { "id": "CVD-01-SC-1", "content": "RF 라인 LOTO 누락 상태에서 챔버 개방 → 감전" }
+            {
+              "id": "CVD-01-SC-1",
+              "content": "RF 라인 LOTO 누락 상태에서 챔버 개방 → 감전",
+              "content_en": "Opening chamber while RF line LOTO is missed → electric shock",
+              "content_vi": "Mở buồng khi chưa LOTO đường RF → điện giật",
+              "content_th": "เปิดห้องขณะที่ยังไม่ได้ LOTO สาย RF → ไฟฟ้าช็อต",
+              "content_id": "Membuka chamber saat LOTO jalur RF terlewat → tersengat listrik"
+            }
           ],
           "mitigations": [
-            { "id": "CVD-01-MIT-1", "content": "전원·RF·가스 3 분야 개별 LOTO + 검전기로 잔류전압 0V 확인" }
+            {
+              "id": "CVD-01-MIT-1",
+              "content": "전원·RF·가스 3 분야 개별 LOTO + 검전기로 잔류전압 0V 확인",
+              "content_en": "Apply individual LOTO to all three (power/RF/gas) and verify 0 V residual voltage with a voltage tester",
+              "content_vi": "Áp dụng LOTO riêng cho cả ba (điện/RF/khí) và xác nhận điện áp dư 0 V bằng đồng hồ đo điện áp",
+              "content_th": "ดำเนินการ LOTO แยกสำหรับทั้งสามแหล่ง (ไฟฟ้า/RF/ก๊าซ) และยืนยันแรงดันคงค้าง 0 V ด้วยเครื่องวัดแรงดัน",
+              "content_id": "Terapkan LOTO terpisah untuk ketiga sumber (listrik/RF/gas) dan verifikasi tegangan sisa 0 V dengan voltage tester"
+            }
           ],
           "ppe": [
-            { "id": "CVD-01-PPE-1", "content": "절연 장갑 (전기용)" }
+            {
+              "id": "CVD-01-PPE-1",
+              "content": "절연 장갑 (전기용)",
+              "content_en": "Electrical insulating gloves",
+              "content_vi": "Găng tay cách điện",
+              "content_th": "ถุงมือฉนวนไฟฟ้า",
+              "content_id": "Sarung tangan isolasi listrik"
+            }
           ]
         },
         {
           "id": "CVD-02",
           "content": "프로세스가스(SiH4·NH3 등) 라인 퍼지 완료 — 잔류농도 측정",
+          "content_en": "Complete purge of process-gas lines (SiH4, NH3, etc.) and measure residual concentration",
+          "content_vi": "Hoàn tất xả sạch (purge) đường khí công nghệ (SiH4, NH3, v.v.) và đo nồng độ dư",
+          "content_th": "ดำเนินการ purge สายก๊าซกระบวนการ (SiH4, NH3 ฯลฯ) ให้สมบูรณ์ และวัดความเข้มข้นคงค้าง",
+          "content_id": "Selesaikan purging jalur gas proses (SiH4, NH3, dll.) dan ukur konsentrasi sisa",
           "regulation": "추정: SEMI S2 §17, felix 검수 필요",
           "evidence_required": "photo",
           "scenarios": [
-            { "id": "CVD-02-SC-1", "content": "퍼지 미완료 상태 챔버 개방으로 SiH4 자연발화" }
+            {
+              "id": "CVD-02-SC-1",
+              "content": "퍼지 미완료 상태 챔버 개방으로 SiH4 자연발화",
+              "content_en": "Opening chamber with incomplete purge causes pyrophoric ignition of SiH4",
+              "content_vi": "Mở buồng khi chưa hoàn tất purge khiến SiH4 tự bốc cháy",
+              "content_th": "เปิดห้องขณะที่ยังไม่ purge เสร็จ ทำให้ SiH4 ลุกไหม้เอง (pyrophoric)",
+              "content_id": "Membuka chamber dengan purging belum selesai menyebabkan SiH4 terbakar spontan (piroforik)"
+            }
           ],
           "mitigations": [
-            { "id": "CVD-02-MIT-1", "content": "N2 퍼지 3회 이상 + 잔류농도 5ppm 미만 확인 후 개방" }
+            {
+              "id": "CVD-02-MIT-1",
+              "content": "N2 퍼지 3회 이상 + 잔류농도 5ppm 미만 확인 후 개방",
+              "content_en": "Perform N2 purge at least 3 cycles and confirm residual concentration < 5 ppm before opening",
+              "content_vi": "Thực hiện purge N2 ít nhất 3 chu kỳ và xác nhận nồng độ dư < 5 ppm trước khi mở",
+              "content_th": "ดำเนินการ purge ด้วย N2 อย่างน้อย 3 รอบ และยืนยันความเข้มข้นคงค้าง < 5 ppm ก่อนเปิด",
+              "content_id": "Lakukan purging N2 minimal 3 siklus dan konfirmasi konsentrasi sisa < 5 ppm sebelum membuka"
+            }
           ],
           "ppe": [
-            { "id": "CVD-02-PPE-1", "content": "휴대용 가스검지기 (SiH4/NH3 + O2)" }
+            {
+              "id": "CVD-02-PPE-1",
+              "content": "휴대용 가스검지기 (SiH4/NH3 + O2)",
+              "content_en": "Portable gas detector (SiH4/NH3 + O2)",
+              "content_vi": "Máy đo khí cầm tay (SiH4/NH3 + O2)",
+              "content_th": "เครื่องตรวจวัดก๊าซแบบพกพา (SiH4/NH3 + O2)",
+              "content_id": "Detektor gas portabel (SiH4/NH3 + O2)"
+            }
           ]
         },
         {
           "id": "CVD-03",
           "content": "PFC(증착부산물) 다량 챔버 개방 시 방독마스크/SCBA 착용",
+          "content_en": "Wear gas mask or SCBA when opening a chamber with heavy PFC (deposition byproduct) load",
+          "content_vi": "Đeo mặt nạ phòng độc hoặc SCBA khi mở buồng có nhiều PFC (sản phẩm phụ lắng đọng)",
+          "content_th": "สวมหน้ากากป้องกันแก๊สหรือ SCBA เมื่อต้องเปิดห้องที่มี PFC (สารพลอยได้จากการพอกพูน) จำนวนมาก",
+          "content_id": "Kenakan masker gas atau SCBA saat membuka chamber dengan banyak PFC (produk samping deposisi)",
           "regulation": "추정: SEMI F-40, felix 검수 필요",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "CVD-03-SC-1", "content": "PFC 다량 노출로 호흡기 자극 또는 만성 노출 우려" }
+            {
+              "id": "CVD-03-SC-1",
+              "content": "PFC 다량 노출로 호흡기 자극 또는 만성 노출 우려",
+              "content_en": "Heavy PFC exposure may cause respiratory irritation or chronic exposure risk",
+              "content_vi": "Phơi nhiễm PFC nhiều có thể gây kích ứng đường hô hấp hoặc nguy cơ phơi nhiễm mãn tính",
+              "content_th": "การสัมผัส PFC ปริมาณมากอาจก่อให้เกิดการระคายเคืองทางเดินหายใจหรือเสี่ยงสัมผัสเรื้อรัง",
+              "content_id": "Paparan PFC dalam jumlah besar dapat menyebabkan iritasi saluran pernapasan atau risiko paparan kronis"
+            }
           ],
           "mitigations": [
-            { "id": "CVD-03-MIT-1", "content": "PFC 농도 측정 후 임계 초과 시 SCBA 의무 + 작업시간 제한" }
+            {
+              "id": "CVD-03-MIT-1",
+              "content": "PFC 농도 측정 후 임계 초과 시 SCBA 의무 + 작업시간 제한",
+              "content_en": "Measure PFC concentration; if it exceeds the threshold, SCBA is mandatory and working time is limited",
+              "content_vi": "Đo nồng độ PFC; nếu vượt ngưỡng, bắt buộc dùng SCBA và giới hạn thời gian làm việc",
+              "content_th": "วัดความเข้มข้น PFC; หากเกินค่าเกณฑ์ ต้องใส่ SCBA และจำกัดเวลาทำงาน",
+              "content_id": "Ukur konsentrasi PFC; jika melewati ambang batas, SCBA wajib dan waktu kerja dibatasi"
+            }
           ],
           "ppe": [
-            { "id": "CVD-03-PPE-1", "content": "방독마스크 또는 SCBA" }
+            {
+              "id": "CVD-03-PPE-1",
+              "content": "방독마스크 또는 SCBA",
+              "content_en": "Gas mask or SCBA",
+              "content_vi": "Mặt nạ phòng độc hoặc SCBA",
+              "content_th": "หน้ากากป้องกันแก๊สหรือ SCBA",
+              "content_id": "Masker gas atau SCBA"
+            }
           ]
         },
         {
           "id": "CVD-04",
           "content": "히터·라이너 잔열 확인(일정 온도 이하 강하 후 작업)",
+          "content_en": "Verify residual heat on heater and liner; only work after cooldown below the specified temperature",
+          "content_vi": "Kiểm tra nhiệt dư trên heater và liner; chỉ làm việc sau khi nhiệt độ hạ xuống dưới ngưỡng quy định",
+          "content_th": "ตรวจสอบความร้อนคงค้างของ heater และ liner; เริ่มงานต่อเมื่ออุณหภูมิลดต่ำกว่าค่าที่กำหนด",
+          "content_id": "Verifikasi panas sisa pada heater dan liner; mulai bekerja hanya setelah suhu turun di bawah ambang yang ditentukan",
           "regulation": "추정: SEMI S2 §15, felix 검수 필요",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "CVD-04-SC-1", "content": "잔열 상태(60°C 이상) 라이너 접촉으로 화상" }
+            {
+              "id": "CVD-04-SC-1",
+              "content": "잔열 상태(60°C 이상) 라이너 접촉으로 화상",
+              "content_en": "Burn injury from contacting a liner still hot (above 60°C)",
+              "content_vi": "Bỏng do chạm vào liner còn nóng (trên 60°C)",
+              "content_th": "ผิวหนังไหม้จากการสัมผัส liner ที่ยังร้อน (สูงกว่า 60°C)",
+              "content_id": "Cedera luka bakar akibat menyentuh liner yang masih panas (di atas 60°C)"
+            }
           ],
           "mitigations": [
-            { "id": "CVD-04-MIT-1", "content": "표면 온도 50°C 이하 강하 확인 후 진입 (적외선 측온계)" }
+            {
+              "id": "CVD-04-MIT-1",
+              "content": "표면 온도 50°C 이하 강하 확인 후 진입 (적외선 측온계)",
+              "content_en": "Confirm surface temperature has dropped below 50°C using an IR thermometer before entry",
+              "content_vi": "Xác nhận nhiệt độ bề mặt đã hạ xuống dưới 50°C bằng nhiệt kế hồng ngoại trước khi vào",
+              "content_th": "ยืนยันอุณหภูมิพื้นผิวลดต่ำกว่า 50°C ด้วยเครื่องวัดอุณหภูมิอินฟราเรดก่อนเข้าทำงาน",
+              "content_id": "Konfirmasi suhu permukaan turun di bawah 50°C menggunakan termometer inframerah sebelum masuk"
+            }
           ],
           "ppe": [
-            { "id": "CVD-04-PPE-1", "content": "내열 장갑" }
+            {
+              "id": "CVD-04-PPE-1",
+              "content": "내열 장갑",
+              "content_en": "Heat-resistant gloves",
+              "content_vi": "Găng tay chịu nhiệt",
+              "content_th": "ถุงมือทนความร้อน",
+              "content_id": "Sarung tangan tahan panas"
+            }
           ]
         },
         {
           "id": "CVD-05",
           "content": "PM 작업 2인 1조 및 EHS 입회 확인",
+          "content_en": "Confirm PM work is performed in a two-person team with EHS witness",
+          "content_vi": "Xác nhận công việc PM được thực hiện theo tổ 2 người với sự chứng kiến của EHS",
+          "content_th": "ยืนยันว่างาน PM ดำเนินการแบบทีม 2 คน พร้อมเจ้าหน้าที่ EHS ร่วมสังเกตการณ์",
+          "content_id": "Konfirmasi pekerjaan PM dilakukan dalam tim 2 orang dengan saksi EHS",
           "regulation": "추정: 사내 EHS 표준, felix 검수 필요",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "CVD-05-SC-1", "content": "단독 PM 작업 중 사고 발생 시 신속한 구조 어려움" }
+            {
+              "id": "CVD-05-SC-1",
+              "content": "단독 PM 작업 중 사고 발생 시 신속한 구조 어려움",
+              "content_en": "Difficult to rescue quickly if an accident occurs during solo PM work",
+              "content_vi": "Khó cứu hộ kịp thời nếu xảy ra sự cố khi làm PM một mình",
+              "content_th": "ยากต่อการช่วยเหลือทันทีหากเกิดอุบัติเหตุระหว่างทำงาน PM คนเดียว",
+              "content_id": "Sulit melakukan pertolongan cepat jika terjadi kecelakaan saat melakukan PM seorang diri"
+            }
           ],
           "mitigations": [
-            { "id": "CVD-05-MIT-1", "content": "2인 1조 (작업·감시) 명문화 + EHS 1회 입회 검증" }
+            {
+              "id": "CVD-05-MIT-1",
+              "content": "2인 1조 (작업·감시) 명문화 + EHS 1회 입회 검증",
+              "content_en": "Document two-person teaming (worker + watcher) and have EHS witness at least once",
+              "content_vi": "Văn bản hóa tổ 2 người (người làm + người giám sát) và có EHS chứng kiến ít nhất một lần",
+              "content_th": "ระบุเป็นเอกสารให้ทำงานแบบทีม 2 คน (ผู้ปฏิบัติงาน + ผู้สังเกตการณ์) และให้ EHS ร่วมสังเกตการณ์อย่างน้อย 1 ครั้ง",
+              "content_id": "Dokumentasikan kerja tim 2 orang (pekerja + pengawas) dan minta EHS menjadi saksi setidaknya sekali"
+            }
           ],
           "ppe": []
         }
@@ -87,6 +208,10 @@
           "add": {
             "id": "CVD-G01",
             "content": "SiH4 잔류 검출 — 즉시 작업중단·환기·재퍼지",
+            "content_en": "Residual SiH4 detected — stop work immediately, ventilate, and re-purge",
+            "content_vi": "Phát hiện SiH4 dư — dừng công việc ngay, thông gió và purge lại",
+            "content_th": "ตรวจพบ SiH4 คงค้าง — หยุดงานทันที, ระบายอากาศ และ purge ซ้ำ",
+            "content_id": "Sisa SiH4 terdeteksi — hentikan pekerjaan segera, ventilasi, dan lakukan purging ulang",
             "regulation": "산업안전보건기준규칙 §420"
           }
         }
@@ -95,74 +220,188 @@
     "GAS_LINE_BREAK": {
       "label_ko": "가스 라인 브레이크",
       "label_en": "Gas Line Break",
+      "label_vi": "Mở/cắt đường ống khí (Gas Line Break)",
+      "label_th": "งานตัด/เปิดท่อก๊าซ (Gas Line Break)",
+      "label_id": "Pemutusan Jalur Gas (Gas Line Break)",
       "baseline": [
         {
           "id": "GLB-01",
           "content": "Chemical Line Break 허가서 발급 및 가스 종류·농도 명기",
+          "content_en": "Issue a Chemical Line Break permit specifying gas type and concentration",
+          "content_vi": "Cấp giấy phép Chemical Line Break, ghi rõ loại khí và nồng độ",
+          "content_th": "ออกใบอนุญาต Chemical Line Break โดยระบุชนิดและความเข้มข้นของก๊าซ",
+          "content_id": "Terbitkan izin Chemical Line Break dengan mencantumkan jenis dan konsentrasi gas",
           "regulation": "산업안전보건기준규칙 §241",
           "evidence_required": "photo",
           "scenarios": [
-            { "id": "GLB-01-SC-1", "content": "허가서 가스 종류 미특정으로 부적합 PPE 선택 → 노출" }
+            {
+              "id": "GLB-01-SC-1",
+              "content": "허가서 가스 종류 미특정으로 부적합 PPE 선택 → 노출",
+              "content_en": "Unspecified gas type on the permit leads to wrong PPE selection → exposure",
+              "content_vi": "Không xác định loại khí trên giấy phép dẫn đến chọn sai PPE → phơi nhiễm",
+              "content_th": "ไม่ระบุชนิดก๊าซในใบอนุญาตทำให้เลือก PPE ไม่ถูกต้อง → สัมผัสสารพิษ",
+              "content_id": "Jenis gas tidak ditentukan pada izin sehingga PPE yang dipilih salah → paparan"
+            }
           ],
           "mitigations": [
-            { "id": "GLB-01-MIT-1", "content": "허가서에 가스 종류·농도·MSDS 번호 명기 후 PPE 매칭" }
+            {
+              "id": "GLB-01-MIT-1",
+              "content": "허가서에 가스 종류·농도·MSDS 번호 명기 후 PPE 매칭",
+              "content_en": "Specify gas type, concentration, and MSDS number on the permit, then match the PPE accordingly",
+              "content_vi": "Ghi rõ loại khí, nồng độ và số MSDS trên giấy phép, sau đó chọn PPE tương ứng",
+              "content_th": "ระบุชนิดก๊าซ, ความเข้มข้น และเลข MSDS ในใบอนุญาต แล้วเลือก PPE ให้สอดคล้อง",
+              "content_id": "Cantumkan jenis gas, konsentrasi, dan nomor MSDS pada izin, lalu sesuaikan PPE"
+            }
           ],
           "ppe": []
         },
         {
           "id": "GLB-02",
           "content": "이중밸브 차단 + 잔압 배출 + 질소(N2) 퍼지 3회 이상",
+          "content_en": "Double-block valve isolation + residual pressure bleed + N2 purge at least 3 cycles",
+          "content_vi": "Khóa van kép + xả áp suất dư + purge N2 ít nhất 3 chu kỳ",
+          "content_th": "ปิดวาล์วแบบ double-block + ระบายความดันคงค้าง + purge ด้วย N2 อย่างน้อย 3 รอบ",
+          "content_id": "Isolasi double-block valve + buang tekanan sisa + purging N2 minimal 3 siklus",
           "regulation": "추정: SEMI F-15, felix 검수 필요",
           "evidence_required": "photo|verbal",
           "scenarios": [
-            { "id": "GLB-02-SC-1", "content": "잔압/잔류가스 미배출 상태 플랜지 개방 → 가스 분출" }
+            {
+              "id": "GLB-02-SC-1",
+              "content": "잔압/잔류가스 미배출 상태 플랜지 개방 → 가스 분출",
+              "content_en": "Opening the flange without bleeding residual pressure/gas → gas blowout",
+              "content_vi": "Mở mặt bích khi chưa xả áp/khí dư → khí phun ra mạnh",
+              "content_th": "เปิดหน้าแปลนโดยยังไม่ระบายความดัน/ก๊าซคงค้าง → ก๊าซพุ่งออก",
+              "content_id": "Membuka flange tanpa membuang tekanan/gas sisa → semburan gas"
+            }
           ],
           "mitigations": [
-            { "id": "GLB-02-MIT-1", "content": "이중밸브 잠금 + 잔압 게이지 0 확인 + N2 퍼지 3회 후 개방" }
+            {
+              "id": "GLB-02-MIT-1",
+              "content": "이중밸브 잠금 + 잔압 게이지 0 확인 + N2 퍼지 3회 후 개방",
+              "content_en": "Lock the double-block valves, confirm residual pressure gauge at 0, perform N2 purge 3 times, then open",
+              "content_vi": "Khóa van kép, xác nhận đồng hồ áp suất dư về 0, purge N2 3 lần rồi mới mở",
+              "content_th": "ล็อควาล์ว double-block, ยืนยันเกจวัดความดันคงค้างเป็น 0, purge N2 3 รอบ แล้วจึงเปิด",
+              "content_id": "Kunci double-block valve, konfirmasi indikator tekanan sisa di 0, lakukan purging N2 3 kali, baru buka"
+            }
           ],
           "ppe": []
         },
         {
           "id": "GLB-03",
           "content": "독성가스 작업자 풀페이스 SCBA 착용 + 비상 SCBA 1조 추가 비치",
+          "content_en": "Workers handling toxic gas wear full-face SCBA; an additional spare SCBA set is staged for emergency",
+          "content_vi": "Người làm việc với khí độc đeo SCBA che mặt toàn phần; bố trí thêm 1 bộ SCBA dự phòng cho tình huống khẩn cấp",
+          "content_th": "ผู้ปฏิบัติงานกับก๊าซพิษสวม SCBA แบบ full-face และจัดเตรียม SCBA สำรองอีก 1 ชุดสำหรับเหตุฉุกเฉิน",
+          "content_id": "Pekerja yang menangani gas beracun mengenakan SCBA full-face; sediakan 1 set SCBA cadangan untuk keadaan darurat",
           "regulation": "산업안전보건기준규칙 §422",
           "evidence_required": "photo",
           "scenarios": [
-            { "id": "GLB-03-SC-1", "content": "SCBA 결함 발생 시 백업 부재로 대피 지연" }
+            {
+              "id": "GLB-03-SC-1",
+              "content": "SCBA 결함 발생 시 백업 부재로 대피 지연",
+              "content_en": "Without a backup SCBA, evacuation is delayed when the primary SCBA fails",
+              "content_vi": "Không có SCBA dự phòng, việc sơ tán bị chậm khi SCBA chính hỏng",
+              "content_th": "หาก SCBA หลักขัดข้องและไม่มีชุดสำรอง การอพยพจะล่าช้า",
+              "content_id": "Tanpa SCBA cadangan, evakuasi tertunda saat SCBA utama bermasalah"
+            }
           ],
           "mitigations": [
-            { "id": "GLB-03-MIT-1", "content": "작업자 SCBA + 비상 SCBA 1조 입구 비치 + 충전 상태 사전 확인" }
+            {
+              "id": "GLB-03-MIT-1",
+              "content": "작업자 SCBA + 비상 SCBA 1조 입구 비치 + 충전 상태 사전 확인",
+              "content_en": "Worker SCBA plus 1 emergency SCBA staged at the entry; pre-check charge status",
+              "content_vi": "SCBA cho người làm cộng 1 bộ SCBA khẩn cấp đặt ở lối vào; kiểm tra trạng thái nạp trước",
+              "content_th": "SCBA สำหรับผู้ปฏิบัติงานพร้อม SCBA ฉุกเฉินอีก 1 ชุดวางที่ทางเข้า; ตรวจสอบสถานะการชาร์จล่วงหน้า",
+              "content_id": "SCBA pekerja ditambah 1 set SCBA darurat di pintu masuk; periksa status pengisian sebelumnya"
+            }
           ],
           "ppe": [
-            { "id": "GLB-03-PPE-1", "content": "풀페이스 SCBA (충전 완료)" },
-            { "id": "GLB-03-PPE-2", "content": "내화학 보호복" }
+            {
+              "id": "GLB-03-PPE-1",
+              "content": "풀페이스 SCBA (충전 완료)",
+              "content_en": "Full-face SCBA (fully charged)",
+              "content_vi": "SCBA che mặt toàn phần (đã nạp đầy)",
+              "content_th": "SCBA แบบ full-face (ชาร์จเต็ม)",
+              "content_id": "SCBA full-face (terisi penuh)"
+            },
+            {
+              "id": "GLB-03-PPE-2",
+              "content": "내화학 보호복",
+              "content_en": "Chemical-resistant protective suit",
+              "content_vi": "Quần áo bảo hộ chống hóa chất",
+              "content_th": "ชุดป้องกันสารเคมี",
+              "content_id": "Pakaian pelindung tahan kimia"
+            }
           ]
         },
         {
           "id": "GLB-04",
           "content": "휴대용 가스검지기(타깃 가스 + O2 + LEL) 지속 측정",
+          "content_en": "Continuously monitor with a portable gas detector (target gas + O2 + LEL)",
+          "content_vi": "Giám sát liên tục bằng máy đo khí cầm tay (khí mục tiêu + O2 + LEL)",
+          "content_th": "ตรวจวัดต่อเนื่องด้วยเครื่องตรวจวัดก๊าซแบบพกพา (ก๊าซเป้าหมาย + O2 + LEL)",
+          "content_id": "Pantau terus-menerus dengan detektor gas portabel (gas target + O2 + LEL)",
           "regulation": "산업안전보건기준규칙 §619",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "GLB-04-SC-1", "content": "가스 누출 미감지로 작업자 흡입 노출" }
+            {
+              "id": "GLB-04-SC-1",
+              "content": "가스 누출 미감지로 작업자 흡입 노출",
+              "content_en": "Undetected gas leak causes inhalation exposure to the worker",
+              "content_vi": "Không phát hiện được khí rò khiến người làm hít phải",
+              "content_th": "ตรวจไม่พบการรั่วของก๊าซทำให้ผู้ปฏิบัติงานสูดดมเข้าไป",
+              "content_id": "Kebocoran gas tidak terdeteksi menyebabkan pekerja menghirupnya"
+            }
           ],
           "mitigations": [
-            { "id": "GLB-04-MIT-1", "content": "타깃 가스 + O2 + LEL 3 채널 검지기 작업 내내 가동" }
+            {
+              "id": "GLB-04-MIT-1",
+              "content": "타깃 가스 + O2 + LEL 3 채널 검지기 작업 내내 가동",
+              "content_en": "Keep a 3-channel detector (target gas + O2 + LEL) running throughout the work",
+              "content_vi": "Duy trì hoạt động máy đo 3 kênh (khí mục tiêu + O2 + LEL) suốt quá trình làm việc",
+              "content_th": "เปิดเครื่องตรวจ 3 ช่องสัญญาณ (ก๊าซเป้าหมาย + O2 + LEL) ตลอดการทำงาน",
+              "content_id": "Jalankan detektor 3-kanal (gas target + O2 + LEL) sepanjang pekerjaan"
+            }
           ],
           "ppe": [
-            { "id": "GLB-04-PPE-1", "content": "휴대용 다중 가스검지기" }
+            {
+              "id": "GLB-04-PPE-1",
+              "content": "휴대용 다중 가스검지기",
+              "content_en": "Portable multi-gas detector",
+              "content_vi": "Máy đo đa khí cầm tay",
+              "content_th": "เครื่องตรวจวัดก๊าซหลายชนิดแบบพกพา",
+              "content_id": "Detektor multi-gas portabel"
+            }
           ]
         },
         {
           "id": "GLB-05",
           "content": "비상샤워·세안기 위치 확인, 비상통신 무전 채널 점검",
+          "content_en": "Verify emergency shower and eyewash locations; check emergency radio channel",
+          "content_vi": "Xác nhận vị trí vòi sen khẩn cấp và bồn rửa mắt; kiểm tra kênh bộ đàm khẩn cấp",
+          "content_th": "ยืนยันตำแหน่งฝักบัวฉุกเฉินและที่ล้างตา; ตรวจสอบช่องวิทยุสื่อสารฉุกเฉิน",
+          "content_id": "Verifikasi lokasi safety shower dan eyewash; periksa kanal radio darurat",
           "regulation": "추정: SEMI S6, felix 검수 필요",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "GLB-05-SC-1", "content": "약품 비산 시 비상샤워 위치 미숙지로 응급 대응 지연" }
+            {
+              "id": "GLB-05-SC-1",
+              "content": "약품 비산 시 비상샤워 위치 미숙지로 응급 대응 지연",
+              "content_en": "Unfamiliarity with emergency shower location delays response in case of chemical splash",
+              "content_vi": "Không nắm rõ vị trí vòi sen khẩn cấp khi hóa chất bắn vào, gây chậm ứng phó",
+              "content_th": "ไม่ทราบตำแหน่งฝักบัวฉุกเฉินเมื่อสารเคมีกระเด็นใส่ ทำให้ตอบสนองล่าช้า",
+              "content_id": "Tidak hafal lokasi safety shower saat tumpahan kimia menyebabkan respons darurat tertunda"
+            }
           ],
           "mitigations": [
-            { "id": "GLB-05-MIT-1", "content": "작업 시작 직전 비상샤워·세안기 위치 1:1 인지 + 무전 1회 통화 시험" }
+            {
+              "id": "GLB-05-MIT-1",
+              "content": "작업 시작 직전 비상샤워·세안기 위치 1:1 인지 + 무전 1회 통화 시험",
+              "content_en": "Right before starting, walk each worker through the shower/eyewash location and run one radio test call",
+              "content_vi": "Ngay trước khi bắt đầu, hướng dẫn 1:1 vị trí vòi sen/bồn rửa mắt và thử gọi bộ đàm 1 lần",
+              "content_th": "ก่อนเริ่มงาน ชี้แนะตำแหน่งฝักบัว/ที่ล้างตาแบบ 1:1 และทดสอบสื่อสารทางวิทยุ 1 ครั้ง",
+              "content_id": "Sesaat sebelum mulai, panduan 1:1 ke lokasi shower/eyewash dan lakukan satu kali tes panggilan radio"
+            }
           ],
           "ppe": []
         }
@@ -173,6 +412,10 @@
           "add": {
             "id": "GLB-HF01",
             "content": "HF/BOE — 칼슘글루코네이트 젤 비치 및 작업자 사전 사용법 숙지",
+            "content_en": "HF/BOE — stage calcium gluconate gel and brief workers on its use beforehand",
+            "content_vi": "HF/BOE — bố trí gel calcium gluconate và phổ biến trước cho người làm cách sử dụng",
+            "content_th": "HF/BOE — เตรียมเจล calcium gluconate และอบรมวิธีใช้ให้ผู้ปฏิบัติงานล่วงหน้า",
+            "content_id": "HF/BOE — siapkan gel kalsium glukonat dan beri pengarahan cara penggunaan kepada pekerja sebelumnya",
             "regulation": "추정: 사내 화학물질 SOP, felix 검수 필요"
           }
         }
@@ -181,64 +424,167 @@
     "LITHO_PM": {
       "label_ko": "리소 장비 PM",
       "label_en": "Lithography PM",
+      "label_vi": "Bảo trì phòng ngừa (PM) thiết bị Lithography",
+      "label_th": "งานบำรุงรักษาเชิงป้องกัน (PM) เครื่อง Lithography",
+      "label_id": "Pemeliharaan Preventif (PM) Peralatan Litografi",
       "baseline": [
         {
           "id": "LIT-01",
           "content": "광원(DUV/EUV) 셔터 차단 및 전원 LOTO",
+          "content_en": "Close the light-source (DUV/EUV) shutter and apply power LOTO",
+          "content_vi": "Đóng shutter nguồn sáng (DUV/EUV) và áp dụng LOTO nguồn điện",
+          "content_th": "ปิดชัตเตอร์แหล่งกำเนิดแสง (DUV/EUV) และดำเนินการ LOTO ไฟฟ้า",
+          "content_id": "Tutup shutter sumber cahaya (DUV/EUV) dan terapkan LOTO sumber daya",
           "regulation": "추정: SEMI S2 §10, felix 검수 필요",
           "evidence_required": "photo|verbal",
           "scenarios": [
-            { "id": "LIT-01-SC-1", "content": "셔터 미차단 상태 챔버 개방 시 광원 노출 → 안구 부상" }
+            {
+              "id": "LIT-01-SC-1",
+              "content": "셔터 미차단 상태 챔버 개방 시 광원 노출 → 안구 부상",
+              "content_en": "Opening chamber while shutter is not closed exposes worker to the light source → eye injury",
+              "content_vi": "Mở buồng khi shutter chưa đóng làm phơi nhiễm nguồn sáng → tổn thương mắt",
+              "content_th": "เปิดห้องขณะที่ชัตเตอร์ยังไม่ปิดทำให้สัมผัสแหล่งกำเนิดแสง → บาดเจ็บที่ดวงตา",
+              "content_id": "Membuka chamber saat shutter belum tertutup menyebabkan paparan sumber cahaya → cedera mata"
+            }
           ],
           "mitigations": [
-            { "id": "LIT-01-MIT-1", "content": "셔터 차단 인터록 확인 + 전원 LOTO 후 챔버 진입" }
+            {
+              "id": "LIT-01-MIT-1",
+              "content": "셔터 차단 인터록 확인 + 전원 LOTO 후 챔버 진입",
+              "content_en": "Verify shutter-closed interlock and apply power LOTO before entering the chamber",
+              "content_vi": "Xác nhận interlock shutter đã đóng và áp dụng LOTO nguồn điện trước khi vào buồng",
+              "content_th": "ยืนยันอินเตอร์ล็อกชัตเตอร์ปิด และดำเนินการ LOTO ไฟฟ้าก่อนเข้าห้อง",
+              "content_id": "Verifikasi interlock shutter tertutup dan terapkan LOTO daya sebelum masuk chamber"
+            }
           ],
           "ppe": [
-            { "id": "LIT-01-PPE-1", "content": "광원 차광 보안경 (DUV/EUV 등급)" }
+            {
+              "id": "LIT-01-PPE-1",
+              "content": "광원 차광 보안경 (DUV/EUV 등급)",
+              "content_en": "Light-source-rated safety goggles (DUV/EUV grade)",
+              "content_vi": "Kính bảo hộ chắn bức xạ nguồn sáng (cấp DUV/EUV)",
+              "content_th": "แว่นนิรภัยกันแสงระดับแหล่งกำเนิด (เกรด DUV/EUV)",
+              "content_id": "Kacamata pelindung sumber cahaya (kelas DUV/EUV)"
+            }
           ]
         },
         {
           "id": "LIT-02",
           "content": "포토레지스트·현상액 누출 확인 및 보호장갑·보안경 착용",
+          "content_en": "Check for photoresist/developer leaks and wear protective gloves and goggles",
+          "content_vi": "Kiểm tra rò rỉ photoresist/dung dịch hiện hình và mang găng tay bảo hộ, kính bảo hộ",
+          "content_th": "ตรวจการรั่วของ photoresist/น้ำยา developer และสวมถุงมือป้องกันและแว่นนิรภัย",
+          "content_id": "Periksa kebocoran photoresist/developer dan kenakan sarung tangan pelindung dan kacamata",
           "regulation": "산업안전보건기준규칙 §32",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "LIT-02-SC-1", "content": "현상액(TMAH) 피부 접촉 시 화학 화상" }
+            {
+              "id": "LIT-02-SC-1",
+              "content": "현상액(TMAH) 피부 접촉 시 화학 화상",
+              "content_en": "Skin contact with developer (TMAH) causes chemical burns",
+              "content_vi": "Da tiếp xúc với dung dịch hiện hình (TMAH) gây bỏng hóa học",
+              "content_th": "ผิวหนังสัมผัสน้ำยา developer (TMAH) ทำให้เกิดแผลไหม้เคมี",
+              "content_id": "Kontak kulit dengan developer (TMAH) menyebabkan luka bakar kimia"
+            }
           ],
           "mitigations": [
-            { "id": "LIT-02-MIT-1", "content": "내화학 장갑 + 보안경 착용 + 누출 시 비상샤워 절차 숙지" }
+            {
+              "id": "LIT-02-MIT-1",
+              "content": "내화학 장갑 + 보안경 착용 + 누출 시 비상샤워 절차 숙지",
+              "content_en": "Wear chemical-resistant gloves and goggles and know the emergency shower procedure for any leak",
+              "content_vi": "Đeo găng tay chống hóa chất và kính bảo hộ; nắm rõ quy trình vòi sen khẩn cấp khi rò rỉ",
+              "content_th": "สวมถุงมือทนสารเคมีและแว่นนิรภัย และเรียนรู้ขั้นตอนฝักบัวฉุกเฉินเมื่อเกิดการรั่ว",
+              "content_id": "Kenakan sarung tangan tahan kimia dan kacamata, serta pahami prosedur safety shower jika terjadi kebocoran"
+            }
           ],
           "ppe": [
-            { "id": "LIT-02-PPE-1", "content": "내화학 장갑 (니트릴 또는 부틸)" },
-            { "id": "LIT-02-PPE-2", "content": "보안경" }
+            {
+              "id": "LIT-02-PPE-1",
+              "content": "내화학 장갑 (니트릴 또는 부틸)",
+              "content_en": "Chemical-resistant gloves (nitrile or butyl)",
+              "content_vi": "Găng tay chống hóa chất (nitrile hoặc butyl)",
+              "content_th": "ถุงมือทนสารเคมี (nitrile หรือ butyl)",
+              "content_id": "Sarung tangan tahan kimia (nitril atau butil)"
+            },
+            {
+              "id": "LIT-02-PPE-2",
+              "content": "보안경",
+              "content_en": "Safety goggles",
+              "content_vi": "Kính bảo hộ",
+              "content_th": "แว่นนิรภัย",
+              "content_id": "Kacamata keselamatan"
+            }
           ]
         },
         {
           "id": "LIT-03",
           "content": "EUV 진공 챔버 개방 전 압력 평형 + 수은램프 잔열 확인",
+          "content_en": "Before opening the EUV vacuum chamber, equalize pressure and verify residual heat on the mercury lamp",
+          "content_vi": "Trước khi mở buồng chân không EUV, cân bằng áp suất và kiểm tra nhiệt dư của đèn thủy ngân",
+          "content_th": "ก่อนเปิดห้องสุญญากาศ EUV ต้องปรับความดันให้สมดุล และตรวจสอบความร้อนคงค้างของหลอดปรอท",
+          "content_id": "Sebelum membuka chamber vakum EUV, samakan tekanan dan verifikasi panas sisa pada lampu merkuri",
           "regulation": "추정: SEMI S2 §15, felix 검수 필요",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "LIT-03-SC-1", "content": "압력 미평형 상태 챔버 개방으로 진공 흡입력 부상" }
+            {
+              "id": "LIT-03-SC-1",
+              "content": "압력 미평형 상태 챔버 개방으로 진공 흡입력 부상",
+              "content_en": "Opening chamber without pressure equalization causes injury from vacuum suction force",
+              "content_vi": "Mở buồng khi áp suất chưa cân bằng có thể gây chấn thương do lực hút chân không",
+              "content_th": "เปิดห้องขณะความดันยังไม่สมดุลทำให้เกิดบาดเจ็บจากแรงดูดสุญญากาศ",
+              "content_id": "Membuka chamber saat tekanan belum seimbang menyebabkan cedera akibat gaya isap vakum"
+            }
           ],
           "mitigations": [
-            { "id": "LIT-03-MIT-1", "content": "압력 게이지 대기압 도달 + 수은램프 표면 50°C 이하 후 개방" }
+            {
+              "id": "LIT-03-MIT-1",
+              "content": "압력 게이지 대기압 도달 + 수은램프 표면 50°C 이하 후 개방",
+              "content_en": "Open only after the pressure gauge reaches atmospheric pressure and the mercury lamp surface is below 50°C",
+              "content_vi": "Chỉ mở sau khi đồng hồ áp suất đạt áp suất khí quyển và bề mặt đèn thủy ngân dưới 50°C",
+              "content_th": "เปิดต่อเมื่อเกจวัดความดันถึงระดับบรรยากาศและพื้นผิวหลอดปรอทต่ำกว่า 50°C",
+              "content_id": "Buka hanya setelah indikator tekanan mencapai tekanan atmosfer dan permukaan lampu merkuri di bawah 50°C"
+            }
           ],
           "ppe": []
         },
         {
           "id": "LIT-04",
           "content": "방사선 안전관리(EUV 부수 X-ray) 출입자 등록",
+          "content_en": "Register entrants under radiation safety management (incidental X-ray from EUV)",
+          "content_vi": "Đăng ký người ra vào theo quản lý an toàn bức xạ (tia X phụ phát sinh từ EUV)",
+          "content_th": "ลงทะเบียนผู้เข้าออกตามการจัดการความปลอดภัยรังสี (X-ray ที่เกิดร่วมกับ EUV)",
+          "content_id": "Daftarkan personel masuk dalam manajemen keselamatan radiasi (sinar-X insidental dari EUV)",
           "regulation": "추정: 원자력안전법, felix 검수 필요",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "LIT-04-SC-1", "content": "출입자 미등록으로 방사선 누적 노출 추적 불가" }
+            {
+              "id": "LIT-04-SC-1",
+              "content": "출입자 미등록으로 방사선 누적 노출 추적 불가",
+              "content_en": "Without entry registration, cumulative radiation exposure cannot be tracked",
+              "content_vi": "Không đăng ký người ra vào dẫn đến không truy vết được phơi nhiễm bức xạ tích lũy",
+              "content_th": "ไม่ลงทะเบียนผู้เข้าออกทำให้ไม่สามารถติดตามปริมาณรังสีสะสมได้",
+              "content_id": "Tanpa pendaftaran personel masuk, paparan radiasi kumulatif tidak dapat dilacak"
+            }
           ],
           "mitigations": [
-            { "id": "LIT-04-MIT-1", "content": "출입자별 TLD 배지 + 출입 로그 기록" }
+            {
+              "id": "LIT-04-MIT-1",
+              "content": "출입자별 TLD 배지 + 출입 로그 기록",
+              "content_en": "Issue a TLD badge per entrant and keep an entry log",
+              "content_vi": "Cấp huy hiệu TLD cho từng người và ghi nhật ký ra vào",
+              "content_th": "ออกป้าย TLD ให้ผู้เข้าออกแต่ละคน และบันทึก log การเข้าออก",
+              "content_id": "Berikan badge TLD per personel dan catat log akses"
+            }
           ],
           "ppe": [
-            { "id": "LIT-04-PPE-1", "content": "TLD 방사선 노출 배지" }
+            {
+              "id": "LIT-04-PPE-1",
+              "content": "TLD 방사선 노출 배지",
+              "content_en": "TLD radiation exposure badge",
+              "content_vi": "Huy hiệu đo phơi nhiễm bức xạ TLD",
+              "content_th": "ป้ายวัดปริมาณรังสี TLD",
+              "content_id": "Badge paparan radiasi TLD"
+            }
           ]
         }
       ],
@@ -248,6 +594,10 @@
           "add": {
             "id": "LIT-N01",
             "content": "EUV 광원·미러 교체 시 — 광원 차단 인터록 LOTO 적용 + Sn 잔류 X-ray 검사 후 진입",
+            "content_en": "When replacing the EUV source or mirror — apply LOTO to the light-source shutoff interlock and perform an X-ray inspection for Sn residue before entry",
+            "content_vi": "Khi thay nguồn EUV/gương — áp dụng LOTO cho interlock cắt nguồn sáng và kiểm tra X-ray dư lượng Sn trước khi vào",
+            "content_th": "เมื่อเปลี่ยนแหล่งกำเนิด EUV หรือกระจก — ดำเนินการ LOTO กับอินเตอร์ล็อกตัดแหล่งกำเนิดแสง และตรวจ X-ray หาคราบ Sn ก่อนเข้า",
+            "content_id": "Saat mengganti sumber EUV atau cermin — terapkan LOTO pada interlock pemutus sumber cahaya dan lakukan pemeriksaan X-ray untuk residu Sn sebelum masuk",
             "regulation": "추정: 원자력안전법 §59 / 산업안전보건기준규칙 §38"
           }
         },
@@ -256,6 +606,10 @@
           "add": {
             "id": "LIT-N02",
             "content": "과거 방사선·노출 이력 — TLD 분기점검 + 출입자별 누적선량 5mSv/연 미만 한도 사전 확인",
+            "content_en": "Past radiation/exposure history — perform quarterly TLD review and confirm each entrant's cumulative dose is below the 5 mSv/year limit beforehand",
+            "content_vi": "Có tiền sử bức xạ/phơi nhiễm — kiểm tra TLD hằng quý và xác nhận trước rằng liều tích lũy của mỗi người dưới giới hạn 5 mSv/năm",
+            "content_th": "มีประวัติรังสี/การสัมผัสในอดีต — ตรวจสอบ TLD รายไตรมาส และยืนยันล่วงหน้าว่าปริมาณรังสีสะสมของผู้เข้าออกแต่ละคนต่ำกว่า 5 mSv/ปี",
+            "content_id": "Riwayat radiasi/paparan sebelumnya — lakukan tinjauan TLD triwulanan dan konfirmasi sebelumnya bahwa dosis kumulatif tiap personel di bawah batas 5 mSv/tahun",
             "regulation": "추정: 원자력안전법 §95"
           }
         }

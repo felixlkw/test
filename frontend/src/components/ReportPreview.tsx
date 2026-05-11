@@ -93,21 +93,51 @@ export function ReportPreview({
         </ul>
       </section>
 
-      {/* 체크리스트 */}
-      <section className="mb-4">
-        <h3 className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold mb-1">
-          체크리스트 ({completed.length}/{(session.checklist_items ?? []).length})
-        </h3>
-        {completed.length === 0 ? (
-          <p className="text-xs text-pwc-ink-mute italic">완료 항목 없음</p>
-        ) : (
-          <ul className="text-sm text-pwc-ink space-y-0.5">
-            {completed.map((c, i) => (
-              <li key={i}>· {c.content}</li>
-            ))}
-          </ul>
-        )}
-      </section>
+      {/* 체크리스트 — PR-feedback-3: skipped 항목 별도 표시 (감사 무결성). */}
+      {(() => {
+        const items = session.checklist_items ?? [];
+        const skipped = items.filter((c) => c.skipped);
+        const incomplete = items.filter((c) => !c.completed && !c.skipped);
+        return (
+          <section className="mb-4">
+            <h3 className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold mb-1">
+              체크리스트 ({completed.length}/{items.length})
+              {skipped.length > 0 && (
+                <span className="ml-1 text-pwc-ink-mute font-normal normal-case tracking-normal">
+                  · 건너뜀 {skipped.length}
+                </span>
+              )}
+            </h3>
+            {items.length === 0 ? (
+              <p className="text-xs text-pwc-ink-mute italic">항목 없음</p>
+            ) : (
+              <>
+                {completed.length > 0 && (
+                  <ul className="text-sm text-pwc-ink space-y-0.5">
+                    {completed.map((c, i) => (
+                      <li key={`c-${i}`}>· {c.content}</li>
+                    ))}
+                  </ul>
+                )}
+                {skipped.length > 0 && (
+                  <ul className="text-sm text-pwc-ink-mute italic space-y-0.5 mt-1.5">
+                    {skipped.map((c, i) => (
+                      <li key={`s-${i}`}>· {c.content} (건너뜀)</li>
+                    ))}
+                  </ul>
+                )}
+                {incomplete.length > 0 && (
+                  <ul className="text-xs text-pwc-ink-mute space-y-0.5 mt-1.5">
+                    {incomplete.map((c, i) => (
+                      <li key={`i-${i}`}>· {c.content} (미기입)</li>
+                    ))}
+                  </ul>
+                )}
+              </>
+            )}
+          </section>
+        );
+      })()}
 
       {/* 8필드 */}
       <section className="mb-4">

@@ -500,6 +500,8 @@ async def recommend_hazards(
     language: str,
     context: dict | None = None,
     refresh_seed: int | None = None,
+    prior_baseline_ids: list[str] | None = None,
+    prior_conditional_ids: list[str] | None = None,
 ) -> dict:
     """GPT-4o chat completion (JSON mode) for prepare-stage recommendations.
 
@@ -588,6 +590,11 @@ async def recommend_hazards(
             seed_baseline=catalog_baseline,
             seed_conditional=seed_conditional_for_prompt,
             seed_suggested_questions=seed_questions,
+            # v0.2.4 PR-feedback-2 — Tier-2 augmentation IDs. When non-empty,
+            # the prompt builder injects [Augmentation Mode] telling the LLM
+            # to keep these items AS-IS and only add/refine.
+            prior_baseline_ids=prior_baseline_ids,
+            prior_conditional_ids=prior_conditional_ids,
         )
     except Exception as exc:
         logger.warning(f"recommend_hazards: prompt build failed: {exc!r} — fallback.")

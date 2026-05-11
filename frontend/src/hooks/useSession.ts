@@ -9,6 +9,7 @@ import {
   archiveSession as dbArchive,
   unarchiveSession as dbUnarchive,
   findLatestDraft,
+  listDraftTbmSessions,
 } from "../services/db";
 import type { Session } from "../services/sessionModel";
 
@@ -140,4 +141,30 @@ export function useLatestDraft() {
   }, []);
 
   return { draft, loading };
+}
+
+/**
+ * PR-feedback-1 (v0.2.2) — 홈 카운트 배지 + HistoryScreen 미완료 필터.
+ * `listDraftTbmSessions`를 단일 호출하여 미완료 TBM 다건을 가져온다.
+ * 홈은 `drafts.length`로 배지 가시성을 판단하고, 첫 항목으로 Resume Card를
+ * 그대로 렌더할 수 있어 `useLatestDraft` 단독 호출 대체도 가능 — 다만 본
+ * 사이클은 후방 호환을 위해 `useLatestDraft`를 유지하고 본 훅을 추가.
+ */
+export function useDraftTbmList() {
+  const [drafts, setDrafts] = useState<Session[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    listDraftTbmSessions().then((list) => {
+      if (cancelled) return;
+      setDrafts(list);
+      setLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return { drafts, loading };
 }

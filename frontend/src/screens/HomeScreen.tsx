@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { putSession } from "../services/db";
 import { createEmptySession } from "../services/sessionModel";
 import type { SessionDomain } from "../services/sessionModel";
-import { useLatestDraft } from "../hooks/useSession";
+import { useDraftTbmList } from "../hooks/useSession";
 import { cleanupExpiredSessions } from "../services/retention";
 import CTAButton from "../components/CTAButton";
 import PwcMark from "../components/PwcMark";
 import RuleLine from "../components/RuleLine";
 import { IconSettings, IconChevronRight, IconArrowRight } from "../components/Icon";
 import { DomainBadge } from "../shared/ui/DomainBadge";
+import { getDraftCountBadgeLabel } from "../shared/i18n/draftLabels";
 
 // PR D Q8 — Settings 기본 도메인 키 (Settings와 동일 키).
 const DEFAULT_DOMAIN_KEY = "safemate.ui.defaultDomain";
@@ -40,7 +41,12 @@ const DOMAIN_OPTIONS: { value: SessionDomain; label: string; hint: string }[] = 
 
 export default function HomeScreen() {
   const navigate = useNavigate();
-  const { draft, loading } = useLatestDraft();
+  // PR-feedback-1 (v0.2.2) — 미완료 다건 인지. drafts[0]이 종전 useLatestDraft
+  // 와 동일한 "가장 최근 미완료 1건"이며, drafts.length로 카운트 배지 가시성을
+  // 판단한다. (listSessions는 updated_at desc 정렬 → drafts[0]이 최신)
+  const { drafts, loading } = useDraftTbmList();
+  const draft = drafts[0];
+  const draftCount = drafts.length;
   const [showDomainSheet, setShowDomainSheet] = useState(false);
 
   // PR D Q8 — mount 시 1회 만료된 archived 세션 cleanup. retentionDays 미설정 시 no-op.
@@ -171,6 +177,21 @@ export default function HomeScreen() {
               <IconArrowRight size={22} />
             </span>
           </button>
+          {/* PR-feedback-1 (v0.2.2) — 미완료 카운트 배지. N >= 2일 때만 표시.
+              N === 1: 카드만 (v0.2.1 동작 유지). N === 0: 섹션 자체 미렌더. */}
+          {draftCount >= 2 && (
+            <button
+              type="button"
+              onClick={() => navigate("/history?filter=draft")}
+              className="mt-2 w-full flex items-center justify-between text-left bg-pwc-orange-wash border border-pwc-orange/30 hover:border-pwc-orange rounded-pwc px-3 py-2 transition"
+              aria-label={getDraftCountBadgeLabel("korean", draftCount)}
+            >
+              <span className="text-[12px] font-semibold text-pwc-orange">
+                {getDraftCountBadgeLabel("korean", draftCount)}
+              </span>
+              <IconChevronRight size={14} className="text-pwc-orange" />
+            </button>
+          )}
         </section>
       )}
 

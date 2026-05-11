@@ -1,66 +1,162 @@
 {
   "domain": "manufacturing",
-  "version": "0.2.0",
-  "note": "PR A placeholder catalog — 3 work types. Phase 2.x PR-1: per-item scenarios/mitigations/ppe. regulation 인용은 felix 검수 필요.",
+  "version": "0.3.0",
+  "note": "PR A placeholder catalog — 3 work types. Phase 2.x PR-1: per-item scenarios/mitigations/ppe. v0.3.0: multilingual content_{en,vi,th,id} added. regulation 인용은 felix 검수 필요.",
   "work_types": {
     "ASSEMBLY_LINE": {
       "label_ko": "조립라인 작업",
       "label_en": "Assembly Line",
+      "label_vi": "Dây chuyền lắp ráp",
+      "label_th": "สายการประกอบ",
+      "label_id": "Lini Perakitan",
       "baseline": [
         {
           "id": "AL-01",
           "content": "컨베이어·구동부 방호덮개 설치 상태 확인",
+          "content_en": "Check installation of guards on conveyors and drive units",
+          "content_vi": "Kiểm tra tình trạng lắp đặt nắp bảo vệ cho băng tải và bộ phận truyền động",
+          "content_th": "ตรวจสอบการติดตั้งฝาครอบป้องกันบนสายพานลำเลียงและชุดขับเคลื่อน",
+          "content_id": "Periksa pemasangan pelindung pada konveyor dan unit penggerak",
           "regulation": "산업안전보건기준규칙 §80",
           "evidence_required": "photo|verbal",
           "scenarios": [
-            { "id": "AL-01-SC-1", "content": "구동부 노출로 작업자 옷자락/면장갑 말림 → 협착" }
+            {
+              "id": "AL-01-SC-1",
+              "content": "구동부 노출로 작업자 옷자락/면장갑 말림 → 협착",
+              "content_en": "Exposed drive unit catches clothing/cotton gloves → entanglement/crushing",
+              "content_vi": "Bộ phận truyền động lộ ra cuốn vạt áo/găng tay vải của công nhân → kẹp",
+              "content_th": "ชุดขับเคลื่อนที่เปิดโล่งดึงชายเสื้อ/ถุงมือผ้าของพนักงาน → การหนีบ",
+              "content_id": "Unit penggerak yang terbuka menarik ujung pakaian/sarung tangan kain pekerja → terjepit"
+            }
           ],
           "mitigations": [
-            { "id": "AL-01-MIT-1", "content": "방호덮개 잠금 상태 점검 + 손등 보호 장갑 사용" }
+            {
+              "id": "AL-01-MIT-1",
+              "content": "방호덮개 잠금 상태 점검 + 손등 보호 장갑 사용",
+              "content_en": "Inspect guard lock status and use back-of-hand protection gloves",
+              "content_vi": "Kiểm tra trạng thái khóa của nắp bảo vệ + sử dụng găng tay bảo vệ mu bàn tay",
+              "content_th": "ตรวจสอบสถานะการล็อกฝาครอบป้องกัน + ใช้ถุงมือป้องกันหลังมือ",
+              "content_id": "Periksa status kunci pelindung dan gunakan sarung tangan pelindung punggung tangan"
+            }
           ],
           "ppe": [
-            { "id": "AL-01-PPE-1", "content": "손등 보호 장갑 (말림 방지)" }
+            {
+              "id": "AL-01-PPE-1",
+              "content": "손등 보호 장갑 (말림 방지)",
+              "content_en": "Back-of-hand protection gloves (anti-entanglement)",
+              "content_vi": "Găng tay bảo vệ mu bàn tay (chống cuốn)",
+              "content_th": "ถุงมือป้องกันหลังมือ (ป้องกันการพันติด)",
+              "content_id": "Sarung tangan pelindung punggung tangan (anti-terjerat)"
+            }
           ]
         },
         {
           "id": "AL-02",
           "content": "라이트커튼·인터록 등 안전장치 정상작동 점검",
+          "content_en": "Check normal operation of safety devices such as light curtains and interlocks",
+          "content_vi": "Kiểm tra hoạt động bình thường của các thiết bị an toàn như rèm sáng (light curtain) và interlock",
+          "content_th": "ตรวจสอบการทำงานปกติของอุปกรณ์นิรภัย เช่น light curtain และ interlock",
+          "content_id": "Periksa operasi normal perangkat keselamatan seperti light curtain dan interlock",
           "regulation": "추정: KOSHA M-XX, felix 검수 필요",
           "evidence_required": "photo|verbal",
           "scenarios": [
-            { "id": "AL-02-SC-1", "content": "라이트커튼 차단 우회/오작동 시 작업자 신체 침입 미감지" }
+            {
+              "id": "AL-02-SC-1",
+              "content": "라이트커튼 차단 우회/오작동 시 작업자 신체 침입 미감지",
+              "content_en": "If the light curtain is bypassed or malfunctions, worker body intrusion goes undetected",
+              "content_vi": "Khi rèm sáng bị bỏ qua/hỏng, không phát hiện được sự xâm nhập cơ thể công nhân",
+              "content_th": "เมื่อ light curtain ถูกข้าม/ทำงานผิดปกติ จะตรวจไม่พบการที่ร่างกายพนักงานเข้าไป",
+              "content_id": "Saat light curtain dilewati/rusak, masuknya tubuh pekerja tidak terdeteksi"
+            }
           ],
           "mitigations": [
-            { "id": "AL-02-MIT-1", "content": "교대 시작 시 테스트 막대로 차단 동작 확인" }
+            {
+              "id": "AL-02-MIT-1",
+              "content": "교대 시작 시 테스트 막대로 차단 동작 확인",
+              "content_en": "At shift start, verify blocking action using a test rod",
+              "content_vi": "Đầu ca, dùng thanh thử để kiểm tra hoạt động chặn",
+              "content_th": "ต้นกะ ใช้แท่งทดสอบเพื่อตรวจสอบการทำงานของการตัดสัญญาณ",
+              "content_id": "Di awal shift, verifikasi aksi pemblokiran menggunakan batang uji"
+            }
           ],
           "ppe": []
         },
         {
           "id": "AL-03",
           "content": "작업자 PPE — 안전모·안전화·면장갑(말림 위험 작업은 손등 보호 권장)",
+          "content_en": "Worker PPE — safety helmet, safety shoes, cotton gloves (back-of-hand protection recommended for entanglement-risk tasks)",
+          "content_vi": "PPE công nhân — mũ bảo hộ, giày bảo hộ, găng tay vải (khuyến nghị găng bảo vệ mu bàn tay cho công việc có nguy cơ cuốn)",
+          "content_th": "PPE ของพนักงาน — หมวกนิรภัย รองเท้านิรภัย ถุงมือผ้า (แนะนำถุงมือป้องกันหลังมือสำหรับงานที่เสี่ยงต่อการพันติด)",
+          "content_id": "APD pekerja — helm pengaman, sepatu pengaman, sarung tangan kain (pelindung punggung tangan disarankan untuk tugas berisiko terjerat)",
           "regulation": "산업안전보건기준규칙 §32",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "AL-03-SC-1", "content": "PPE 미착용 상태에서 자재 낙하 시 발등/머리 부상" }
+            {
+              "id": "AL-03-SC-1",
+              "content": "PPE 미착용 상태에서 자재 낙하 시 발등/머리 부상",
+              "content_en": "Without PPE, falling materials cause foot/head injury",
+              "content_vi": "Khi không mang PPE, vật liệu rơi gây thương tích bàn chân/đầu",
+              "content_th": "หากไม่สวม PPE วัสดุที่ตกอาจทำให้บาดเจ็บที่หลังเท้า/ศีรษะ",
+              "content_id": "Tanpa APD, material jatuh menyebabkan cedera punggung kaki/kepala"
+            }
           ],
           "mitigations": [
-            { "id": "AL-03-MIT-1", "content": "라인 진입 전 PPE 자체 점검 체크리스트 통과" }
+            {
+              "id": "AL-03-MIT-1",
+              "content": "라인 진입 전 PPE 자체 점검 체크리스트 통과",
+              "content_en": "Pass the PPE self-check checklist before entering the line",
+              "content_vi": "Hoàn thành danh mục tự kiểm tra PPE trước khi vào dây chuyền",
+              "content_th": "ผ่านรายการตรวจสอบ PPE ด้วยตนเองก่อนเข้าสายงาน",
+              "content_id": "Lulus checklist pemeriksaan APD mandiri sebelum memasuki lini"
+            }
           ],
           "ppe": [
-            { "id": "AL-03-PPE-1", "content": "안전화 (강화 토캡)" },
-            { "id": "AL-03-PPE-2", "content": "안전모" }
+            {
+              "id": "AL-03-PPE-1",
+              "content": "안전화 (강화 토캡)",
+              "content_en": "Safety shoes (reinforced toe cap)",
+              "content_vi": "Giày bảo hộ (mũi giày gia cố)",
+              "content_th": "รองเท้านิรภัย (หัวเสริมเหล็ก)",
+              "content_id": "Sepatu pengaman (toe cap diperkuat)"
+            },
+            {
+              "id": "AL-03-PPE-2",
+              "content": "안전모",
+              "content_en": "Safety helmet",
+              "content_vi": "Mũ bảo hộ",
+              "content_th": "หมวกนิรภัย",
+              "content_id": "Helm pengaman"
+            }
           ]
         },
         {
           "id": "AL-04",
           "content": "비상정지 버튼 위치·접근성 확인 및 작업자 인지",
+          "content_en": "Verify location and accessibility of emergency stop buttons and ensure worker awareness",
+          "content_vi": "Xác nhận vị trí và khả năng tiếp cận của nút dừng khẩn cấp và đảm bảo công nhân biết rõ",
+          "content_th": "ยืนยันตำแหน่งและการเข้าถึงปุ่มหยุดฉุกเฉิน และตรวจสอบให้พนักงานรับทราบ",
+          "content_id": "Verifikasi lokasi dan aksesibilitas tombol berhenti darurat dan pastikan pekerja menyadarinya",
           "regulation": "산업안전보건기준규칙 §92",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "AL-04-SC-1", "content": "비상정지 위치 미인지로 협착 발생 시 정지 지연" }
+            {
+              "id": "AL-04-SC-1",
+              "content": "비상정지 위치 미인지로 협착 발생 시 정지 지연",
+              "content_en": "Unawareness of emergency stop location delays stopping when entanglement occurs",
+              "content_vi": "Không biết vị trí dừng khẩn cấp dẫn đến chậm trễ khi xảy ra kẹp",
+              "content_th": "การไม่ทราบตำแหน่งหยุดฉุกเฉินทำให้การหยุดล่าช้าเมื่อเกิดการหนีบ",
+              "content_id": "Ketidaktahuan lokasi tombol berhenti darurat menunda penghentian saat terjadi terjepit"
+            }
           ],
           "mitigations": [
-            { "id": "AL-04-MIT-1", "content": "교대 직전 비상정지 위치 1:1 인수인계 + 모의 정지 1회" }
+            {
+              "id": "AL-04-MIT-1",
+              "content": "교대 직전 비상정지 위치 1:1 인수인계 + 모의 정지 1회",
+              "content_en": "Conduct 1:1 handover on emergency stop location just before shift change + one mock stop drill",
+              "content_vi": "Bàn giao 1:1 vị trí dừng khẩn cấp ngay trước khi giao ca + 1 lần dừng diễn tập",
+              "content_th": "ส่งมอบ 1:1 เรื่องตำแหน่งหยุดฉุกเฉินก่อนเปลี่ยนกะ + ฝึกซ้อมหยุด 1 ครั้ง",
+              "content_id": "Lakukan serah-terima 1:1 mengenai lokasi tombol berhenti darurat tepat sebelum pergantian shift + satu kali simulasi berhenti"
+            }
           ],
           "ppe": []
         }
@@ -71,6 +167,10 @@
           "add": {
             "id": "AL-N01",
             "content": "소음 85dB 이상 — 청력보호구(귀마개/귀덮개) 착용",
+            "content_en": "Noise 85dB or above — wear hearing protection (earplugs/earmuffs)",
+            "content_vi": "Tiếng ồn từ 85dB trở lên — đeo thiết bị bảo vệ thính giác (nút tai/chụp tai)",
+            "content_th": "เสียงดัง 85dB ขึ้นไป — สวมอุปกรณ์ป้องกันการได้ยิน (ปลั๊กอุดหู/ที่ครอบหู)",
+            "content_id": "Kebisingan 85dB ke atas — kenakan pelindung pendengaran (sumbat telinga/penutup telinga)",
             "regulation": "산업안전보건기준규칙 §513"
           }
         }
@@ -79,71 +179,171 @@
     "FORKLIFT_OPS": {
       "label_ko": "지게차 운반작업",
       "label_en": "Forklift Operations",
+      "label_vi": "Vận hành xe nâng",
+      "label_th": "การปฏิบัติงานรถโฟล์คลิฟท์",
+      "label_id": "Operasi Forklift",
       "baseline": [
         {
           "id": "FL-01",
           "content": "지게차 운전자 자격증(소형건설기계/지게차) 확인",
+          "content_en": "Verify forklift operator certification (small construction machinery/forklift license)",
+          "content_vi": "Xác minh chứng chỉ vận hành xe nâng (giấy phép máy xây dựng nhỏ/xe nâng)",
+          "content_th": "ตรวจสอบใบรับรองผู้ขับขี่รถโฟล์คลิฟท์ (เครื่องจักรก่อสร้างขนาดเล็ก/รถโฟล์คลิฟท์)",
+          "content_id": "Verifikasi sertifikasi operator forklift (lisensi mesin konstruksi kecil/forklift)",
           "regulation": "산업안전보건기준규칙 §170",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "FL-01-SC-1", "content": "무자격 운전자가 운행 중 지게차 전도/충돌" }
+            {
+              "id": "FL-01-SC-1",
+              "content": "무자격 운전자가 운행 중 지게차 전도/충돌",
+              "content_en": "Unqualified operator causes forklift overturn/collision during operation",
+              "content_vi": "Người vận hành không có chứng chỉ gây lật/va chạm xe nâng trong khi vận hành",
+              "content_th": "ผู้ขับขี่ที่ไม่มีคุณสมบัติทำให้รถโฟล์คลิฟท์พลิกคว่ำ/ชนระหว่างปฏิบัติงาน",
+              "content_id": "Operator tidak berkualifikasi menyebabkan forklift terguling/tabrakan saat beroperasi"
+            }
           ],
           "mitigations": [
-            { "id": "FL-01-MIT-1", "content": "자격증 사본 작업 시작 전 확인 + 카드 키 발급제" }
+            {
+              "id": "FL-01-MIT-1",
+              "content": "자격증 사본 작업 시작 전 확인 + 카드 키 발급제",
+              "content_en": "Check certification copies before work starts + issue card-key access system",
+              "content_vi": "Kiểm tra bản sao chứng chỉ trước khi bắt đầu công việc + áp dụng hệ thống cấp thẻ chìa khóa",
+              "content_th": "ตรวจสอบสำเนาใบรับรองก่อนเริ่มงาน + ใช้ระบบการ์ดคีย์",
+              "content_id": "Periksa salinan sertifikasi sebelum pekerjaan dimulai + terapkan sistem kartu kunci"
+            }
           ],
           "ppe": []
         },
         {
           "id": "FL-02",
           "content": "운행 전 일상점검 — 헤드가드, 후사경, 경광등, 후진경보음",
+          "content_en": "Pre-operation daily inspection — head guard, rear-view mirror, warning light, reverse alarm",
+          "content_vi": "Kiểm tra hàng ngày trước khi vận hành — khung bảo vệ đầu, gương chiếu hậu, đèn cảnh báo, còi lùi",
+          "content_th": "การตรวจสอบประจำวันก่อนปฏิบัติงาน — โครงป้องกันศีรษะ กระจกมองหลัง ไฟเตือน เสียงเตือนถอยหลัง",
+          "content_id": "Inspeksi harian pra-operasi — head guard, kaca spion, lampu peringatan, alarm mundur",
           "regulation": "산업안전보건기준규칙 §172",
           "evidence_required": "photo|verbal",
           "scenarios": [
-            { "id": "FL-02-SC-1", "content": "후진경보음 고장 상태에서 보행자 미인지 → 후방 충돌" }
+            {
+              "id": "FL-02-SC-1",
+              "content": "후진경보음 고장 상태에서 보행자 미인지 → 후방 충돌",
+              "content_en": "With a faulty reverse alarm, pedestrian goes undetected → rear collision",
+              "content_vi": "Còi lùi hỏng khiến không nhận biết người đi bộ → va chạm phía sau",
+              "content_th": "เสียงเตือนถอยหลังเสีย ทำให้ไม่รับรู้คนเดินเท้า → ชนด้านหลัง",
+              "content_id": "Dengan alarm mundur rusak, pejalan kaki tidak terdeteksi → tabrakan belakang"
+            }
           ],
           "mitigations": [
-            { "id": "FL-02-MIT-1", "content": "운행 전 일상점검 5종 (시동·브레이크·경광·경보·후사경) 시연" }
+            {
+              "id": "FL-02-MIT-1",
+              "content": "운행 전 일상점검 5종 (시동·브레이크·경광·경보·후사경) 시연",
+              "content_en": "Demonstrate 5-item pre-operation daily inspection (ignition, brake, warning light, alarm, mirror)",
+              "content_vi": "Diễn tập kiểm tra hàng ngày 5 mục trước khi vận hành (khởi động, phanh, đèn cảnh báo, còi báo, gương)",
+              "content_th": "สาธิตการตรวจสอบประจำวันก่อนปฏิบัติงาน 5 รายการ (สตาร์ท เบรก ไฟเตือน เสียงเตือน กระจก)",
+              "content_id": "Demonstrasikan inspeksi harian pra-operasi 5 item (pengapian, rem, lampu peringatan, alarm, spion)"
+            }
           ],
           "ppe": []
         },
         {
           "id": "FL-03",
           "content": "지게차 작업반경 5m 이내 작업자 출입금지 / 보행자 동선 분리",
+          "content_en": "No worker entry within 5m of forklift operating radius / separate pedestrian routes",
+          "content_vi": "Cấm công nhân vào trong bán kính 5m của xe nâng / tách lối đi của người đi bộ",
+          "content_th": "ห้ามพนักงานเข้าภายในรัศมีปฏิบัติงาน 5 ม. ของรถโฟล์คลิฟท์ / แยกเส้นทางคนเดินเท้า",
+          "content_id": "Larang pekerja masuk dalam radius 5m operasi forklift / pisahkan jalur pejalan kaki",
           "regulation": "산업안전보건기준규칙 §172",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "FL-03-SC-1", "content": "지게차 작업반경 진입 보행자가 사각지대로 충돌" }
+            {
+              "id": "FL-03-SC-1",
+              "content": "지게차 작업반경 진입 보행자가 사각지대로 충돌",
+              "content_en": "Pedestrian entering forklift operating radius collides in blind spot",
+              "content_vi": "Người đi bộ đi vào bán kính hoạt động của xe nâng bị va chạm tại điểm mù",
+              "content_th": "คนเดินเท้าที่เข้ามาในรัศมีปฏิบัติงานของรถโฟล์คลิฟท์ชนในจุดบอด",
+              "content_id": "Pejalan kaki yang masuk radius operasi forklift bertabrakan di titik buta"
+            }
           ],
           "mitigations": [
-            { "id": "FL-03-MIT-1", "content": "노면 마킹으로 보행자 동선 분리 + 신호수 배치" }
+            {
+              "id": "FL-03-MIT-1",
+              "content": "노면 마킹으로 보행자 동선 분리 + 신호수 배치",
+              "content_en": "Separate pedestrian routes with floor markings + assign signal operator",
+              "content_vi": "Tách lối đi của người đi bộ bằng vạch sơn sàn + bố trí người ra hiệu",
+              "content_th": "แยกเส้นทางคนเดินเท้าด้วยเครื่องหมายบนพื้น + จัดผู้ให้สัญญาณ",
+              "content_id": "Pisahkan jalur pejalan kaki dengan marka lantai + tugaskan petugas sinyal"
+            }
           ],
           "ppe": [
-            { "id": "FL-03-PPE-1", "content": "고시인성 반사조끼" }
+            {
+              "id": "FL-03-PPE-1",
+              "content": "고시인성 반사조끼",
+              "content_en": "High-visibility reflective vest",
+              "content_vi": "Áo gile phản quang nổi bật",
+              "content_th": "เสื้อกั๊กสะท้อนแสงทัศนวิสัยสูง",
+              "content_id": "Rompi reflektif visibilitas tinggi"
+            }
           ]
         },
         {
           "id": "FL-04",
           "content": "포크 적재 한도 준수 및 마스트 후경 상태 운행",
+          "content_en": "Comply with fork load limits and operate with mast tilted backward",
+          "content_vi": "Tuân thủ giới hạn tải của càng nâng và vận hành với cột nâng nghiêng về sau",
+          "content_th": "ปฏิบัติตามขีดจำกัดน้ำหนักบรรทุกของงา และขับขี่ในสภาพเสาเอียงไปด้านหลัง",
+          "content_id": "Patuhi batas beban garpu dan operasikan dengan tiang miring ke belakang",
           "regulation": "추정: KOSHA M-77, felix 검수 필요",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "FL-04-SC-1", "content": "정격 초과 적재로 균형 무너져 화물 낙하" }
+            {
+              "id": "FL-04-SC-1",
+              "content": "정격 초과 적재로 균형 무너져 화물 낙하",
+              "content_en": "Overloading beyond rated capacity causes loss of balance and cargo fall",
+              "content_vi": "Chở quá tải định mức làm mất thăng bằng và rơi hàng",
+              "content_th": "การบรรทุกเกินพิกัดทำให้เสียสมดุลและสินค้าตก",
+              "content_id": "Muatan melebihi kapasitas terukur menyebabkan kehilangan keseimbangan dan jatuhnya muatan"
+            }
           ],
           "mitigations": [
-            { "id": "FL-04-MIT-1", "content": "차량별 정격 표시 점검 + 마스트 후경 15° 유지 운행" }
+            {
+              "id": "FL-04-MIT-1",
+              "content": "차량별 정격 표시 점검 + 마스트 후경 15° 유지 운행",
+              "content_en": "Check rated capacity label per vehicle + maintain 15° mast backward tilt during operation",
+              "content_vi": "Kiểm tra nhãn tải định mức của từng xe + duy trì cột nâng nghiêng sau 15° khi vận hành",
+              "content_th": "ตรวจสอบป้ายพิกัดน้ำหนักของรถแต่ละคัน + รักษามุมเอียงเสาไปด้านหลัง 15° ขณะขับ",
+              "content_id": "Periksa label kapasitas terukur per kendaraan + pertahankan kemiringan tiang ke belakang 15° saat beroperasi"
+            }
           ],
           "ppe": []
         },
         {
           "id": "FL-05",
           "content": "급선회·급제동 금지, 옥내 제한속도(10km/h) 준수",
+          "content_en": "No sharp turns or sudden braking; comply with indoor speed limit (10km/h)",
+          "content_vi": "Cấm rẽ ngoặt/phanh gấp; tuân thủ giới hạn tốc độ trong nhà (10km/h)",
+          "content_th": "ห้ามเลี้ยวกะทันหัน/เบรกกะทันหัน ปฏิบัติตามขีดจำกัดความเร็วในอาคาร (10 กม./ชม.)",
+          "content_id": "Dilarang berbelok tajam/mengerem mendadak; patuhi batas kecepatan dalam ruangan (10km/jam)",
           "regulation": "산업안전보건기준규칙 §172",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "FL-05-SC-1", "content": "급제동 시 적재물 관성 이탈로 인근 작업자 충격" }
+            {
+              "id": "FL-05-SC-1",
+              "content": "급제동 시 적재물 관성 이탈로 인근 작업자 충격",
+              "content_en": "Sudden braking causes cargo to slide off by inertia, striking nearby workers",
+              "content_vi": "Khi phanh gấp, hàng văng ra do quán tính gây va đập với công nhân lân cận",
+              "content_th": "เมื่อเบรกกะทันหัน สินค้าหลุดด้วยแรงเฉื่อยกระแทกพนักงานที่อยู่ใกล้",
+              "content_id": "Pengereman mendadak menyebabkan muatan lepas akibat inersia dan menabrak pekerja di dekatnya"
+            }
           ],
           "mitigations": [
-            { "id": "FL-05-MIT-1", "content": "옥내 10km/h 표지 + 속도 위반 운전자 재교육" }
+            {
+              "id": "FL-05-MIT-1",
+              "content": "옥내 10km/h 표지 + 속도 위반 운전자 재교육",
+              "content_en": "Post indoor 10km/h signs + retrain speeding operators",
+              "content_vi": "Đặt biển 10km/h trong nhà + đào tạo lại tài xế vượt tốc độ",
+              "content_th": "ติดป้าย 10 กม./ชม. ในอาคาร + ฝึกอบรมซ้ำผู้ขับขี่ที่ใช้ความเร็วเกิน",
+              "content_id": "Pasang rambu 10km/jam dalam ruangan + latih ulang operator yang melanggar kecepatan"
+            }
           ],
           "ppe": []
         }
@@ -154,6 +354,10 @@
           "add": {
             "id": "FL-N01",
             "content": "야간 운행 — 작업장 조명 200lux 이상 확보 + 후방 경광등 작동 확인",
+            "content_en": "Night operation — ensure 200lux+ workplace lighting + verify rear warning light operation",
+            "content_vi": "Vận hành ban đêm — đảm bảo chiếu sáng nơi làm việc 200lux trở lên + xác nhận hoạt động đèn cảnh báo phía sau",
+            "content_th": "ปฏิบัติงานเวลากลางคืน — จัดให้แสงสว่างในพื้นที่ทำงานตั้งแต่ 200lux + ยืนยันการทำงานของไฟเตือนด้านหลัง",
+            "content_id": "Operasi malam — pastikan pencahayaan tempat kerja 200lux+ + verifikasi operasi lampu peringatan belakang",
             "regulation": "산업안전보건기준규칙 §8"
           }
         },
@@ -162,6 +366,10 @@
           "add": {
             "id": "FL-N02",
             "content": "과거 충돌·협착 이력 — 보행자 통로 강화(가드레일/노면 채색) 및 진입 차단 검토",
+            "content_en": "Prior collision/entanglement history — reinforce pedestrian walkways (guardrails/floor coloring) and review entry restrictions",
+            "content_vi": "Lịch sử va chạm/kẹp trước đây — gia cố lối đi bộ (lan can/sơn sàn) và xem xét chặn lối vào",
+            "content_th": "ประวัติการชน/หนีบในอดีต — เสริมความแข็งแรงทางเดินคนเดินเท้า (ราวกั้น/สีพื้น) และพิจารณาการห้ามเข้า",
+            "content_id": "Riwayat tabrakan/terjepit sebelumnya — perkuat jalur pejalan kaki (pagar pengaman/pewarnaan lantai) dan tinjau pembatasan akses",
             "regulation": "산업안전보건기준규칙 §172"
           }
         }
@@ -170,73 +378,187 @@
     "PRESS_OPS": {
       "label_ko": "프레스 작업",
       "label_en": "Press Operations",
+      "label_vi": "Vận hành máy ép",
+      "label_th": "การปฏิบัติงานเครื่องเพรส",
+      "label_id": "Operasi Mesin Press",
       "baseline": [
         {
           "id": "PR-01",
           "content": "프레스 양수기동장치(투핸드) 정상작동 점검",
+          "content_en": "Check normal operation of press two-hand control device",
+          "content_vi": "Kiểm tra hoạt động bình thường của thiết bị khởi động hai tay máy ép",
+          "content_th": "ตรวจสอบการทำงานปกติของอุปกรณ์ควบคุมสองมือของเครื่องเพรส",
+          "content_id": "Periksa operasi normal perangkat kontrol dua tangan mesin press",
           "regulation": "산업안전보건기준규칙 §103",
           "evidence_required": "photo|verbal",
           "scenarios": [
-            { "id": "PR-01-SC-1", "content": "투핸드 우회 운전 시 한 손이 다이 영역에 들어가 협착" }
+            {
+              "id": "PR-01-SC-1",
+              "content": "투핸드 우회 운전 시 한 손이 다이 영역에 들어가 협착",
+              "content_en": "Bypassing two-hand control, one hand enters die area causing entanglement/crushing",
+              "content_vi": "Khi bỏ qua điều khiển hai tay, một tay đi vào vùng khuôn gây kẹp",
+              "content_th": "เมื่อข้ามการควบคุมสองมือ มือข้างหนึ่งเข้าไปในพื้นที่แม่พิมพ์ทำให้เกิดการหนีบ",
+              "content_id": "Saat melewati kontrol dua tangan, satu tangan masuk area die menyebabkan terjepit"
+            }
           ],
           "mitigations": [
-            { "id": "PR-01-MIT-1", "content": "교대 시작 시 양수기동 미작동 가동 차단 시연" }
+            {
+              "id": "PR-01-MIT-1",
+              "content": "교대 시작 시 양수기동 미작동 가동 차단 시연",
+              "content_en": "At shift start, demonstrate that operation is blocked when two-hand control fails to activate",
+              "content_vi": "Đầu ca, diễn tập việc chặn vận hành khi khởi động hai tay không hoạt động",
+              "content_th": "ต้นกะ สาธิตการตัดการทำงานเมื่อการควบคุมสองมือไม่ทำงาน",
+              "content_id": "Di awal shift, demonstrasikan pemblokiran operasi saat kontrol dua tangan gagal aktif"
+            }
           ],
           "ppe": []
         },
         {
           "id": "PR-02",
           "content": "광전자식 안전장치(라이트커튼) 작동거리·차단 시간 확인",
+          "content_en": "Verify operating distance and stopping time of photoelectric safety device (light curtain)",
+          "content_vi": "Xác nhận khoảng cách hoạt động và thời gian cắt của thiết bị an toàn quang điện (rèm sáng)",
+          "content_th": "ยืนยันระยะการทำงานและเวลาตัดของอุปกรณ์นิรภัยแบบโฟโตอิเล็กทริก (light curtain)",
+          "content_id": "Verifikasi jarak operasi dan waktu pemutusan perangkat keselamatan fotoelektrik (light curtain)",
           "regulation": "추정: KOSHA M-141, felix 검수 필요",
           "evidence_required": "photo",
           "scenarios": [
-            { "id": "PR-02-SC-1", "content": "차단 거리 부족으로 슬라이드 정지 전 신체 침입" }
+            {
+              "id": "PR-02-SC-1",
+              "content": "차단 거리 부족으로 슬라이드 정지 전 신체 침입",
+              "content_en": "Insufficient stopping distance allows body intrusion before slide stops",
+              "content_vi": "Khoảng cách cắt không đủ khiến cơ thể xâm nhập trước khi slide dừng",
+              "content_th": "ระยะการตัดไม่เพียงพอ ทำให้ร่างกายเข้าไปก่อน slide จะหยุด",
+              "content_id": "Jarak penghentian yang tidak cukup memungkinkan tubuh masuk sebelum slide berhenti"
+            }
           ],
           "mitigations": [
-            { "id": "PR-02-MIT-1", "content": "광전자 안전거리 = 정지시간 × 안전계수 산정 후 재배치" }
+            {
+              "id": "PR-02-MIT-1",
+              "content": "광전자 안전거리 = 정지시간 × 안전계수 산정 후 재배치",
+              "content_en": "Calculate photoelectric safety distance = stopping time × safety factor, then reposition",
+              "content_vi": "Tính khoảng cách an toàn quang điện = thời gian dừng × hệ số an toàn, sau đó bố trí lại",
+              "content_th": "คำนวณระยะปลอดภัยของโฟโตอิเล็กทริก = เวลาหยุด × ค่าสัมประสิทธิ์ความปลอดภัย แล้วจัดวางใหม่",
+              "content_id": "Hitung jarak aman fotoelektrik = waktu berhenti × faktor keselamatan, lalu reposisi"
+            }
           ],
           "ppe": []
         },
         {
           "id": "PR-03",
           "content": "금형 교체 시 LOTO(전원/공압 차단·잠금·꼬리표) 시행",
+          "content_en": "Apply LOTO (lockout/tagout — cut power/air, lock, attach tag) during die change",
+          "content_vi": "Áp dụng LOTO (ngắt nguồn/khí nén, khóa, gắn thẻ) khi thay khuôn",
+          "content_th": "ใช้ LOTO (ระบบล็อกและแขวนป้าย — ตัดไฟ/ลม ล็อก แขวนป้าย) เมื่อเปลี่ยนแม่พิมพ์",
+          "content_id": "Terapkan LOTO (lockout/tagout — putus daya/udara, kunci, pasang label) saat penggantian die",
           "regulation": "산업안전보건기준규칙 §38",
           "evidence_required": "photo",
           "scenarios": [
-            { "id": "PR-03-SC-1", "content": "LOTO 미시행 중 동료 임의 가동 → 금형 교체 작업자 협착" }
+            {
+              "id": "PR-03-SC-1",
+              "content": "LOTO 미시행 중 동료 임의 가동 → 금형 교체 작업자 협착",
+              "content_en": "Without LOTO, a coworker starts the machine arbitrarily → die-change worker entanglement/crushing",
+              "content_vi": "Khi không thực hiện LOTO, đồng nghiệp tự ý vận hành → công nhân thay khuôn bị kẹp",
+              "content_th": "ขณะไม่ใช้ LOTO เพื่อนร่วมงานเปิดเครื่องโดยพลการ → พนักงานเปลี่ยนแม่พิมพ์ถูกหนีบ",
+              "content_id": "Tanpa LOTO, rekan kerja mengoperasikan mesin sembarangan → pekerja pengganti die terjepit"
+            }
           ],
           "mitigations": [
-            { "id": "PR-03-MIT-1", "content": "개인별 LOTO 락 + 꼬리표 작업자 이름 명기 후 교체 착수" }
+            {
+              "id": "PR-03-MIT-1",
+              "content": "개인별 LOTO 락 + 꼬리표 작업자 이름 명기 후 교체 착수",
+              "content_en": "Use individual LOTO locks + tag with worker's name, then start die change",
+              "content_vi": "Sử dụng khóa LOTO cá nhân + thẻ ghi rõ tên công nhân, sau đó bắt đầu thay khuôn",
+              "content_th": "ใช้กุญแจ LOTO ส่วนบุคคล + แขวนป้ายระบุชื่อพนักงาน แล้วจึงเริ่มเปลี่ยนแม่พิมพ์",
+              "content_id": "Gunakan kunci LOTO individu + label dengan nama pekerja, baru mulai penggantian die"
+            }
           ],
           "ppe": []
         },
         {
           "id": "PR-04",
           "content": "방진마스크·보안경·안전화 착용",
+          "content_en": "Wear dust mask, safety goggles, and safety shoes",
+          "content_vi": "Đeo khẩu trang chống bụi, kính bảo hộ và giày bảo hộ",
+          "content_th": "สวมหน้ากากกันฝุ่น แว่นนิรภัย และรองเท้านิรภัย",
+          "content_id": "Kenakan masker debu, kacamata pengaman, dan sepatu pengaman",
           "regulation": "산업안전보건기준규칙 §32",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "PR-04-SC-1", "content": "프레스 비산 분진/파편으로 안면/안구 부상" }
+            {
+              "id": "PR-04-SC-1",
+              "content": "프레스 비산 분진/파편으로 안면/안구 부상",
+              "content_en": "Press-flying dust/fragments cause facial/eye injury",
+              "content_vi": "Bụi/mảnh vỡ bắn ra từ máy ép gây thương tích vùng mặt/mắt",
+              "content_th": "ฝุ่น/เศษที่กระเด็นจากเครื่องเพรสทำให้บาดเจ็บที่ใบหน้า/ดวงตา",
+              "content_id": "Debu/pecahan yang terbang dari press menyebabkan cedera wajah/mata"
+            }
           ],
           "mitigations": [
-            { "id": "PR-04-MIT-1", "content": "구역 진입 전 PPE 3종 자체 점검 체크리스트 통과" }
+            {
+              "id": "PR-04-MIT-1",
+              "content": "구역 진입 전 PPE 3종 자체 점검 체크리스트 통과",
+              "content_en": "Pass the 3-item PPE self-check checklist before entering the zone",
+              "content_vi": "Hoàn thành danh mục tự kiểm tra 3 loại PPE trước khi vào khu vực",
+              "content_th": "ผ่านรายการตรวจสอบ PPE 3 รายการด้วยตนเองก่อนเข้าพื้นที่",
+              "content_id": "Lulus checklist pemeriksaan APD 3 item mandiri sebelum memasuki zona"
+            }
           ],
           "ppe": [
-            { "id": "PR-04-PPE-1", "content": "방진마스크 (KF80 이상)" },
-            { "id": "PR-04-PPE-2", "content": "보안경" },
-            { "id": "PR-04-PPE-3", "content": "안전화" }
+            {
+              "id": "PR-04-PPE-1",
+              "content": "방진마스크 (KF80 이상)",
+              "content_en": "Dust mask (KF80 or higher)",
+              "content_vi": "Khẩu trang chống bụi (KF80 trở lên)",
+              "content_th": "หน้ากากกันฝุ่น (KF80 ขึ้นไป)",
+              "content_id": "Masker debu (KF80 atau lebih tinggi)"
+            },
+            {
+              "id": "PR-04-PPE-2",
+              "content": "보안경",
+              "content_en": "Safety goggles",
+              "content_vi": "Kính bảo hộ",
+              "content_th": "แว่นนิรภัย",
+              "content_id": "Kacamata pengaman"
+            },
+            {
+              "id": "PR-04-PPE-3",
+              "content": "안전화",
+              "content_en": "Safety shoes",
+              "content_vi": "Giày bảo hộ",
+              "content_th": "รองเท้านิรภัย",
+              "content_id": "Sepatu pengaman"
+            }
           ]
         },
         {
           "id": "PR-05",
           "content": "슬라이드 하강 정지장치(브레이크) 정상작동 일상점검",
+          "content_en": "Daily check on normal operation of slide-descent stopping device (brake)",
+          "content_vi": "Kiểm tra hàng ngày hoạt động bình thường của thiết bị dừng hạ slide (phanh)",
+          "content_th": "การตรวจสอบประจำวันการทำงานปกติของอุปกรณ์หยุดการลงของ slide (เบรก)",
+          "content_id": "Pemeriksaan harian operasi normal perangkat penghenti turunnya slide (rem)",
           "regulation": "산업안전보건기준규칙 §103",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "PR-05-SC-1", "content": "브레이크 마모 상태 미점검으로 정지 지연 → 협착" }
+            {
+              "id": "PR-05-SC-1",
+              "content": "브레이크 마모 상태 미점검으로 정지 지연 → 협착",
+              "content_en": "Failure to check brake wear delays stopping → entanglement/crushing",
+              "content_vi": "Không kiểm tra độ mòn phanh gây chậm dừng → kẹp",
+              "content_th": "ไม่ตรวจสอบการสึกหรอของเบรก ทำให้การหยุดล่าช้า → การหนีบ",
+              "content_id": "Tidak memeriksa keausan rem menyebabkan keterlambatan penghentian → terjepit"
+            }
           ],
           "mitigations": [
-            { "id": "PR-05-MIT-1", "content": "교대 시작 시 빈 가동 1회 후 정지 시간 측정 기록" }
+            {
+              "id": "PR-05-MIT-1",
+              "content": "교대 시작 시 빈 가동 1회 후 정지 시간 측정 기록",
+              "content_en": "At shift start, run one idle cycle and record stopping time measurement",
+              "content_vi": "Đầu ca, chạy không tải 1 lần và ghi lại thời gian dừng",
+              "content_th": "ต้นกะ เดินเครื่องเปล่า 1 ครั้งและบันทึกการวัดเวลาหยุด",
+              "content_id": "Di awal shift, jalankan satu siklus kosong dan catat pengukuran waktu berhenti"
+            }
           ],
           "ppe": []
         }
@@ -247,6 +569,10 @@
           "add": {
             "id": "PR-N01",
             "content": "금형 교체·신규 자재 시 — 본가동 전 빈 가동 1회 + 첫 가공품 외관/치수 검사",
+            "content_en": "On die change/new material — run one idle cycle before full operation + inspect first product's appearance/dimensions",
+            "content_vi": "Khi thay khuôn/vật liệu mới — chạy không tải 1 lần trước khi vận hành chính thức + kiểm tra ngoại quan/kích thước sản phẩm đầu tiên",
+            "content_th": "เมื่อเปลี่ยนแม่พิมพ์/วัสดุใหม่ — เดินเครื่องเปล่า 1 ครั้งก่อนเดินเครื่องจริง + ตรวจสอบลักษณะภายนอก/ขนาดของชิ้นงานแรก",
+            "content_id": "Saat pergantian die/material baru — jalankan satu siklus kosong sebelum operasi penuh + periksa tampilan/dimensi produk pertama",
             "regulation": "산업안전보건기준규칙 §103"
           }
         },
@@ -255,6 +581,10 @@
           "add": {
             "id": "PR-N02",
             "content": "과거 협착·면장갑 말림 이력 — 손등 보호 장갑 사용 + 라이트커튼 차단 거리 재산정",
+            "content_en": "Prior entanglement/cotton-glove entanglement history — use back-of-hand protection gloves + recalculate light curtain stopping distance",
+            "content_vi": "Lịch sử kẹp/cuốn găng vải trước đây — sử dụng găng bảo vệ mu bàn tay + tính lại khoảng cách cắt của rèm sáng",
+            "content_th": "ประวัติการหนีบ/ถุงมือผ้าถูกพันในอดีต — ใช้ถุงมือป้องกันหลังมือ + คำนวณระยะตัดของ light curtain ใหม่",
+            "content_id": "Riwayat terjepit/sarung tangan kain terjerat sebelumnya — gunakan sarung tangan pelindung punggung tangan + hitung ulang jarak pemutusan light curtain",
             "regulation": "산업안전보건기준규칙 §103"
           }
         }

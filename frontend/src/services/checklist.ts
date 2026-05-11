@@ -12,6 +12,13 @@ export interface ChecklistItem {
   is_baseline?: boolean;
   baseline_id?: string;   // 카탈로그 ID (예: "WAH-01")
   regulation?: string;    // 법규/근거 (예: "산안법 §42")
+  // PR-feedback-3 (v0.2.3) — 사용자가 "다음에/건너뛸게" 응답 시 LLM이
+  // complete_checklist_item({skipped: true})로 호출. completed=false + skipped=true
+  // 조합으로 "건너뜀" 상태를 표현 (감사 무결성: "안 한 걸 했다고 거짓 기록"이 아닌
+  // 명시 skip 기록).
+  // 옵셔널 필드라 IndexedDB 스키마 변경 X (v2 호환). 기존 v0.2.2 세션 hydrate 시
+  // undefined → !skipped 가 기존 incomplete 판정과 동일.
+  skipped?: boolean;
 }
 
 // Create checklist items from an array of strings

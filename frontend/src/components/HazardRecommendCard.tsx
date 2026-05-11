@@ -28,6 +28,9 @@ interface HazardRecommendCardProps {
   conditional: ConditionalHazardItem[];
   /** PR B+ NEW-H3: conditional `if` DSL 변환 언어. 미지정 시 한국어. */
   language?: SessionLanguage;
+  /** v0.2.4 PR-feedback-2 — 2단 보강 호출 진행 중. true일 때 카드 우상단에
+   *  "AI 보강 중…" spinner indicator를 노출. 1단 카드는 그대로 유지된다. */
+  augmenting?: boolean;
 }
 
 interface BaselinePerItemPreviewProps {
@@ -124,6 +127,7 @@ export default function HazardRecommendCard({
   baseline,
   conditional,
   language = "korean",
+  augmenting = false,
 }: HazardRecommendCardProps) {
   if (!baseline.length && !conditional.length) {
     return (
@@ -133,7 +137,22 @@ export default function HazardRecommendCard({
     );
   }
   return (
-    <div className="bg-white border border-pwc-border rounded-pwc-lg shadow-pwc-card overflow-hidden">
+    <div className="relative bg-white border border-pwc-border rounded-pwc-lg shadow-pwc-card overflow-hidden">
+      {/* v0.2.4 PR-feedback-2 — 우상단 spinner indicator. 1단 카드가 이미
+          노출된 상태에서 backend 보강 호출이 진행 중일 때만 표시. */}
+      {augmenting && (
+        <div
+          className="absolute top-2 right-2 z-10 inline-flex items-center gap-1.5 bg-pwc-orange/10 border border-pwc-orange/30 text-pwc-orange-deep text-[10px] font-bold uppercase tracking-wider rounded-pwc px-2 py-1"
+          role="status"
+          aria-live="polite"
+        >
+          <span
+            className="inline-block w-2 h-2 rounded-full bg-pwc-orange animate-pulse"
+            aria-hidden="true"
+          />
+          AI 보강 중…
+        </div>
+      )}
       {baseline.length > 0 && (
         <section aria-labelledby="hrc-baseline" className="p-4">
           <header className="flex items-center justify-between mb-3">

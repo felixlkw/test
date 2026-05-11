@@ -23,7 +23,7 @@ app = FastAPI()
 # ---------------------------------------------------------------------------
 @app.get("/api/health")
 async def health_check():
-    return {"status": "ok", "version": "0.2.1"}
+    return {"status": "ok", "version": "0.2.4"}
 
 
 # Allow CORS for local development
@@ -113,6 +113,18 @@ class RecommendHazardsRequest(BaseModel):
     # PR A_v2-1: nonce — the LLM sees a hint to vary perspective when this is
     # set. Same input + temperature 0.4 still varies output naturally.
     refresh_seed: Optional[int] = None
+    # v0.2.4 PR-feedback-2: 2-tier hazard recommendation. Frontend uses the
+    # static checklist catalog (build-time synced) as the immediate Tier-1
+    # response, then on PrepareContextForm input change (debounce 1.5s) or the
+    # "다시 받기" button it calls /api/recommend-hazards with these IDs telling
+    # the LLM what the user already sees. The prompt builder injects an
+    # "Augmentation Mode" block that instructs the LLM to keep these baseline
+    # items AS-IS (same id, same content) and only reorder, refine, or add NEW
+    # items the user has not seen yet (id="LLM-COND-*"). Both fields are
+    # optional — when None or empty list the prompt builder skips the block
+    # entirely, preserving v0.2.3 behavior 1:1 (full backward compat).
+    prior_baseline_ids: Optional[List[str]] = None
+    prior_conditional_ids: Optional[List[str]] = None
 
 
 # Note: baseline / conditional / incident_cases items use loose Dict shapes
@@ -359,6 +371,9 @@ async def recommend_hazards(req: RecommendHazardsRequest, request: Request):
         language=req.language,
         context=req.context,
         refresh_seed=req.refresh_seed,
+        # v0.2.4 PR-feedback-2 — Tier-2 augmentation IDs (None/[] => no-op).
+        prior_baseline_ids=req.prior_baseline_ids,
+        prior_conditional_ids=req.prior_conditional_ids,
     )
     if result is None:
         # Defensive: should not happen because we already checked entry above.

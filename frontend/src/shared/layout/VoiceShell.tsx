@@ -70,6 +70,7 @@ import { ProgressStack } from "./ProgressStack";
 import { ChatList } from "./ChatList";
 import { InputDock } from "./InputDock";
 import { ChecklistPanel } from "../../features/tbm/ChecklistPanel";
+import { ClosingBanner } from "../../features/tbm/ClosingBanner";
 import { Portal } from "../portal/PortalRoot";
 import { SummaryDrawer } from "../portal/SummaryDrawer";
 import { InterruptionToast } from "../portal/InterruptionToast";
@@ -77,7 +78,15 @@ import { StagesStrip } from "../ui/StagesStrip";
 import { BroadcastCompleteCTA } from "../ui/BroadcastCompleteCTA";
 import { AttestationModal, type AttestationConfirmResult } from "../portal/AttestationModal";
 import { ReportPreviewModal } from "../portal/ReportPreviewModal";
+import { FinalizeConfirmModal } from "../portal/FinalizeConfirmModal";
 import { deriveTbmStage, type TbmStage } from "../../features/tbm/useTbmStage";
+// PR-feedback-3 (v0.2.3) — slot 진행도 + 종료 임박 검사 유틸.
+import { useSlotProgress, buildSlotStatusBlock } from "../../features/tbm/useSlotProgress";
+import {
+  evaluateClosingTriggers,
+  buildClosingReminderBlock,
+  type ClosingTrigger,
+} from "../../services/closingDetector";
 
 export default function VoiceShell({ sessionId, initialMode, initialDomain }: AppProps = {}) {
   const navigate = useNavigate();
@@ -164,6 +173,20 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
   const [reportPdfBlob, setReportPdfBlob] = useState<Blob | null>(null);
   const [reportFilename, setReportFilename] = useState<string>("");
   const [reportError, setReportError] = useState<string | null>(null);
+  // PR-feedback-3 (v0.2.3) — finishing 단계 + sticky 배너 + finalize confirm.
+  // closingDetector OR 트리거 충족 시 1회 set true. 한 세션당 finishing 진입 1회.
+  const [finishingActive, setFinishingActive] = useState(false);
+  // 진입 트리거 라벨 — 디버그/추후 telemetry용. Banner는 trigger 라벨을 노출
+  // 하지 않으나 [Closing Reminder] inject 페이로드 합성에 사용. 본 PR에서는
+  // ref로 보관해 useEffect deps 부담을 줄임.
+  const closingTriggerRef = useRef<ClosingTrigger | null>(null);
+  // 사용자가 banner 닫기 버튼 누르면 다시 안 뜸(세션 한정).
+  const [closingBannerDismissed, setClosingBannerDismissed] = useState(false);
+  // FinalizeConfirmModal 토글.
+  const [finalizeConfirmOpen, setFinalizeConfirmOpen] = useState(false);
+  // 마지막 사용자 발화 — finish_intent 정규식 검사 + idle 타이머용.
+  const [lastUtteranceAt, setLastUtteranceAt] = useState<string | undefined>(undefined);
+  const [lastUserUtterance, setLastUserUtterance] = useState<string>("");
   // Cycle 3: 마이크 토글 상태(view-only). 자동 시작 시 OFF.
   const [micEnabled, setMicEnabled] = useState(false);
   // Phase chat-PR2: 채팅 폴백 트랜스포트. 메모리 only — 영속 X (invariant #10,
@@ -265,6 +288,18 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
   // Phase 2.x PR-4 — onBroadcastReady. LLM이 request_broadcast_attestation 호출 시
   // 30초간 펄스. setTimeout cleanup은 다음 호출 시 자연 무시 (id race 무관 —
   // setTimeout이 자체적으로 boolean 토글만 함).
+  // PR-feedback-3 — finalize_tbm 호출 시 일부 미완 상태이면 confirm 모달 위임.
+  // 미주입 시 기존 동작 유지. summary는 finalize_tbm args.final_summary —
+  // 사용자가 confirm "예" 누르면 그 summary로 setFinalSummary + setShowSummaryDrawer.
+  const pendingFinalSummaryRef = useRef<string>("");
+  // 본 콜백은 ref 기반이라 deps 안 넣어도 됨. checklist/slotState를 클로저로 읽기.
+  // ref 동기화는 slotState 가 declare 된 뒤 useEffect 로 처리(파일 하단).
+  const checklistRef = useRef(checklist);
+  const slotStateRef = useRef<{ missing: string[] }>({ missing: [] });
+  useEffect(() => {
+    checklistRef.current = checklist;
+  }, [checklist]);
+
   const events = useWebRTCEvents({
     sessionRef,
     currentMode,
@@ -284,6 +319,22 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
       setBroadcastPulsing(true);
       // 30초 후 자동 해제 — 사용자 통제권 보존(felix Q5=A).
       window.setTimeout(() => setBroadcastPulsing(false), 30000);
+    }, []),
+    onFinalizeRequested: useCallback((summary: string): boolean => {
+      // 미완 카운트 — slot missing OR checklist incomplete (skipped 제외).
+      const cl = checklistRef.current;
+      const ss = slotStateRef.current;
+      const incompleteCount = cl.filter(
+        (it) => !it.completed && !it.skipped,
+      ).length;
+      const missingSlots = ss.missing.length;
+      // 모두 완료 → 기존 흐름으로(intercept=false). 일부 미완 → confirm 모달.
+      if (incompleteCount === 0 && missingSlots === 0) {
+        return false;
+      }
+      pendingFinalSummaryRef.current = summary;
+      setFinalizeConfirmOpen(true);
+      return true; // intercepted
     }, []),
   });
 
@@ -327,6 +378,13 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
   const { completedCount, progressPercent } = useChecklistProgress(checklist);
   const { structuredProgressPercent } = useStructuredProgress(structured);
 
+  // PR-feedback-3 (v0.2.3) — 4 슬롯 충족도 derive (영속 X).
+  const slotState = useSlotProgress(priorInfo);
+  // ref 동기화 — useWebRTCEvents의 onFinalizeRequested 콜백이 클로저에서 읽음.
+  useEffect(() => {
+    slotStateRef.current = { missing: slotState.missing };
+  }, [slotState]);
+
   // Phase 2.x PR-4 — Broadcast readiness derived state.
   // 4 종료 게이트 검사: baseline checklist 100% + structured 4필드 + attendance.
   // 영속 X (invariant #10) — useMemo 사용.
@@ -360,6 +418,142 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     },
     [],
   );
+
+  // ── PR-feedback-3 (v0.2.3) — 세션 시작 시각 + finishing 진입 가드 ──
+  // sessionActive가 true 로 전환되는 첫 시점에 stamp. stop 후 재시작은 새 세션
+  // 으로 보지 않음(같은 sessionId 한정 — IndexedDB에서 hydrate). finishing
+  // 진입은 한 sessionId 한정 1회.
+  const sessionStartedAtRef = useRef<string | undefined>(undefined);
+  const finishingTriggeredRef = useRef(false);
+  const slotInjectThrottleRef = useRef<number>(0);
+  // ChecklistPanel missingOnly 모드 — ClosingBanner "자세히 보기" 진입 시.
+  const [checklistMissingOnly, setChecklistMissingOnly] = useState(false);
+  useEffect(() => {
+    if (voiceSession.sessionActive && !sessionStartedAtRef.current) {
+      sessionStartedAtRef.current = new Date().toISOString();
+    }
+    if (!voiceSession.sessionActive) {
+      // 세션 종료 시 finishing/banner 상태도 정리. 재시작 시 hydrate 결과에 따라
+      // 다시 트리거 검사.
+      sessionStartedAtRef.current = undefined;
+    }
+  }, [voiceSession.sessionActive]);
+
+  // TBM 모드 한정 — 사용자 발화 종료(input_audio_buffer.speech_stopped)에서
+  // last user message 텍스트와 timestamp를 추적한다. messages 배열의 마지막
+  // user 메시지가 변경되면 lastUserUtterance + lastUtteranceAt 갱신.
+  useEffect(() => {
+    if (currentMode !== "TBM") return;
+    if (messages.length === 0) return;
+    // 가장 최근 user 메시지 찾기.
+    for (let i = messages.length - 1; i >= 0; i -= 1) {
+      const m = messages[i];
+      if (m.role === "user") {
+        if (m.text !== lastUserUtterance) {
+          setLastUserUtterance(m.text);
+          setLastUtteranceAt(new Date().toISOString());
+        }
+        return;
+      }
+    }
+  }, [messages, currentMode, lastUserUtterance]);
+
+  // 종료 트리거 검사 — 1회만. checklist/idle/timeout/finish_intent OR.
+  // useEffect로 매 변화마다 검사하되 finishingTriggeredRef로 1회 가드.
+  useEffect(() => {
+    if (currentMode !== "TBM") return;
+    if (finishingTriggeredRef.current) return;
+    if (!voiceSession.sessionActive) return;
+    const result = evaluateClosingTriggers({
+      checklist,
+      state: {
+        sessionStartedAt: sessionStartedAtRef.current,
+        lastUtteranceAt,
+      },
+      lastUserUtterance,
+      language: currentLanguage,
+      nowMs: Date.now(),
+    });
+    if (result.triggered && result.trigger) {
+      finishingTriggeredRef.current = true;
+      setFinishingActive(true);
+      closingTriggerRef.current = result.trigger;
+      // [Closing Reminder] 1회 inject — backend prompt가 trigger 라벨과 missing
+      // 정보를 받아 1문장 환기 발화를 생성. echo 방지는 backend prompt 가드.
+      if (sessionRef.current) {
+        const block = buildClosingReminderBlock({
+          trigger: result.trigger,
+          missingSlots: slotState.missing,
+          missingChecklistIds: checklist
+            .filter((c) => !c.completed && !c.skipped)
+            .map((c) => c.index),
+        });
+        try {
+          sessionRef.current.injectSystemContext(block);
+        } catch (err) {
+          console.warn("[VoiceShell] closing reminder inject failed:", err);
+        }
+      }
+    }
+  }, [
+    currentMode,
+    voiceSession.sessionActive,
+    checklist,
+    lastUtteranceAt,
+    lastUserUtterance,
+    currentLanguage,
+    slotState.missing,
+  ]);
+
+  // 12분 timeout 트리거 — useEffect로 마운트 후 setTimeout 1회 등록.
+  // 발화/checklist 진행이 없어도 시간 자체로 트리거되어야 하므로 별도 타이머.
+  useEffect(() => {
+    if (currentMode !== "TBM") return;
+    if (!voiceSession.sessionActive) return;
+    if (finishingTriggeredRef.current) return;
+    // 마운트 시점에 sessionStartedAtRef가 stamp되어 있어야 timeout 계산 정확.
+    if (!sessionStartedAtRef.current) return;
+    const startMs = Date.parse(sessionStartedAtRef.current);
+    if (!Number.isFinite(startMs)) return;
+    const elapsed = Date.now() - startMs;
+    const remaining = 12 * 60_000 - elapsed;
+    if (remaining <= 0) return; // 이미 timeout — 다음 evaluateClosingTriggers에서 처리.
+    const id = window.setTimeout(() => {
+      // setTimeout 만료 시 trigger evaluate 한 번 더 force(상태 변화 없을 수 있음).
+      // finishingTriggeredRef 가드는 evaluate 함수 effect에서 처리.
+      // 단순히 setLastUtteranceAt을 새 시각으로 nudge 하면 evaluate effect 재실행.
+      setLastUtteranceAt((prev) => prev ?? new Date(0).toISOString());
+    }, remaining);
+    return () => window.clearTimeout(id);
+  }, [currentMode, voiceSession.sessionActive]);
+
+  // [Slot Status] 매 턴 inject — 사용자 발화 종료 시점(speech_stopped 후 messages
+  // 의 user 메시지 추가 → lastUtteranceAt 갱신)에 throttle된 inject.
+  // 600ms throttle: 빠른 발화 연속에도 1회로 제한, 빈번한 inject 방지.
+  // chat 트랜스포트는 sessionRef.current가 null이라 inject가 silently noop —
+  // 본 effect는 voice 전용으로 자연 분기.
+  useEffect(() => {
+    if (currentMode !== "TBM") return;
+    if (!voiceSession.sessionActive) return;
+    if (!sessionRef.current) return;
+    if (!lastUtteranceAt) return;
+    const now = Date.now();
+    if (now - slotInjectThrottleRef.current < 600) return;
+    slotInjectThrottleRef.current = now;
+    try {
+      const block = buildSlotStatusBlock(slotState, priorInfo);
+      sessionRef.current.injectSystemContext(block);
+    } catch (err) {
+      console.warn("[VoiceShell] slot status inject failed:", err);
+    }
+    // slot 채움 변화로도 inject — backend가 다음 사용자 응답에서 활용.
+  }, [
+    currentMode,
+    voiceSession.sessionActive,
+    lastUtteranceAt,
+    priorInfo,
+    slotState,
+  ]);
 
   // ── EHS click handler ─────────────────────────────
   // Phase chat-PR2: voiceSession 을 직접 참조. chat 모드에서의 추천 질문 동작
@@ -1360,6 +1554,36 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     navigate,
   ]);
 
+  // PR-feedback-3 — FinalizeConfirmModal 핸들러.
+  // "예" → pending summary로 finalize 진행 + SummaryDrawer open.
+  // "보강하기" → 모달 닫기 + finishing 단계 유지 (banner는 그대로).
+  const handleFinalizeConfirm = useCallback(() => {
+    const s = pendingFinalSummaryRef.current;
+    pendingFinalSummaryRef.current = "";
+    setFinalizeConfirmOpen(false);
+    if (s) {
+      setFinalSummary(s);
+      setShowSummaryDrawer(true);
+    }
+  }, []);
+  const handleFinalizeCancel = useCallback(() => {
+    pendingFinalSummaryRef.current = "";
+    setFinalizeConfirmOpen(false);
+  }, []);
+
+  // PR-feedback-3 — finalize confirm 모달용 카운트 derive.
+  const finalizeCounts = useMemo(() => {
+    const incompleteChecklist = checklist.filter(
+      (it) => !it.completed && !it.skipped,
+    ).length;
+    const skippedChecklist = checklist.filter((it) => it.skipped).length;
+    return {
+      missingSlots: slotState.missing.length,
+      missingChecklist: incompleteChecklist,
+      skippedChecklist,
+    };
+  }, [checklist, slotState.missing.length]);
+
   // PR F: CTA 노출 조건 — TBM 모드 + prepare 단계 데이터가 한 가지라도 있을 때.
   const showBroadcastCta =
     currentMode === "TBM" &&
@@ -1385,6 +1609,11 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
         setShowLanguageSelector={setShowLanguageSelector}
         // Phase chat-PR3: 채팅 모드 chip 표시.
         transport={transport}
+        // PR-feedback-3 — slot/체크 컴팩트 인디케이터.
+        priorFilled={slotState.filled.length}
+        priorTotal={slotState.total}
+        checklistCompleted={completedCount}
+        checklistTotal={checklist.length}
         onClickStart={() => session.startSession(null, null, { preparedSummary })}
         onClickStop={session.stopSession}
         onLeaveToHome={session.stopSessionPreserveState}
@@ -1572,6 +1801,23 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
         onTogglePanel={() => setShowChecklistPanel((v) => !v)}
       />
 
+      {/* PR-feedback-3 — finishing 단계 sticky 배너. 강제 모달 X, 닫기 가능.
+           "자세히 보기" → ChecklistPanel missingOnly=true 모드 open. */}
+      {currentMode === "TBM" && finishingActive && !closingBannerDismissed && (
+        <ClosingBanner
+          show={true}
+          missingCount={
+            slotState.missing.length +
+            checklist.filter((it) => !it.completed && !it.skipped).length
+          }
+          onOpenDetails={() => {
+            setChecklistMissingOnly(true);
+            setShowChecklistPanel(true);
+          }}
+          onDismiss={() => setClosingBannerDismissed(true)}
+        />
+      )}
+
       <ChatList
         messages={messages}
         currentMode={currentMode}
@@ -1685,14 +1931,32 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
         {currentMode === "TBM" && showChecklistPanel && (
           <ChecklistPanel
             show={true}
-            onClose={() => setShowChecklistPanel(false)}
+            onClose={() => {
+              setShowChecklistPanel(false);
+              setChecklistMissingOnly(false);
+            }}
             checklist={checklist}
             setChecklist={setChecklist}
             priorInfo={priorInfo}
             completedCount={completedCount}
             sessionRef={sessionRef}
+            // PR-feedback-3 — ClosingBanner "자세히 보기" 진입 시 미기입만 필터.
+            missingOnly={checklistMissingOnly}
           />
         )}
+      </Portal>
+
+      {/* PR-feedback-3 — FinalizeConfirmModal. finalize_tbm tool call 시
+           일부 미완 상태이면 본 모달이 confirm을 받음. 모두 완료 시에는 호출 X. */}
+      <Portal>
+        <FinalizeConfirmModal
+          open={finalizeConfirmOpen}
+          missingSlots={finalizeCounts.missingSlots}
+          missingChecklist={finalizeCounts.missingChecklist}
+          skippedChecklist={finalizeCounts.skippedChecklist}
+          onConfirm={handleFinalizeConfirm}
+          onCancel={handleFinalizeCancel}
+        />
       </Portal>
 
       {/* Phase 2.x PR-5 — AttestationModal. CTA 클릭 시 open. */}

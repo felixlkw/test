@@ -4,6 +4,9 @@ WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
+# Build-time catalog sync (frontend/package.json prebuild → node ../scripts/sync-catalog.mjs)
+COPY scripts/ /app/scripts/
+COPY backend/data/checklist_catalog /app/backend/data/checklist_catalog
 RUN npm run build
 
 # Stage 2: Backend

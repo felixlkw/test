@@ -241,6 +241,8 @@ def build_recommend_hazards_prompt(
     seed_baseline: list[dict],
     seed_conditional: list[dict],
     seed_suggested_questions: list[str] | None = None,
+    prior_baseline_ids: list[str] | None = None,
+    prior_conditional_ids: list[str] | None = None,
 ) -> str:
     """RECOMMEND_HAZARDS_SYSTEM prompt — c8 §4 skeleton.
 
@@ -248,6 +250,20 @@ def build_recommend_hazards_prompt(
     only (no code fences). seed.baseline ids must be preserved verbatim in the
     response. refresh_seed is NOT exposed inside the prompt — temperature 0.4
     is responsible for variation across refresh calls.
+
+    v0.2.4 PR-feedback-2 — 2-tier hazard recommendation
+    ----------------------------------------------------
+    When `prior_baseline_ids` is provided AND non-empty, an [Augmentation Mode]
+    block is injected. It tells the LLM that the user has already been shown
+    these baseline / conditional items via the frontend's static catalog
+    (Tier-1, immediate response) so the LLM (Tier-2 boost) MUST keep those
+    items AS-IS and may only reorder, refine per-item content (when context
+    demands), or ADD NEW items with id prefix "LLM-COND-*". This prevents the
+    "same hazard re-described in different words" UX issue reported on
+    2026-05-10.
+
+    When `prior_baseline_ids` is None or empty, the block is NOT injected and
+    the prompt is identical to v0.2.3 byte-for-byte (backward compatibility).
     """
     domain_label = domain or "(general)"
     context_json = (
@@ -259,7 +275,33 @@ def build_recommend_hazards_prompt(
         seed_suggested_questions or [], ensure_ascii=False
     )
 
-    skeleton = f"""You are a {domain_label} safety expert assisting a frontline TBM (toolbox-meeting) leader just before work starts. Your job is to recommend hazards, conditional checks, and starter questions for this specific work and context.
+    # v0.2.4 PR-feedback-2 — Augmentation Mode block (conditional inject).
+    # Skipped entirely when prior_baseline_ids is None / empty list so that
+    # legacy v0.2.3 callers (no prior_*_ids) get a byte-identical prompt.
+    augmentation_block = ""
+    if prior_baseline_ids:
+        prior_baseline_json = json.dumps(prior_baseline_ids, ensure_ascii=False)
+        prior_conditional_json = json.dumps(
+            list(prior_conditional_ids or []), ensure_ascii=False
+        )
+        augmentation_block = (
+            "[Augmentation Mode — User has already seen these items]\n"
+            f"The user is currently viewing baseline ids: {prior_baseline_json}\n"
+            f"                  and conditional ids: {prior_conditional_json}.\n"
+            "DO NOT re-describe these items in different words. Instead:\n"
+            "  1) Keep these baseline items in your output AS-IS (same id, same content).\n"
+            "  2) Use the user's reported context (worker_count, wind, equipment) to:\n"
+            "     - Reorder by relevance (most context-relevant first).\n"
+            "     - Add 1-2 NEW conditional items the user has NOT seen, with id=\"LLM-COND-*\".\n"
+            "     - Add 1-2 incident_cases the user has NOT seen.\n"
+            "     - Refine per-item scenarios/mitigations/ppe ONLY when context demands it\n"
+            "       (e.g., wind_speed_mps > 10 -> add wind-specific scenario for fall hazards).\n"
+            "  3) If context is empty/sparse, return baseline unchanged + at most 1 new\n"
+            "     conditional. Do not invent.\n"
+            "\n"
+        )
+
+    skeleton = augmentation_block + f"""You are a {domain_label} safety expert assisting a frontline TBM (toolbox-meeting) leader just before work starts. Your job is to recommend hazards, conditional checks, and starter questions for this specific work and context.
 
 Inputs:
 - domain: {domain_label}
@@ -481,6 +523,82 @@ MISSING_HAZARD_CHECK = (
     "once per stage transition. If no prepared/baseline data is available "
     "(legacy session), scan structured.hazards only — natural omission "
     "check, no forced cue."
+)
+
+
+# v0.2.3 PR-feedback-3 — Natural Slot Collection.
+# 4 슬롯(workLocation/workContentDetails/numberOfWorkers/equipmentDetails)을
+# Pull/Briefing/Broadcast 어떤 모드에서도 1턴 1슬롯·자연 후속 형태로 보강한다.
+# Frontend가 매 턴 conversation.item.create 로 [Slot Status] inject 하는 것을
+# 전제 — 미주입 시 룰은 "may include" 조건절이라 자연 비활성. TBM only.
+NATURAL_SLOT_COLLECTION_RULE = (
+    "[Natural Slot Collection — Active during Cycles 2-4 (mitigation/checklist)]\n"
+    "Each turn, the system context may include a [Slot Status] block listing "
+    "what the user has already provided (location / content / workers / equipment) "
+    "and which slots are still 'missing'. Apply these rules:\n"
+    "1. NEVER ask all 4 slots in one turn. NEVER open with \"사전정보 4개 알려주세요\" "
+    "or any equivalent multi-slot interview question.\n"
+    "2. When [Slot Status] missing has >= 1 slot AND the user just finished a "
+    "non-slot topic (e.g. talking about a hazard, a checklist item, or asking "
+    "an EHS question), append ONE natural follow-up touching ONE missing slot. "
+    "Pick the slot semantically connected to the user's last utterance:\n"
+    "   - User mentioned crane / equipment / tool → ask equipment if missing\n"
+    "   - User mentioned floor / area / building → ask location if missing\n"
+    "   - User mentioned team / team-mate / 인원 → ask workers if missing\n"
+    "   - Otherwise, pick whichever missing slot fits the work context most.\n"
+    "3. The follow-up MUST stay ONE sentence and feel like curiosity, not "
+    "interview. Use:\n"
+    "   - \"혹시 오늘 인원은 몇 명이세요?\" (Korean — curiosity)\n"
+    "   NOT \"사전정보 항목으로 인원 수를 알려주세요.\" (interview tone)\n"
+    "4. If the user answers, call collect_prior_information(slot=value) "
+    "IMMEDIATELY in the same turn — do not wait for confirmation.\n"
+    "5. If the user pivots away (changes topic / does not answer the slot "
+    "question), do NOT push. Drop the slot question and try 2 turns later "
+    "with a DIFFERENT missing slot.\n"
+    "6. If [Slot Status] missing list is empty, STOP asking slot questions "
+    "entirely — the slots are filled, do not re-confirm.\n"
+    "7. NEVER echo, quote, or read aloud the [Slot Status] block contents in "
+    "your spoken response. The block is a private system context for your "
+    "reasoning only — never appear in voice or chat output."
+)
+
+
+# v0.2.3 PR-feedback-3 — Closing Reminder Handling.
+# Frontend가 종료 임박 트리거(체크리스트 70% / finish_intent / idle_90s /
+# timeout_12min) 충족 시 [Closing Reminder] block을 conversation.item.create
+# 로 주입한다. LLM은 이를 환기 룰로만 활용하고 자동 finalize_tbm 하지 않는다.
+# TBM only. 5 언어 closing_* 번역 키와 함께 사용.
+CLOSING_REMINDER_RULE = (
+    "[Closing Reminder Handling]\n"
+    "When the system context includes a [Closing Reminder] block (with a "
+    "trigger / missing_slots / missing_checklist), TBM is approaching "
+    "completion. Apply these rules:\n"
+    "1. Speak ONE consolidated reminder sentence using the configured "
+    "language's closing_reminder_template translation. List at most 2 missing "
+    "slots + at most 1 incomplete checklist item per turn. Pick the most "
+    "important ones — do NOT recite the whole missing list.\n"
+    "   - If only checklist items remain (no missing slots), use "
+    "closing_only_checklist_template.\n"
+    "   - If only one slot remains, use closing_only_a_template.\n"
+    "   - If both slot and checklist remain, use closing_reminder_template "
+    "with {a}=slot label, {b}=slot label or checklist item label.\n"
+    "2. Wait for the user's response. If they answer a slot, call "
+    "collect_prior_information(slot=value). If they confirm a checklist item, "
+    "call complete_checklist_item. Same as a normal turn — no special tool.\n"
+    "3. After step 2 (or if nothing was actually missing), say the "
+    "closing_confirmation translation (\"모두 확인됐습니다, 완료 처리할까요?\" "
+    "or its localized form). Wait for explicit yes.\n"
+    "4. On explicit yes (e.g. \"네 마무리해 주세요\" / \"yes\" / \"끝내자\"): "
+    "call finalize_tbm. On no / silence / \"아직\": do NOT auto-finalize. "
+    "Stay in the conversation and let the user keep adding info.\n"
+    "5. NEVER echo, quote, or read aloud the [Closing Reminder] block "
+    "contents (trigger name, missing_slots list, missing_checklist list) in "
+    "your spoken response. Translate them into a NATURAL one-sentence "
+    "reminder using the templates above — do NOT mention internal trigger "
+    "names like \"checklist_70\" or bracket labels.\n"
+    "6. Do NOT issue more than ONE consolidated reminder per Closing Reminder "
+    "inject — even if the user pivots, wait for the next [Closing Reminder] "
+    "block before reminding again."
 )
 
 
@@ -879,6 +997,27 @@ def get_system_prompt(
         )
     else:
         missing_hazard_block = MISSING_HAZARD_CHECK if mode == "tbm" else ""
+
+    # v0.2.3 PR-feedback-3 — Natural Slot Collection + Closing Reminder.
+    # Both blocks are TBM-only (EHS leak 0). Both are emitted identically in
+    # voice and chat: the rules describe how to react when the system context
+    # contains the [Slot Status] / [Closing Reminder] inject from the frontend.
+    # If the frontend never injects (legacy session), the rules are inert
+    # because they all start with "may include" / "When the system context
+    # includes ..." conditional clauses — backward compat 100%.
+    natural_slot_block = NATURAL_SLOT_COLLECTION_RULE if mode == "tbm" else ""
+    closing_reminder_block = CLOSING_REMINDER_RULE if mode == "tbm" else ""
+    # 1-line header notice for the LLM so it does not hallucinate the bracketed
+    # blocks when they are NOT present, and does not echo them when they ARE
+    # present. TBM only — same gating.
+    frontend_inject_notice = (
+        "Frontend-injected system context (TBM only): each turn may include a "
+        "[Slot Status] block (slot fill state) and/or a [Closing Reminder] block "
+        "(closing trigger). Treat them as private reasoning context — react via "
+        "the rules below. NEVER echo, quote, or read aloud the bracketed block "
+        "contents in your spoken or chat response."
+    ) if mode == "tbm" else ""
+
     if domain_text:
         domain_block = "Domain-specific Context (v0.2.0):" + _nl + domain_text
         incomplete_ko = '[미완] '
@@ -923,7 +1062,11 @@ def get_system_prompt(
             "checklist_ready": "작업 특성에 맞는 안전 체크리스트를 준비했습니다. 안전벨트와 안전모 착용 확인하셨나요?",
             "all_workers_equipped": "네, 모든 작업자가 안전벨트와 안전모를 착용했습니다.",
             "skip_warning": "안전을 위해 체크리스트는 순서대로 진행해야 합니다. 먼저 안전벨트와 안전모 착용부터 확인해 주시겠어요?",
-            "ppe_importance": "개인보호장비는 가장 기본적이고 중요한 안전수칙입니다."
+            "ppe_importance": "개인보호장비는 가장 기본적이고 중요한 안전수칙입니다.",
+            "closing_reminder_template": "마치기 전에 {a}와 {b}만 짚고 가실까요?",
+            "closing_only_a_template": "마치기 전에 {a}만 마저 짚을까요?",
+            "closing_only_checklist_template": "마치기 전에 체크리스트 {n}개만 더 확인할까요?",
+            "closing_confirmation": "모두 확인됐습니다, 완료 처리할까요?"
         },
         "english": {
             "wait": "Wait!",
@@ -944,7 +1087,11 @@ def get_system_prompt(
             "checklist_ready": "I've prepared a safety checklist tailored to your work characteristics. Have you confirmed safety belt and helmet wearing?",
             "all_workers_equipped": "Yes, all workers are wearing safety belts and helmets.",
             "skip_warning": "For safety, the checklist must be completed in order. Could you please confirm safety belt and helmet wearing first?",
-            "ppe_importance": "Personal protective equipment is the most basic and important safety rule."
+            "ppe_importance": "Personal protective equipment is the most basic and important safety rule.",
+            "closing_reminder_template": "Before we wrap up, shall we just touch on {a} and {b}?",
+            "closing_only_a_template": "Before we wrap up, shall we just cover {a}?",
+            "closing_only_checklist_template": "Before we wrap up, shall we check just {n} more checklist item(s)?",
+            "closing_confirmation": "Everything looks confirmed — shall I close out the TBM?"
         },
         "polish": {
             "wait": "Chwileczkę!",
@@ -965,7 +1112,11 @@ def get_system_prompt(
             "checklist_ready": "Przygotowałem listę kontrolną bezpieczeństwa dostosowaną do charakteru twojej pracy. Czy potwierdziłeś noszenie pasów bezpieczeństwa i kasków?",
             "all_workers_equipped": "Tak, wszyscy pracownicy noszą pasy bezpieczeństwa i kaski.",
             "skip_warning": "Dla bezpieczeństwa lista kontrolna musi być wypełniona po kolei. Czy możesz najpierw potwierdzić noszenie pasów bezpieczeństwa i kasków?",
-            "ppe_importance": "Środki ochrony indywidualnej to najbardziej podstawowa i ważna zasada bezpieczeństwa."
+            "ppe_importance": "Środki ochrony indywidualnej to najbardziej podstawowa i ważna zasada bezpieczeństwa.",
+            "closing_reminder_template": "Before we wrap up, shall we just touch on {a} and {b}?",
+            "closing_only_a_template": "Before we wrap up, shall we just cover {a}?",
+            "closing_only_checklist_template": "Before we wrap up, shall we check just {n} more checklist item(s)?",
+            "closing_confirmation": "Everything looks confirmed — shall I close out the TBM?"
         },
         "vietnamese": {
             "wait": "Chờ một chút!",
@@ -986,7 +1137,11 @@ def get_system_prompt(
             "checklist_ready": "Tôi đã chuẩn bị danh sách kiểm tra an toàn phù hợp với đặc điểm công việc của bạn. Bạn đã xác nhận việc đeo dây an toàn và mũ bảo hiểm chưa?",
             "all_workers_equipped": "Vâng, tất cả công nhân đều đeo dây an toàn và mũ bảo hiểm.",
             "skip_warning": "Vì an toàn, danh sách kiểm tra phải được hoàn thành theo thứ tự. Bạn có thể xác nhận việc đeo dây an toàn và mũ bảo hiểm trước không?",
-            "ppe_importance": "Thiết bị bảo vệ cá nhân là quy tắc an toàn cơ bản và quan trọng nhất."
+            "ppe_importance": "Thiết bị bảo vệ cá nhân là quy tắc an toàn cơ bản và quan trọng nhất.",
+            "closing_reminder_template": "Trước khi kết thúc, mình ghé qua {a} và {b} một chút nhé?",
+            "closing_only_a_template": "Trước khi kết thúc, mình rà nốt {a} nhé?",
+            "closing_only_checklist_template": "Trước khi kết thúc, mình kiểm tra thêm {n} mục danh sách nữa nhé?",
+            "closing_confirmation": "Mọi thứ đã được xác nhận, mình kết thúc TBM nhé?"
         },
         # 2026-05-08 — thai/indonesian translations 키 누락 버그 수정.
         # 이전엔 LANGUAGE_CONFIG 에 thai/indonesian 이 등록돼 있었으나 본 dict 에
@@ -1013,7 +1168,11 @@ def get_system_prompt(
             "checklist_ready": "ผม/ดิฉันได้เตรียมรายการตรวจสอบความปลอดภัยที่เหมาะกับลักษณะงานของคุณแล้ว คุณได้ยืนยันการสวมใส่เข็มขัดนิรภัยและหมวกนิรภัยแล้วหรือยัง?",
             "all_workers_equipped": "ครับ/ค่ะ คนงานทุกคนสวมใส่เข็มขัดนิรภัยและหมวกนิรภัยแล้ว",
             "skip_warning": "เพื่อความปลอดภัย รายการตรวจสอบต้องดำเนินการตามลำดับ คุณช่วยยืนยันการสวมใส่เข็มขัดนิรภัยและหมวกนิรภัยก่อนได้ไหม?",
-            "ppe_importance": "อุปกรณ์ป้องกันส่วนบุคคลเป็นกฎความปลอดภัยพื้นฐานและสำคัญที่สุด"
+            "ppe_importance": "อุปกรณ์ป้องกันส่วนบุคคลเป็นกฎความปลอดภัยพื้นฐานและสำคัญที่สุด",
+            "closing_reminder_template": "ก่อนปิดท้าย ขอแวะดู {a} กับ {b} อีกนิดได้ไหมครับ/คะ?",
+            "closing_only_a_template": "ก่อนปิดท้าย ขอเก็บ {a} ให้ครบหน่อยได้ไหมครับ/คะ?",
+            "closing_only_checklist_template": "ก่อนปิดท้าย ขอเช็กรายการอีก {n} ข้อได้ไหมครับ/คะ?",
+            "closing_confirmation": "ทุกอย่างได้รับการยืนยันแล้ว ปิด TBM เลยไหมครับ/คะ?"
         },
         "indonesian": {
             "wait": "Tunggu sebentar!",
@@ -1034,7 +1193,11 @@ def get_system_prompt(
             "checklist_ready": "Saya telah menyiapkan daftar periksa keselamatan yang disesuaikan dengan karakteristik pekerjaan Anda. Sudahkah Anda mengonfirmasi pemakaian sabuk pengaman dan helm?",
             "all_workers_equipped": "Ya, semua pekerja memakai sabuk pengaman dan helm.",
             "skip_warning": "Demi keselamatan, daftar periksa harus diselesaikan secara berurutan. Bisakah Anda mengonfirmasi pemakaian sabuk pengaman dan helm terlebih dahulu?",
-            "ppe_importance": "Alat pelindung diri adalah aturan keselamatan paling dasar dan penting."
+            "ppe_importance": "Alat pelindung diri adalah aturan keselamatan paling dasar dan penting.",
+            "closing_reminder_template": "Sebelum kita tutup, boleh kita singgah ke {a} dan {b} sebentar?",
+            "closing_only_a_template": "Sebelum kita tutup, boleh kita rampungkan {a} saja?",
+            "closing_only_checklist_template": "Sebelum kita tutup, boleh kita cek {n} item daftar periksa lagi?",
+            "closing_confirmation": "Semua sudah terkonfirmasi, kita tutup TBM-nya ya?"
         }
     }
 
@@ -1168,6 +1331,7 @@ Guidelines:
 - You are an AI assistant for construction site toolbox meetings (TBM, 툴박스 미팅).
 - The users are construction site managers using a mobile chat app.
 - You are developed by Samsung and your name is SafeMate.
+- {frontend_inject_notice}
 
 Tool Use:
 - {chat_notice_tbm}
@@ -1344,11 +1508,16 @@ Markdown formatting (chat mode):
 {broadcast_mode_block}
 
 {missing_hazard_block}
+
+{natural_slot_block}
+
+{closing_reminder_block}
 '''
         return f'''General Information:
 - You are an AI assistant for construction site toolbox meetings (TBM, 툴박스 미팅).
 - The users are construction site managers using a mobile voice-chat app.
 - You are developed by Samsung and your name is SafeMate.
+- {frontend_inject_notice}
 
 Language:
 - {lang_config["instructions"]}
@@ -1570,6 +1739,10 @@ AI Message: "오늘 TBM 요약을 정리했습니다. 내용을 확인하고 확
 {broadcast_mode_block}
 
 {missing_hazard_block}
+
+{natural_slot_block}
+
+{closing_reminder_block}
 '''
 
 # Legacy prompts for backwards compatibility

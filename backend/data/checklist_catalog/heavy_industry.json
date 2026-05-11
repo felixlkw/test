@@ -1,78 +1,185 @@
 {
   "domain": "heavy_industry",
-  "version": "0.2.0",
-  "note": "PR A placeholder catalog — 3 work types. Phase 2.x PR-1: per-item scenarios/mitigations/ppe. regulation 인용은 felix 검수 필요.",
+  "version": "0.3.0",
+  "note": "PR A placeholder catalog — 3 work types. Phase 2.x PR-1: per-item scenarios/mitigations/ppe. v0.3.0: multi-language (en/vi/th/id) added. regulation 인용은 felix 검수 필요.",
   "work_types": {
     "LIFTING": {
       "label_ko": "양중작업",
       "label_en": "Lifting / Hoisting",
+      "label_vi": "Công tác nâng / cẩu",
+      "label_th": "งานยก / ยกของหนัก",
+      "label_id": "Pekerjaan Angkat / Hoisting",
       "baseline": [
         {
           "id": "LIFT-01",
           "content": "리프팅 플랜 검토 — 중량물 무게·중심·줄걸이 방법 확인",
+          "content_en": "Review lifting plan — verify load weight, center of gravity, and rigging method",
+          "content_vi": "Xem xét kế hoạch nâng — xác nhận trọng lượng, trọng tâm và phương pháp móc cáp của vật nâng",
+          "content_th": "ตรวจสอบแผนการยก — ยืนยันน้ำหนัก จุดศูนย์ถ่วง และวิธีการคล้องสลิงของวัสดุ",
+          "content_id": "Tinjau rencana pengangkatan — verifikasi berat, titik pusat gravitasi, dan metode rigging beban",
           "regulation": "산업안전보건기준규칙 §38",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "LIFT-01-SC-1", "content": "중심점 오판으로 양중 중 회전·기울어 인근 작업자 충돌" }
+            {
+              "id": "LIFT-01-SC-1",
+              "content": "중심점 오판으로 양중 중 회전·기울어 인근 작업자 충돌",
+              "content_en": "Misjudged center of gravity causes the load to rotate/tilt during lifting, striking nearby workers",
+              "content_vi": "Đánh giá sai trọng tâm khiến vật nâng xoay/nghiêng trong khi nâng, va vào công nhân gần đó",
+              "content_th": "การประเมินจุดศูนย์ถ่วงผิดพลาด ทำให้วัสดุหมุน/เอียงระหว่างการยก และชนคนงานใกล้เคียง",
+              "content_id": "Kesalahan penilaian titik pusat gravitasi menyebabkan beban berputar/miring saat diangkat dan menabrak pekerja di sekitarnya"
+            }
           ],
           "mitigations": [
-            { "id": "LIFT-01-MIT-1", "content": "리프팅 플랜에 무게 중심 표시 + 시양중(test lift) 1회 시행" }
+            {
+              "id": "LIFT-01-MIT-1",
+              "content": "리프팅 플랜에 무게 중심 표시 + 시양중(test lift) 1회 시행",
+              "content_en": "Mark center of gravity on lifting plan and perform one trial/test lift before full lift",
+              "content_vi": "Đánh dấu trọng tâm trên kế hoạch nâng và thực hiện một lần nâng thử (test lift) trước khi nâng chính thức",
+              "content_th": "ทำเครื่องหมายจุดศูนย์ถ่วงในแผนการยก และทำการยกทดสอบ (test lift) 1 ครั้งก่อนยกจริง",
+              "content_id": "Tandai titik pusat gravitasi pada rencana pengangkatan dan lakukan satu kali test lift sebelum pengangkatan penuh"
+            }
           ],
           "ppe": []
         },
         {
           "id": "LIFT-02",
           "content": "크레인 정기점검 유효기간 및 SWL(safe working load) 확인",
+          "content_en": "Verify crane periodic inspection validity and SWL (safe working load)",
+          "content_vi": "Kiểm tra thời hạn kiểm định định kỳ của cẩu và SWL (tải trọng làm việc an toàn)",
+          "content_th": "ตรวจสอบอายุการตรวจสอบประจำของเครน และค่า SWL (safe working load)",
+          "content_id": "Verifikasi masa berlaku inspeksi berkala crane dan SWL (safe working load)",
           "regulation": "산업안전보건기준규칙 §142",
           "evidence_required": "photo|verbal",
           "scenarios": [
-            { "id": "LIFT-02-SC-1", "content": "정격 초과 양중으로 크레인 전도 또는 와이어 절단" }
+            {
+              "id": "LIFT-02-SC-1",
+              "content": "정격 초과 양중으로 크레인 전도 또는 와이어 절단",
+              "content_en": "Lifting beyond rated capacity causes crane to overturn or wire rope to snap",
+              "content_vi": "Nâng vượt tải định mức khiến cẩu lật đổ hoặc cáp thép đứt",
+              "content_th": "การยกเกินพิกัดทำให้เครนพลิกคว่ำหรือลวดสลิงขาด",
+              "content_id": "Pengangkatan melebihi kapasitas terukur menyebabkan crane terbalik atau wire rope putus"
+            }
           ],
           "mitigations": [
-            { "id": "LIFT-02-MIT-1", "content": "양중물 중량 사전 측정 + SWL 80% 이내 운용 원칙 준수" }
+            {
+              "id": "LIFT-02-MIT-1",
+              "content": "양중물 중량 사전 측정 + SWL 80% 이내 운용 원칙 준수",
+              "content_en": "Pre-weigh the load and operate within 80% of SWL as a working principle",
+              "content_vi": "Cân trọng lượng vật nâng trước và tuân thủ nguyên tắc vận hành trong phạm vi 80% SWL",
+              "content_th": "ชั่งน้ำหนักวัสดุล่วงหน้าและปฏิบัติตามหลักการทำงานในขอบเขต 80% ของ SWL",
+              "content_id": "Timbang beban terlebih dahulu dan operasikan dalam batas 80% SWL sebagai prinsip kerja"
+            }
           ],
           "ppe": []
         },
         {
           "id": "LIFT-03",
           "content": "줄걸이용구(슬링·체인·후크) 손상 점검 및 안전핀 결속",
+          "content_en": "Inspect rigging gear (slings, chains, hooks) for damage and secure safety latches/pins",
+          "content_vi": "Kiểm tra hư hỏng của thiết bị móc cáp (dây cáp, xích, móc) và cài chốt an toàn",
+          "content_th": "ตรวจสอบความเสียหายของอุปกรณ์คล้อง (สลิง โซ่ ตะขอ) และล็อกสลักนิรภัย",
+          "content_id": "Periksa kerusakan alat rigging (sling, rantai, hook) dan kunci safety latch/pin",
           "regulation": "추정: KOSHA G-91, felix 검수 필요",
           "evidence_required": "photo",
           "scenarios": [
-            { "id": "LIFT-03-SC-1", "content": "슬링 손상 미인지로 양중 중 절단 → 중량물 낙하" }
+            {
+              "id": "LIFT-03-SC-1",
+              "content": "슬링 손상 미인지로 양중 중 절단 → 중량물 낙하",
+              "content_en": "Undetected sling damage causes failure during lift, resulting in load drop",
+              "content_vi": "Hư hỏng dây cáp không được phát hiện dẫn đến đứt trong khi nâng → vật nặng rơi",
+              "content_th": "ความเสียหายของสลิงที่ตรวจไม่พบทำให้ขาดระหว่างการยก → วัสดุหนักตก",
+              "content_id": "Kerusakan sling yang tidak terdeteksi menyebabkan putus saat pengangkatan → beban jatuh"
+            }
           ],
           "mitigations": [
-            { "id": "LIFT-03-MIT-1", "content": "교대 시작 시 슬링·후크 안전핀 시각 점검 + 색깔 라벨 갱신" }
+            {
+              "id": "LIFT-03-MIT-1",
+              "content": "교대 시작 시 슬링·후크 안전핀 시각 점검 + 색깔 라벨 갱신",
+              "content_en": "Visually inspect slings and hook safety pins at shift start and renew color-coded inspection tags",
+              "content_vi": "Kiểm tra trực quan dây cáp và chốt an toàn móc khi bắt đầu ca, cập nhật nhãn màu kiểm định",
+              "content_th": "ตรวจสอบสลิงและสลักนิรภัยตะขอด้วยสายตาเมื่อเริ่มกะ และอัปเดตป้ายสีตรวจสอบ",
+              "content_id": "Inspeksi visual sling dan safety pin hook saat awal shift dan perbarui label warna inspeksi"
+            }
           ],
           "ppe": [
-            { "id": "LIFT-03-PPE-1", "content": "안전모 (턱끈 체결)" }
+            {
+              "id": "LIFT-03-PPE-1",
+              "content": "안전모 (턱끈 체결)",
+              "content_en": "Safety helmet (chin strap fastened)",
+              "content_vi": "Mũ bảo hộ (cài quai cằm)",
+              "content_th": "หมวกนิรภัย (รัดสายคาง)",
+              "content_id": "Helm pengaman (tali dagu terikat)"
+            }
           ]
         },
         {
           "id": "LIFT-04",
           "content": "신호수 배치 및 신호체계(수신호/무전) 통일",
+          "content_en": "Assign signal person and standardize signaling protocol (hand signals/radio)",
+          "content_vi": "Bố trí người ra tín hiệu và thống nhất hệ thống tín hiệu (ra dấu tay/bộ đàm)",
+          "content_th": "จัดเจ้าหน้าที่ให้สัญญาณ และกำหนดมาตรฐานระบบสัญญาณ (สัญญาณมือ/วิทยุสื่อสาร)",
+          "content_id": "Tugaskan signalman dan standarisasi sistem sinyal (hand signal/radio)",
           "regulation": "산업안전보건기준규칙 §146",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "LIFT-04-SC-1", "content": "신호 혼선 시 운전자가 잘못된 방향으로 양중 → 충돌" }
+            {
+              "id": "LIFT-04-SC-1",
+              "content": "신호 혼선 시 운전자가 잘못된 방향으로 양중 → 충돌",
+              "content_en": "Signal confusion causes the operator to lift in the wrong direction, resulting in collision",
+              "content_vi": "Tín hiệu nhiễu loạn khiến người vận hành nâng sai hướng → va chạm",
+              "content_th": "สัญญาณสับสนทำให้ผู้ปฏิบัติงานยกผิดทิศทาง → เกิดการชน",
+              "content_id": "Sinyal yang membingungkan menyebabkan operator mengangkat ke arah salah → terjadi tabrakan"
+            }
           ],
           "mitigations": [
-            { "id": "LIFT-04-MIT-1", "content": "전담 신호수 1명 지정 + 무전 채널 단일화" }
+            {
+              "id": "LIFT-04-MIT-1",
+              "content": "전담 신호수 1명 지정 + 무전 채널 단일화",
+              "content_en": "Designate one dedicated signal person and use a single unified radio channel",
+              "content_vi": "Chỉ định 1 người ra tín hiệu chuyên trách và thống nhất một kênh bộ đàm duy nhất",
+              "content_th": "กำหนดเจ้าหน้าที่ให้สัญญาณเฉพาะ 1 คน และใช้ช่องวิทยุสื่อสารช่องเดียว",
+              "content_id": "Tetapkan satu signalman khusus dan gunakan satu channel radio terpadu"
+            }
           ],
           "ppe": [
-            { "id": "LIFT-04-PPE-1", "content": "고시인성 반사조끼" }
+            {
+              "id": "LIFT-04-PPE-1",
+              "content": "고시인성 반사조끼",
+              "content_en": "High-visibility reflective vest",
+              "content_vi": "Áo phản quang độ nhận diện cao",
+              "content_th": "เสื้อกั๊กสะท้อนแสงทัศนวิสัยสูง",
+              "content_id": "Rompi reflektif visibilitas tinggi"
+            }
           ]
         },
         {
           "id": "LIFT-05",
           "content": "양중 반경 내 출입금지 구역 설정·표시",
+          "content_en": "Establish and mark a no-entry exclusion zone within the lifting radius",
+          "content_vi": "Thiết lập và đánh dấu khu vực cấm vào trong bán kính nâng",
+          "content_th": "กำหนดและทำเครื่องหมายเขตห้ามเข้าในรัศมีการยก",
+          "content_id": "Tetapkan dan tandai zona terlarang dalam radius pengangkatan",
           "regulation": "산업안전보건기준규칙 §20",
           "evidence_required": "photo|verbal",
           "scenarios": [
-            { "id": "LIFT-05-SC-1", "content": "출입금지 표시 미준수로 작업자 양중 반경 진입 → 추돌/추락" }
+            {
+              "id": "LIFT-05-SC-1",
+              "content": "출입금지 표시 미준수로 작업자 양중 반경 진입 → 추돌/추락",
+              "content_en": "Failure to observe no-entry markings allows a worker to enter the lifting radius, resulting in being struck or falling",
+              "content_vi": "Không tuân thủ biển cấm vào khiến công nhân tiến vào bán kính nâng → va chạm/rơi ngã",
+              "content_th": "การไม่ปฏิบัติตามป้ายห้ามเข้า ทำให้คนงานเข้าไปในรัศมีการยก → ถูกชนหรือตก",
+              "content_id": "Pengabaian tanda larangan masuk menyebabkan pekerja memasuki radius pengangkatan → tertabrak/terjatuh"
+            }
           ],
           "mitigations": [
-            { "id": "LIFT-05-MIT-1", "content": "라바콘 + 점멸 라이트 + 출입금지 게시 후 양중 시작" }
+            {
+              "id": "LIFT-05-MIT-1",
+              "content": "라바콘 + 점멸 라이트 + 출입금지 게시 후 양중 시작",
+              "content_en": "Begin lifting only after placing traffic cones, flashing lights, and no-entry signage",
+              "content_vi": "Chỉ bắt đầu nâng sau khi đặt cọc tiêu, đèn nhấp nháy và biển cấm vào",
+              "content_th": "เริ่มยกหลังจากวางกรวยจราจร ไฟกระพริบ และป้ายห้ามเข้าแล้วเท่านั้น",
+              "content_id": "Mulai pengangkatan hanya setelah memasang traffic cone, lampu flashing, dan rambu larangan masuk"
+            }
           ],
           "ppe": []
         }
@@ -83,6 +190,10 @@
           "add": {
             "id": "LIFT-W01",
             "content": "풍속 15m/s 이상 — 양중작업 중단, 스톰핀 체결",
+            "content_en": "Wind speed ≥ 15 m/s — suspend lifting operations and engage storm pins",
+            "content_vi": "Tốc độ gió ≥ 15 m/s — ngừng công tác nâng và cài chốt chống bão (storm pin)",
+            "content_th": "ความเร็วลม ≥ 15 m/s — หยุดงานยกและล็อกสลักกันพายุ (storm pin)",
+            "content_id": "Kecepatan angin ≥ 15 m/s — hentikan pekerjaan pengangkatan dan pasang storm pin",
             "regulation": "추정: KOSHA Heavy-Industry P-XX, felix 검수 필요"
           }
         }
@@ -91,74 +202,188 @@
     "HOT_WORK": {
       "label_ko": "화기작업",
       "label_en": "Hot Work",
+      "label_vi": "Công tác sinh nhiệt / hàn cắt",
+      "label_th": "งานที่ก่อให้เกิดประกายไฟ (Hot Work)",
+      "label_id": "Pekerjaan Panas (Hot Work)",
       "baseline": [
         {
           "id": "HHW-01",
           "content": "화기작업 허가서 발급 및 유효시간 확인(8시간 단위)",
+          "content_en": "Issue hot work permit (PTW) and verify validity period (8-hour basis)",
+          "content_vi": "Cấp phiếu phép công tác sinh nhiệt (PTW) và kiểm tra thời hạn hiệu lực (theo đơn vị 8 giờ)",
+          "content_th": "ออกใบอนุญาตงาน Hot Work (PTW) และตรวจสอบระยะเวลามีผล (หน่วยละ 8 ชั่วโมง)",
+          "content_id": "Terbitkan Hot Work Permit (PTW) dan verifikasi masa berlaku (basis 8 jam)",
           "regulation": "산업안전보건기준규칙 §241",
           "evidence_required": "photo|verbal",
           "scenarios": [
-            { "id": "HHW-01-SC-1", "content": "허가 만료 후 추가 작업 강행 → 통제 외 화기 발생" }
+            {
+              "id": "HHW-01-SC-1",
+              "content": "허가 만료 후 추가 작업 강행 → 통제 외 화기 발생",
+              "content_en": "Continuing work after the permit expires leads to uncontrolled hot work activity",
+              "content_vi": "Tiếp tục công việc sau khi giấy phép hết hạn → phát sinh nguồn nhiệt ngoài kiểm soát",
+              "content_th": "ดำเนินงานต่อหลังใบอนุญาตหมดอายุ → เกิดประกายไฟนอกการควบคุม",
+              "content_id": "Melanjutkan pekerjaan setelah izin kedaluwarsa → terjadi aktivitas panas di luar kendali"
+            }
           ],
           "mitigations": [
-            { "id": "HHW-01-MIT-1", "content": "PTW 만료 30분 전 알람 + 연장 발급 절차 명문화" }
+            {
+              "id": "HHW-01-MIT-1",
+              "content": "PTW 만료 30분 전 알람 + 연장 발급 절차 명문화",
+              "content_en": "Set an alarm 30 minutes before PTW expiry and document the extension/re-issue procedure",
+              "content_vi": "Thiết lập cảnh báo 30 phút trước khi PTW hết hạn và quy định hóa thủ tục gia hạn/cấp mới",
+              "content_th": "ตั้งการแจ้งเตือน 30 นาทีก่อน PTW หมดอายุ และจัดทำขั้นตอนต่ออายุเป็นเอกสาร",
+              "content_id": "Atur alarm 30 menit sebelum PTW kedaluwarsa dan dokumentasikan prosedur perpanjangan/penerbitan ulang"
+            }
           ],
           "ppe": []
         },
         {
           "id": "HHW-02",
           "content": "용접·용단 시 차광판·불티 비산 방지포 설치",
+          "content_en": "Install welding screens and fire-resistant spark/slag containment blankets during welding and cutting",
+          "content_vi": "Lắp tấm chắn hồ quang và tấm chống bắn tia lửa khi hàn/cắt",
+          "content_th": "ติดตั้งฉากกันแสงเชื่อมและผ้าทนไฟกันสะเก็ดไฟกระเด็นระหว่างงานเชื่อม/ตัด",
+          "content_id": "Pasang welding screen dan fire blanket anti percikan saat pengelasan/pemotongan",
           "regulation": "추정: KOSHA W-2, felix 검수 필요",
           "evidence_required": "photo",
           "scenarios": [
-            { "id": "HHW-02-SC-1", "content": "불티 비산으로 인근 가연물 발화 또는 통행자 화상" }
+            {
+              "id": "HHW-02-SC-1",
+              "content": "불티 비산으로 인근 가연물 발화 또는 통행자 화상",
+              "content_en": "Spark scattering ignites nearby combustibles or burns passing workers",
+              "content_vi": "Tia lửa bắn ra làm cháy vật liệu dễ cháy gần đó hoặc gây bỏng người qua lại",
+              "content_th": "สะเก็ดไฟกระเด็นทำให้วัสดุติดไฟใกล้เคียงลุกไหม้ หรือทำให้ผู้สัญจรผ่านถูกไฟไหม้",
+              "content_id": "Percikan api menyalakan bahan mudah terbakar di dekatnya atau membakar pekerja yang lewat"
+            }
           ],
           "mitigations": [
-            { "id": "HHW-02-MIT-1", "content": "비산 반경 3m 차광판/불연포 2겹 + 통행자 우회 동선" }
+            {
+              "id": "HHW-02-MIT-1",
+              "content": "비산 반경 3m 차광판/불연포 2겹 + 통행자 우회 동선",
+              "content_en": "Install welding screens/fire blankets in 2 layers within a 3 m radius and divert pedestrian traffic",
+              "content_vi": "Lắp tấm chắn/tấm chống cháy 2 lớp trong bán kính 3 m và bố trí lối đi vòng cho người qua lại",
+              "content_th": "ติดตั้งฉากกัน/ผ้าทนไฟ 2 ชั้นในรัศมี 3 ม. และจัดเส้นทางเดินอ้อมสำหรับผู้สัญจร",
+              "content_id": "Pasang welding screen/fire blanket 2 lapis dalam radius 3 m dan alihkan jalur lalu lintas pejalan kaki"
+            }
           ],
           "ppe": [
-            { "id": "HHW-02-PPE-1", "content": "용접면 (차광 등급 9 이상)" },
-            { "id": "HHW-02-PPE-2", "content": "용접용 가죽 앞치마" }
+            {
+              "id": "HHW-02-PPE-1",
+              "content": "용접면 (차광 등급 9 이상)",
+              "content_en": "Welding helmet (shade grade 9 or higher)",
+              "content_vi": "Mặt nạ hàn (cấp lọc sáng từ 9 trở lên)",
+              "content_th": "หน้ากากเชื่อม (เกรดกรองแสงระดับ 9 ขึ้นไป)",
+              "content_id": "Welding helmet (shade grade 9 atau lebih tinggi)"
+            },
+            {
+              "id": "HHW-02-PPE-2",
+              "content": "용접용 가죽 앞치마",
+              "content_en": "Leather welding apron",
+              "content_vi": "Tạp dề da chuyên dụng cho thợ hàn",
+              "content_th": "ผ้ากันเปื้อนหนังสำหรับงานเชื่อม",
+              "content_id": "Apron kulit untuk pengelasan"
+            }
           ]
         },
         {
           "id": "HHW-03",
           "content": "용접흄 국소배기장치 가동 또는 송기마스크 착용",
+          "content_en": "Operate local exhaust ventilation for welding fumes or wear supplied-air respirator",
+          "content_vi": "Vận hành hệ thống hút cục bộ cho khói hàn hoặc đeo mặt nạ cấp khí",
+          "content_th": "เดินระบบดูดอากาศเฉพาะจุดสำหรับฟูมเชื่อม หรือสวมหน้ากากจ่ายอากาศ",
+          "content_id": "Operasikan local exhaust ventilation untuk welding fume atau pakai supplied-air respirator",
           "regulation": "산업안전보건기준규칙 §422",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "HHW-03-SC-1", "content": "용접흄 장기 노출로 작업자 호흡기·중금속 중독" }
+            {
+              "id": "HHW-03-SC-1",
+              "content": "용접흄 장기 노출로 작업자 호흡기·중금속 중독",
+              "content_en": "Long-term welding fume exposure causes respiratory disease and heavy-metal poisoning",
+              "content_vi": "Phơi nhiễm lâu dài với khói hàn gây bệnh đường hô hấp và ngộ độc kim loại nặng",
+              "content_th": "การสัมผัสฟูมเชื่อมระยะยาวทำให้คนงานเป็นโรคทางเดินหายใจและพิษโลหะหนัก",
+              "content_id": "Paparan welding fume jangka panjang menyebabkan penyakit pernapasan dan keracunan logam berat pada pekerja"
+            }
           ],
           "mitigations": [
-            { "id": "HHW-03-MIT-1", "content": "국소배기 풍속 0.5m/s 이상 또는 송기마스크 의무 착용" }
+            {
+              "id": "HHW-03-MIT-1",
+              "content": "국소배기 풍속 0.5m/s 이상 또는 송기마스크 의무 착용",
+              "content_en": "Maintain local exhaust face velocity ≥ 0.5 m/s or mandate supplied-air respirator use",
+              "content_vi": "Duy trì tốc độ hút cục bộ ≥ 0,5 m/s hoặc bắt buộc đeo mặt nạ cấp khí",
+              "content_th": "รักษาความเร็วลมดูดเฉพาะจุด ≥ 0.5 m/s หรือบังคับสวมหน้ากากจ่ายอากาศ",
+              "content_id": "Pertahankan kecepatan udara local exhaust ≥ 0,5 m/s atau wajibkan penggunaan supplied-air respirator"
+            }
           ],
           "ppe": [
-            { "id": "HHW-03-PPE-1", "content": "송기마스크 또는 방진방독 겸용 마스크" }
+            {
+              "id": "HHW-03-PPE-1",
+              "content": "송기마스크 또는 방진방독 겸용 마스크",
+              "content_en": "Supplied-air respirator or combined dust/gas respirator",
+              "content_vi": "Mặt nạ cấp khí hoặc khẩu trang lọc bụi/lọc hơi kết hợp",
+              "content_th": "หน้ากากจ่ายอากาศ หรือหน้ากากกรองฝุ่น/แก๊สแบบรวม",
+              "content_id": "Supplied-air respirator atau masker kombinasi anti-debu/anti-gas"
+            }
           ]
         },
         {
           "id": "HHW-04",
           "content": "탱크·블록 내부 화기작업 시 가스농도(LEL) 측정",
+          "content_en": "Measure gas concentration (LEL) when performing hot work inside tanks or blocks",
+          "content_vi": "Đo nồng độ khí (LEL) khi thực hiện công tác sinh nhiệt bên trong bồn/khối kết cấu",
+          "content_th": "วัดความเข้มข้นก๊าซ (LEL) เมื่อทำงาน Hot Work ภายในแท็งก์/บล็อก",
+          "content_id": "Ukur konsentrasi gas (LEL) saat melakukan hot work di dalam tangki/blok",
           "regulation": "산업안전보건기준규칙 §242",
           "evidence_required": "photo|verbal",
           "scenarios": [
-            { "id": "HHW-04-SC-1", "content": "탱크 잔류 가연성 가스 미측정 상태에서 화기 점화 → 폭발" }
+            {
+              "id": "HHW-04-SC-1",
+              "content": "탱크 잔류 가연성 가스 미측정 상태에서 화기 점화 → 폭발",
+              "content_en": "Igniting hot work without measuring residual flammable gas in the tank leads to explosion",
+              "content_vi": "Mồi lửa khi chưa đo khí cháy còn dư trong bồn → nổ",
+              "content_th": "การจุดไฟทำงานโดยไม่วัดก๊าซติดไฟตกค้างในแท็งก์ → ระเบิด",
+              "content_id": "Menyalakan hot work tanpa mengukur sisa gas mudah terbakar di tangki → ledakan"
+            }
           ],
           "mitigations": [
-            { "id": "HHW-04-MIT-1", "content": "작업 전·중 LEL 10% 미만 확인 (1시간 간격 재측정)" }
+            {
+              "id": "HHW-04-MIT-1",
+              "content": "작업 전·중 LEL 10% 미만 확인 (1시간 간격 재측정)",
+              "content_en": "Verify LEL is below 10% before and during work and remeasure every hour",
+              "content_vi": "Kiểm tra LEL dưới 10% trước và trong khi làm việc, đo lại mỗi 1 giờ",
+              "content_th": "ตรวจสอบ LEL ต่ำกว่า 10% ก่อนและระหว่างทำงาน และวัดซ้ำทุก 1 ชั่วโมง",
+              "content_id": "Verifikasi LEL di bawah 10% sebelum dan selama pekerjaan, dan ukur ulang setiap 1 jam"
+            }
           ],
           "ppe": []
         },
         {
           "id": "HHW-05",
           "content": "화재감시자 배치 및 작업 종료 후 1시간 잔불 점검(중공업 야드 강화)",
+          "content_en": "Assign fire watch and conduct a 1-hour post-work residual ember inspection (heavy-industry yard standard)",
+          "content_vi": "Bố trí người giám sát cháy (fire watch) và kiểm tra tàn lửa 1 giờ sau khi kết thúc công việc (tăng cường cho yard công nghiệp nặng)",
+          "content_th": "จัดเจ้าหน้าที่เฝ้าระวังเพลิงไหม้ (fire watch) และตรวจสอบไฟค้างเป็นเวลา 1 ชั่วโมงหลังเสร็จงาน (มาตรฐานเข้มสำหรับยาร์ดอุตสาหกรรมหนัก)",
+          "content_id": "Tugaskan fire watch dan lakukan inspeksi bara sisa selama 1 jam setelah pekerjaan selesai (standar diperkuat untuk yard industri berat)",
           "regulation": "추정: KOSHA G-2, felix 검수 필요",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "HHW-05-SC-1", "content": "야드 환경에서 잔불이 강풍에 의해 인접 자재로 비산" }
+            {
+              "id": "HHW-05-SC-1",
+              "content": "야드 환경에서 잔불이 강풍에 의해 인접 자재로 비산",
+              "content_en": "In an outdoor yard environment, residual embers are blown by strong wind to adjacent materials",
+              "content_vi": "Trong môi trường yard ngoài trời, tàn lửa bị gió mạnh thổi sang vật liệu lân cận",
+              "content_th": "ในสภาพแวดล้อมยาร์ดกลางแจ้ง ไฟค้างถูกลมแรงพัดไปยังวัสดุข้างเคียง",
+              "content_id": "Pada lingkungan yard terbuka, bara sisa terbawa angin kencang ke material di sekitarnya"
+            }
           ],
           "mitigations": [
-            { "id": "HHW-05-MIT-1", "content": "전담 화재감시자 + 종료 후 1시간 잔불 순찰 + 살수 처리" }
+            {
+              "id": "HHW-05-MIT-1",
+              "content": "전담 화재감시자 + 종료 후 1시간 잔불 순찰 + 살수 처리",
+              "content_en": "Dedicated fire watch plus 1-hour post-work patrol with water dousing of residual embers",
+              "content_vi": "Người giám sát cháy chuyên trách + tuần tra tàn lửa 1 giờ sau khi kết thúc + tưới nước dập lửa",
+              "content_th": "เจ้าหน้าที่เฝ้าระวังเพลิงไหม้เฉพาะ + ตรวจตราไฟค้าง 1 ชั่วโมงหลังเสร็จงาน + ราดน้ำดับ",
+              "content_id": "Fire watch khusus + patroli bara sisa 1 jam pasca-pekerjaan + penyiraman air"
+            }
           ],
           "ppe": []
         }
@@ -169,6 +394,10 @@
           "add": {
             "id": "HHW-CS01",
             "content": "탱크 내부 화기작업 — 산소(19.5~23.5%)·가연성가스(LEL 10% 미만) 동시 측정",
+            "content_en": "Hot work inside tank — simultaneously measure oxygen (19.5–23.5%) and flammable gas (LEL < 10%)",
+            "content_vi": "Công tác sinh nhiệt bên trong bồn — đo đồng thời oxy (19,5–23,5%) và khí cháy (LEL < 10%)",
+            "content_th": "งาน Hot Work ภายในแท็งก์ — วัดออกซิเจน (19.5–23.5%) และก๊าซติดไฟ (LEL < 10%) พร้อมกัน",
+            "content_id": "Hot work di dalam tangki — ukur oksigen (19,5–23,5%) dan gas mudah terbakar (LEL < 10%) secara simultan",
             "regulation": "산업안전보건기준규칙 §619"
           }
         }
@@ -177,76 +406,190 @@
     "CONFINED_SPACE": {
       "label_ko": "밀폐공간 작업",
       "label_en": "Confined Space Entry",
+      "label_vi": "Công tác trong không gian hạn chế",
+      "label_th": "งานในที่อับอากาศ (Confined Space)",
+      "label_id": "Pekerjaan Ruang Terbatas (Confined Space)",
       "baseline": [
         {
           "id": "CS-01",
           "content": "밀폐공간 작업허가서 발급 및 위험요인(질식/화재/유해가스) 명기",
+          "content_en": "Issue confined space entry permit and explicitly list hazards (asphyxiation/fire/toxic gas)",
+          "content_vi": "Cấp giấy phép vào không gian hạn chế và ghi rõ các yếu tố nguy hiểm (ngạt thở/cháy/khí độc)",
+          "content_th": "ออกใบอนุญาตเข้าทำงานในที่อับอากาศและระบุปัจจัยอันตราย (ขาดอากาศ/ไฟไหม้/ก๊าซพิษ) อย่างชัดเจน",
+          "content_id": "Terbitkan izin masuk ruang terbatas dan cantumkan secara eksplisit bahaya (asfiksia/kebakaran/gas beracun)",
           "regulation": "산업안전보건기준규칙 §619",
           "evidence_required": "photo",
           "scenarios": [
-            { "id": "CS-01-SC-1", "content": "허가서 위험요인 누락으로 작업자가 잠재 가스 미인지 진입" }
+            {
+              "id": "CS-01-SC-1",
+              "content": "허가서 위험요인 누락으로 작업자가 잠재 가스 미인지 진입",
+              "content_en": "Omitted hazards on the permit cause workers to enter unaware of latent gas hazards",
+              "content_vi": "Bỏ sót yếu tố nguy hiểm trên giấy phép khiến công nhân vào trong khi không biết về khí tiềm ẩn",
+              "content_th": "การละเว้นปัจจัยอันตรายในใบอนุญาตทำให้คนงานเข้าไปโดยไม่รู้ตัวว่ามีก๊าซแฝง",
+              "content_id": "Bahaya yang terlewat dalam izin menyebabkan pekerja masuk tanpa menyadari adanya gas laten"
+            }
           ],
           "mitigations": [
-            { "id": "CS-01-MIT-1", "content": "위험요인 3종(질식/화재/유해가스) 별도 라인 명기 후 출력 게시" }
+            {
+              "id": "CS-01-MIT-1",
+              "content": "위험요인 3종(질식/화재/유해가스) 별도 라인 명기 후 출력 게시",
+              "content_en": "List the three hazard categories (asphyxiation/fire/toxic gas) on separate lines and post the printed permit at the entry",
+              "content_vi": "Ghi 3 loại nguy hiểm (ngạt thở/cháy/khí độc) trên các dòng riêng biệt và niêm yết bản in tại lối vào",
+              "content_th": "ระบุปัจจัยอันตราย 3 ประเภท (ขาดอากาศ/ไฟไหม้/ก๊าซพิษ) แยกบรรทัด และติดประกาศแบบพิมพ์ที่ทางเข้า",
+              "content_id": "Cantumkan 3 jenis bahaya (asfiksia/kebakaran/gas beracun) di baris terpisah dan tempel izin cetak di pintu masuk"
+            }
           ],
           "ppe": []
         },
         {
           "id": "CS-02",
           "content": "산소(19.5~23.5%)·가연성가스(LEL 10% 미만)·황화수소(10ppm 미만) 측정",
+          "content_en": "Measure oxygen (19.5–23.5%), flammable gas (LEL < 10%), and hydrogen sulfide (< 10 ppm)",
+          "content_vi": "Đo oxy (19,5–23,5%), khí cháy (LEL < 10%) và hydro sulfua (< 10 ppm)",
+          "content_th": "วัดออกซิเจน (19.5–23.5%), ก๊าซติดไฟ (LEL < 10%) และไฮโดรเจนซัลไฟด์ (< 10 ppm)",
+          "content_id": "Ukur oksigen (19,5–23,5%), gas mudah terbakar (LEL < 10%), dan hidrogen sulfida (< 10 ppm)",
           "regulation": "산업안전보건기준규칙 §619",
           "evidence_required": "photo|verbal",
           "scenarios": [
-            { "id": "CS-02-SC-1", "content": "산소 결핍 미감지 진입 → 질식 의식 상실" }
+            {
+              "id": "CS-02-SC-1",
+              "content": "산소 결핍 미감지 진입 → 질식 의식 상실",
+              "content_en": "Entering without detecting oxygen deficiency results in asphyxiation and loss of consciousness",
+              "content_vi": "Vào mà không phát hiện thiếu oxy → ngạt thở và mất ý thức",
+              "content_th": "เข้าไปโดยไม่ตรวจพบภาวะขาดออกซิเจน → ขาดอากาศหายใจและหมดสติ",
+              "content_id": "Memasuki ruang tanpa mendeteksi defisiensi oksigen → asfiksia dan hilang kesadaran"
+            }
           ],
           "mitigations": [
-            { "id": "CS-02-MIT-1", "content": "휴대용 4-가스 검지기로 진입 직전 + 1시간 간격 측정" }
+            {
+              "id": "CS-02-MIT-1",
+              "content": "휴대용 4-가스 검지기로 진입 직전 + 1시간 간격 측정",
+              "content_en": "Use a portable 4-gas detector immediately before entry and re-measure every hour",
+              "content_vi": "Sử dụng máy đo 4 khí cầm tay ngay trước khi vào và đo lại mỗi 1 giờ",
+              "content_th": "ใช้เครื่องตรวจวัด 4 ก๊าซแบบพกพา ทันทีก่อนเข้าและวัดซ้ำทุก 1 ชั่วโมง",
+              "content_id": "Gunakan detektor 4-gas portabel tepat sebelum masuk dan ukur ulang setiap 1 jam"
+            }
           ],
           "ppe": [
-            { "id": "CS-02-PPE-1", "content": "휴대용 4-가스 검지기 (O2/LEL/H2S/CO)" }
+            {
+              "id": "CS-02-PPE-1",
+              "content": "휴대용 4-가스 검지기 (O2/LEL/H2S/CO)",
+              "content_en": "Portable 4-gas detector (O2/LEL/H2S/CO)",
+              "content_vi": "Máy đo 4 khí cầm tay (O2/LEL/H2S/CO)",
+              "content_th": "เครื่องตรวจวัด 4 ก๊าซแบบพกพา (O2/LEL/H2S/CO)",
+              "content_id": "Detektor 4-gas portabel (O2/LEL/H2S/CO)"
+            }
           ]
         },
         {
           "id": "CS-03",
           "content": "송풍기 또는 강제환기 가동 및 작업 중 지속 환기",
+          "content_en": "Operate a blower or forced ventilation and maintain ventilation continuously during work",
+          "content_vi": "Vận hành quạt thổi hoặc thông gió cưỡng bức và duy trì thông gió liên tục trong khi làm việc",
+          "content_th": "เดินพัดลมเป่าหรือระบบระบายอากาศแบบบังคับ และระบายอากาศต่อเนื่องตลอดการทำงาน",
+          "content_id": "Operasikan blower atau ventilasi paksa dan pertahankan ventilasi terus-menerus selama pekerjaan",
           "regulation": "산업안전보건기준규칙 §624",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "CS-03-SC-1", "content": "환기 중단 시 잔류 가스 농축으로 산소 결핍 재발생" }
+            {
+              "id": "CS-03-SC-1",
+              "content": "환기 중단 시 잔류 가스 농축으로 산소 결핍 재발생",
+              "content_en": "Stopping ventilation allows residual gas to accumulate and oxygen deficiency to recur",
+              "content_vi": "Khi ngừng thông gió, khí dư tích tụ và tái phát thiếu oxy",
+              "content_th": "เมื่อหยุดระบายอากาศ ก๊าซตกค้างจะสะสมและภาวะขาดออกซิเจนกลับมาเกิดอีก",
+              "content_id": "Menghentikan ventilasi memungkinkan gas sisa terakumulasi dan defisiensi oksigen muncul kembali"
+            }
           ],
           "mitigations": [
-            { "id": "CS-03-MIT-1", "content": "작업 종료 시까지 강제환기 지속 + 전원 차단 시 즉시 철수" }
+            {
+              "id": "CS-03-MIT-1",
+              "content": "작업 종료 시까지 강제환기 지속 + 전원 차단 시 즉시 철수",
+              "content_en": "Maintain forced ventilation until work ends and evacuate immediately if power is lost",
+              "content_vi": "Duy trì thông gió cưỡng bức cho đến khi kết thúc công việc và rút lui ngay khi mất điện",
+              "content_th": "ระบายอากาศแบบบังคับต่อเนื่องจนเสร็จงาน และอพยพทันทีเมื่อไฟฟ้าดับ",
+              "content_id": "Pertahankan ventilasi paksa hingga pekerjaan selesai dan evakuasi segera bila listrik terputus"
+            }
           ],
           "ppe": []
         },
         {
           "id": "CS-04",
           "content": "감시인 배치 및 통신수단(무전기) 확보",
+          "content_en": "Assign an attendant (watcher) and ensure communication means (radio)",
+          "content_vi": "Bố trí người giám sát (attendant) và đảm bảo phương tiện liên lạc (bộ đàm)",
+          "content_th": "จัดเจ้าหน้าที่เฝ้าระวัง (attendant) และจัดเตรียมอุปกรณ์สื่อสาร (วิทยุสื่อสาร)",
+          "content_id": "Tugaskan attendant (pengawas) dan pastikan sarana komunikasi (radio)",
           "regulation": "산업안전보건기준규칙 §621",
           "evidence_required": "verbal",
           "scenarios": [
-            { "id": "CS-04-SC-1", "content": "감시인 부재 또는 통신 두절로 비상 상황 대응 지연" }
+            {
+              "id": "CS-04-SC-1",
+              "content": "감시인 부재 또는 통신 두절로 비상 상황 대응 지연",
+              "content_en": "Absence of attendant or loss of communication delays emergency response",
+              "content_vi": "Vắng người giám sát hoặc mất liên lạc làm chậm phản ứng khẩn cấp",
+              "content_th": "การไม่มีเจ้าหน้าที่เฝ้าระวังหรือการสื่อสารขาดหายทำให้การตอบสนองเหตุฉุกเฉินล่าช้า",
+              "content_id": "Ketiadaan attendant atau putusnya komunikasi memperlambat respons darurat"
+            }
           ],
           "mitigations": [
-            { "id": "CS-04-MIT-1", "content": "감시인 1명 상주 + 5분 간격 호출 응답 절차" }
+            {
+              "id": "CS-04-MIT-1",
+              "content": "감시인 1명 상주 + 5분 간격 호출 응답 절차",
+              "content_en": "Station one attendant permanently and follow a 5-minute interval call-and-response protocol",
+              "content_vi": "Bố trí 1 người giám sát thường trực và áp dụng thủ tục gọi-đáp 5 phút/lần",
+              "content_th": "ประจำเจ้าหน้าที่เฝ้าระวัง 1 คนตลอดเวลา และปฏิบัติตามขั้นตอนเรียก-ตอบทุก 5 นาที",
+              "content_id": "Tempatkan satu attendant secara permanen dan ikuti prosedur panggilan-respons setiap 5 menit"
+            }
           ],
           "ppe": [
-            { "id": "CS-04-PPE-1", "content": "방수 무전기 (전용 채널)" }
+            {
+              "id": "CS-04-PPE-1",
+              "content": "방수 무전기 (전용 채널)",
+              "content_en": "Waterproof radio (dedicated channel)",
+              "content_vi": "Bộ đàm chống nước (kênh chuyên dụng)",
+              "content_th": "วิทยุสื่อสารกันน้ำ (ช่องเฉพาะ)",
+              "content_id": "Radio anti-air (channel khusus)"
+            }
           ]
         },
         {
           "id": "CS-05",
           "content": "긴급구조용 SCBA(공기호흡기)·구명로프 비치",
+          "content_en": "Stage emergency rescue SCBA (self-contained breathing apparatus) and lifeline rope at entry",
+          "content_vi": "Bố trí sẵn SCBA (bình thở khí nén) và dây cứu sinh tại lối vào cho cứu hộ khẩn cấp",
+          "content_th": "จัดเตรียม SCBA (เครื่องช่วยหายใจแบบมีถังอากาศ) และเชือกช่วยชีวิตที่ทางเข้าสำหรับการกู้ภัยฉุกเฉิน",
+          "content_id": "Siapkan SCBA (self-contained breathing apparatus) dan tali penyelamat di pintu masuk untuk rescue darurat",
           "regulation": "산업안전보건기준규칙 §622",
           "evidence_required": "photo",
           "scenarios": [
-            { "id": "CS-05-SC-1", "content": "내부 작업자 의식 상실 시 구조자가 SCBA 없이 진입 → 2차 피해" }
+            {
+              "id": "CS-05-SC-1",
+              "content": "내부 작업자 의식 상실 시 구조자가 SCBA 없이 진입 → 2차 피해",
+              "content_en": "When an inside worker loses consciousness, rescuers entering without SCBA suffer secondary casualties",
+              "content_vi": "Khi công nhân bên trong mất ý thức, người cứu hộ vào không có SCBA → tổn thất thứ cấp",
+              "content_th": "เมื่อคนงานภายในหมดสติ ผู้กู้ภัยเข้าโดยไม่มี SCBA → เกิดผู้บาดเจ็บลำดับที่สอง",
+              "content_id": "Ketika pekerja di dalam kehilangan kesadaran, rescuer yang masuk tanpa SCBA mengalami korban sekunder"
+            }
           ],
           "mitigations": [
-            { "id": "CS-05-MIT-1", "content": "SCBA 1조 + 구명로프 입구 비치 + 구조자 사전 SCBA 훈련" }
+            {
+              "id": "CS-05-MIT-1",
+              "content": "SCBA 1조 + 구명로프 입구 비치 + 구조자 사전 SCBA 훈련",
+              "content_en": "One SCBA set plus lifeline staged at entry and pre-trained rescuers in SCBA use",
+              "content_vi": "1 bộ SCBA + dây cứu sinh đặt sẵn tại lối vào + huấn luyện sử dụng SCBA cho người cứu hộ trước",
+              "content_th": "SCBA 1 ชุด + เชือกช่วยชีวิตวางที่ทางเข้า + ฝึกอบรมการใช้ SCBA ให้ผู้กู้ภัยล่วงหน้า",
+              "content_id": "Satu set SCBA + tali penyelamat ditempatkan di pintu masuk + pelatihan SCBA bagi rescuer sebelumnya"
+            }
           ],
           "ppe": [
-            { "id": "CS-05-PPE-1", "content": "SCBA (공기호흡기, 충전 상태)" }
+            {
+              "id": "CS-05-PPE-1",
+              "content": "SCBA (공기호흡기, 충전 상태)",
+              "content_en": "SCBA (self-contained breathing apparatus, fully charged)",
+              "content_vi": "SCBA (bình thở khí nén, đã nạp đầy)",
+              "content_th": "SCBA (เครื่องช่วยหายใจ ชาร์จเต็ม)",
+              "content_id": "SCBA (self-contained breathing apparatus, terisi penuh)"
+            }
           ]
         }
       ],
@@ -256,6 +599,10 @@
           "add": {
             "id": "CS-N01",
             "content": "과거 질식·가스 사고 이력 — 진입 전 산소·황화수소·일산화탄소 3종 동시 측정 + 환기 30분 이상 선행",
+            "content_en": "Prior asphyxiation/gas incident history — before entry, simultaneously measure oxygen, hydrogen sulfide, and carbon monoxide, and pre-ventilate for at least 30 minutes",
+            "content_vi": "Tiền sử sự cố ngạt thở/khí — trước khi vào, đo đồng thời oxy, hydro sulfua và carbon monoxide, đồng thời thông gió trước ít nhất 30 phút",
+            "content_th": "มีประวัติเหตุการณ์ขาดอากาศ/ก๊าซในอดีต — ก่อนเข้า ให้วัดออกซิเจน ไฮโดรเจนซัลไฟด์ และคาร์บอนมอนอกไซด์พร้อมกัน และระบายอากาศล่วงหน้าอย่างน้อย 30 นาที",
+            "content_id": "Riwayat insiden asfiksia/gas sebelumnya — sebelum masuk, ukur oksigen, hidrogen sulfida, dan karbon monoksida secara simultan, serta ventilasi awal minimal 30 menit",
             "regulation": "산업안전보건기준규칙 §619"
           }
         },
@@ -264,6 +611,10 @@
           "add": {
             "id": "CS-N02",
             "content": "야간·단독 작업 시 — 외부 감시인 2인 배치 + 무전 채널 상시 개방 + 30분 단위 안부 콜",
+            "content_en": "For night or solo work — assign two external attendants, keep the radio channel open at all times, and perform welfare check-in calls every 30 minutes",
+            "content_vi": "Với ca đêm hoặc làm việc một mình — bố trí 2 người giám sát bên ngoài, mở kênh bộ đàm thường trực và gọi kiểm tra an toàn mỗi 30 phút",
+            "content_th": "สำหรับงานกลางคืนหรือทำงานคนเดียว — จัดเจ้าหน้าที่เฝ้าระวังภายนอก 2 คน เปิดช่องวิทยุสื่อสารตลอดเวลา และโทรเช็คความปลอดภัยทุก 30 นาที",
+            "content_id": "Untuk shift malam atau pekerjaan solo — tugaskan 2 attendant eksternal, jaga channel radio tetap terbuka, dan lakukan welfare call setiap 30 menit",
             "regulation": "산업안전보건기준규칙 §622"
           }
         }

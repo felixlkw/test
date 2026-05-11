@@ -46,6 +46,14 @@ export interface RecommendHazardsRequestBody {
    *  perspective. Same input + temperature 0.4 still produces variation, but
    *  the nonce also bypasses any future caching layer. */
   refresh_seed?: number;
+  /** v0.2.4 PR-feedback-2 — Tier-2 augmentation IDs. List of baseline /
+   *  conditional ids the user has already seen (rendered from Tier-1 static
+   *  catalog). The backend prompt activates an "Augmentation Mode" block:
+   *  keep these baselines AS-IS, only refine per-item or add NEW conditional
+   *  items the user hasn't seen yet. Both fields are optional — omitting them
+   *  preserves v0.2.3 prompt behavior 1:1. */
+  prior_baseline_ids?: string[];
+  prior_conditional_ids?: string[];
 }
 
 export interface RecommendHazardsResponse {
@@ -71,6 +79,12 @@ export interface RecommendHazardsResponse {
   seed_revision?: string;
   /** PR A_v2-2: ISO timestamp of when the response was generated. */
   generated_at?: string;
+  /** v0.2.6 PR-5: 비-한국어 사용자에게 ko-fallback 마이크로카피 노출 여부 가드.
+   *  true → 응답의 모든 텍스트가 ko 폴백 → "AI가 곧 {언어}로 보강합니다" 노출.
+   *  false → 1개라도 현지어가 채워져 있음 → 마이크로카피 숨김.
+   *  catalogQuick.ts(1단 정적 카탈로그)만 채우고 backend /api/recommend-hazards
+   *  (2단 LLM)는 미반환 → undefined로 도착하면 caller가 false로 간주. */
+  content_only_ko_fallback?: boolean;
 }
 
 const handleNonOk = async (res: Response, ctx: string): Promise<never> => {
@@ -105,6 +119,15 @@ export async function recommendHazards(
   if (!res.ok) await handleNonOk(res, "recommendHazards");
   return (await res.json()) as RecommendHazardsResponse;
 }
+
+// ---------------------------------------------------------------------------
+// v0.2.4 PR-feedback-2 — Tier-1 quick path. Re-export from catalogQuick so
+// PrepareScreen has a single import surface for the recommendation API.
+// recommendHazardsQuick reads the build-synced static catalog (≤300ms, no
+// network), throws when the work_type_id isn't seeded — caller falls back
+// to recommendHazards() in that case.
+// ---------------------------------------------------------------------------
+export { recommendHazardsQuick, catalogHasWorkType } from "./catalogQuick";
 
 // ---------------------------------------------------------------------------
 // PR B+ NEW-H3 — conditional `if` DSL → 한국어 라벨 변환.

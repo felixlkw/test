@@ -26,10 +26,13 @@ import { getSession, putSession } from "../services/db";
 import {
   fetchWorkTypes,
   recommendHazards,
+  recommendHazardsQuick,
   type RecommendHazardsResponse,
   type WorkType,
 } from "../services/recommendHazards";
 import type {
+  PreparedBaselineItem,
+  PreparedConditionalItem,
   PreparedContext,
   Session,
   SessionLanguage,
@@ -44,6 +47,8 @@ import HazardRecommendCard from "../components/HazardRecommendCard";
 import SuggestedQuestionChips from "../components/SuggestedQuestionChips";
 import PrepareContextForm from "../components/PrepareContextForm";
 import { IconRefresh } from "../components/Icon";
+import { getPrepareNonKoFallbackMicrocopy } from "../shared/i18n/cueMessages";
+import { pickLabel } from "../services/catalogI18n";
 
 // 자동 재추천은 도메인/작업유형 변경 시에만 트리거. 컨텍스트 폼 변경은
 // 자동 fetch에서 분리(2026-05-04) — felix lock c8 §12-#8(5/60s rate limit)이
@@ -150,12 +155,27 @@ export default function PrepareScreen() {
     };
   }, [domain]);
 
-  // ── 4. recommend-hazards (loadRecommend로 추출 — 수동 새로고침용) ────
-  // PR A_v2-2: backend가 GPT-4o로 전환됨 → 동일 입력에서도 "다시 받기" 시
-  // refresh_seed=Date.now()를 보내 다양성을 유도. 5회/60s rate-limit 초과 시
-  // backend 429 → recommendError에 메시지 표출 (UI는 A_v2-3에서 친화적으로 교체).
+  // ── 4. recommend-hazards 2단 응답 (v0.2.4 PR-feedback-2) ────────────
+  // 1단(즉시): 작업유형 선택 → recommendHazardsQuick(정적 카탈로그) ≤300ms.
+  //   네트워크 0회, source="catalog". work_type 미스 시 backend 폴백.
+  // 2단(보강): PrepareContextForm 변경 1.5s debounce → recommendHazards()
+  //   호출. 요청 body에 prior_baseline_ids/_conditional_ids 포함하여 backend
+  //   Augmentation Mode 활성화. 응답을 1단 카드 위에 머지(id 보존).
+  // "다시 받기": debounce 우회 + 5s cooldown.
   // cancellation: monotonically 증가하는 reqIdRef로 stale 응답 가드.
   const reqIdRef = useRef(0);
+  const debounceTimerRef = useRef<number | null>(null);
+  const lastRefreshAtRef = useRef<number>(0);
+  // v0.2.5 PR-feedback-4 — cooldown setTimeout/interval ref 관리.
+  // 컴포넌트 언마운트 시 정리해서 setState on unmounted 경고 회피.
+  const cooldownTimerRef = useRef<number | null>(null);
+  const cooldownIntervalRef = useRef<number | null>(null);
+  // augmenting=true 일 때 카드 우상단 spinner. recommend는 그대로 노출(=
+  // 1단 카드는 그대로 보이고 백그라운드에서 보강 중).
+  const [augmenting, setAugmenting] = useState(false);
+  // "다시 받기" cooldown — 남은 초(0 = 사용 가능, 5→4→3→2→1→0 카운트다운).
+  const [cooldownRemaining, setCooldownRemaining] = useState(0);
+  const refreshCooldownActive = cooldownRemaining > 0;
 
   // PR A_v2-3: context payload — 도메인 토글 OFF면 무조건 undefined.
   // PreparedContext 빈 객체와 모든 필드 undefined인 객체 모두 → undefined.
@@ -171,46 +191,214 @@ export default function PrepareScreen() {
     return has ? context : undefined;
   }, [aiContextEnabled, context]);
 
-  const loadRecommend = useCallback(
-    async (opts?: { refresh?: boolean }) => {
-      if (!domain || !selectedWorkTypeId) {
+  // 1단 — 정적 카탈로그 즉시 로드. work_type 미스 시 backend 호출로 폴백.
+  // 카탈로그 로드는 Vite dynamic import()라 첫 호출은 chunk fetch가 필요할
+  // 수도 있으나 압축 후 ~10 KB 이내로 ≤300ms 보장.
+  const loadQuick = useCallback(async () => {
+    if (!domain || !selectedWorkTypeId) {
+      setRecommend(null);
+      return;
+    }
+    const myId = ++reqIdRef.current;
+    setRecommendLoading(true);
+    setRecommendError(null);
+    try {
+      const res = await recommendHazardsQuick({
+        domain,
+        workTypeId: selectedWorkTypeId,
+        // v0.2.6 PR-5: 카탈로그 다국어 분기. language별 content_<lang> 우선,
+        // 없으면 ko 폴백. 응답의 `content_only_ko_fallback`이 마이크로카피
+        // 노출 가드(아래 nonKoFallbackMicrocopy 렌더 조건).
+        language,
+      });
+      if (reqIdRef.current !== myId) return;
+      setRecommend(res);
+    } catch {
+      // 카탈로그에 work_type_id가 없거나 동적 import 실패 — backend 폴백.
+      // 사용자에게는 "불러오는 중..."만 노출(에러 메시지 X). 폴백 실패 시
+      // 폴백 catch 블록이 recommendError를 세팅한다.
+      try {
+        const res = await recommendHazards({
+          work_type_id: selectedWorkTypeId,
+          domain,
+          language,
+          context: contextPayload,
+        });
+        if (reqIdRef.current !== myId) return;
+        setRecommend(res);
+      } catch (err: unknown) {
+        if (reqIdRef.current !== myId) return;
+        setRecommendError(err instanceof Error ? err.message : String(err));
         setRecommend(null);
-        return;
       }
+    } finally {
+      if (reqIdRef.current === myId) setRecommendLoading(false);
+    }
+  }, [domain, selectedWorkTypeId, language, contextPayload]);
+
+  // 머지 — 보강 응답 도착 시 호출. id 기반 dedup, 동일 baseline은 LLM 응답으로
+  // 교체(per-item 갱신), 신규 baseline/conditional은 prepend/append.
+  const mergeAugment = useCallback(
+    (
+      prev: RecommendHazardsResponse | null,
+      next: RecommendHazardsResponse,
+    ): RecommendHazardsResponse => {
+      if (!prev) return next;
+      const baselineMap = new Map<string, PreparedBaselineItem>();
+      // 기존 카탈로그 baseline 먼저 — 응답 순서 보존
+      for (const b of prev.baseline) baselineMap.set(b.id, b);
+      // LLM 응답으로 교체(같은 id) + 신규 추가
+      for (const b of next.baseline) baselineMap.set(b.id, b);
+      const baseline = Array.from(baselineMap.values());
+
+      const condMap = new Map<string, PreparedConditionalItem>();
+      for (const c of prev.conditional) condMap.set(c.id, c);
+      for (const c of next.conditional) condMap.set(c.id, c);
+      const conditional = Array.from(condMap.values());
+
+      return {
+        baseline,
+        conditional,
+        // suggested_questions 는 LLM 보강 응답으로 교체(작업장 특이성 반영).
+        suggested_questions:
+          next.suggested_questions.length > 0
+            ? next.suggested_questions
+            : prev.suggested_questions,
+        // incident_cases 도 LLM 응답으로 교체(카탈로그는 비어있는게 default).
+        incident_cases:
+          next.incident_cases.length > 0
+            ? next.incident_cases
+            : prev.incident_cases,
+        scenarios: next.scenarios ?? prev.scenarios,
+        mitigations: next.mitigations ?? prev.mitigations,
+        ppe: next.ppe ?? prev.ppe,
+        seed_revision: next.seed_revision ?? prev.seed_revision,
+        generated_at: next.generated_at ?? prev.generated_at,
+      };
+    },
+    [],
+  );
+
+  // 2단 — backend 보강 호출. 머지 모드: prev recommend가 있으면 prior_*ids
+  // 를 보내 Augmentation Mode 활성화.
+  const loadAugment = useCallback(
+    async (opts?: { refresh?: boolean }) => {
+      if (!domain || !selectedWorkTypeId) return;
       const myId = ++reqIdRef.current;
-      setRecommendLoading(true);
+      const prev = recommend;
+      const priorBaselineIds = prev?.baseline.map((b) => b.id) ?? [];
+      const priorConditionalIds = prev?.conditional.map((c) => c.id) ?? [];
+      setAugmenting(true);
       setRecommendError(null);
       try {
         const res = await recommendHazards({
           work_type_id: selectedWorkTypeId,
           domain,
           language,
-          // PR A_v2-3: 도메인 토글 OFF 또는 빈 form이면 미전송.
           context: contextPayload,
-          // 수동 "다시 받기" 클릭에만 nonce 부여. 자동 fetch는 미부여.
           refresh_seed: opts?.refresh ? Date.now() : undefined,
+          // v0.2.4 PR-feedback-2: backend Augmentation Mode 활성화. prev가 없는
+          // 첫 호출에는 빈 배열을 보내 backend는 일반 모드로 동작 — 후방 호환.
+          prior_baseline_ids:
+            priorBaselineIds.length > 0 ? priorBaselineIds : undefined,
+          prior_conditional_ids:
+            priorConditionalIds.length > 0 ? priorConditionalIds : undefined,
         });
-        if (reqIdRef.current !== myId) return; // 더 새로운 요청이 진입함 → drop
-        setRecommend(res);
+        if (reqIdRef.current !== myId) return;
+        setRecommend((cur) => mergeAugment(cur, res));
       } catch (err: unknown) {
         if (reqIdRef.current !== myId) return;
+        // 보강 실패 시 1단 카드는 유지. 에러는 표기만 — 사용자가 다시 시도 가능.
         setRecommendError(err instanceof Error ? err.message : String(err));
-        setRecommend(null);
       } finally {
-        if (reqIdRef.current === myId) setRecommendLoading(false);
+        if (reqIdRef.current === myId) setAugmenting(false);
       }
     },
-    [domain, selectedWorkTypeId, language, contextPayload],
+    [domain, selectedWorkTypeId, language, contextPayload, recommend, mergeAugment],
   );
 
-  // 도메인/작업유형 변경 시에만 자동 호출. 컨텍스트(form) 변경은 자동 fetch X —
-  // 사용자가 "다시 받기"를 눌러야 반영된다. loadRecommend는 closure로 최신
-  // contextPayload를 가지므로 명시 호출 시 정상 동작.
+  // 도메인/작업유형 변경 시: 1단 즉시 로드. 2단은 사용자 입력 또는 "다시 받기"
+  // 트리거.
   useEffect(() => {
     if (!domain || !selectedWorkTypeId) return;
-    void loadRecommend();
+    void loadQuick();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [domain, selectedWorkTypeId]);
+
+  // PrepareContextForm 변경 → 1.5s debounce → 2단 호출.
+  // contextPayload undefined → form 비어있음 → 호출 X.
+  // recommend null → 1단 미완 → 호출 X (중첩 가드).
+  useEffect(() => {
+    if (!domain || !selectedWorkTypeId) return;
+    if (!contextPayload) return;
+    if (!recommend) return;
+    if (debounceTimerRef.current !== null) {
+      window.clearTimeout(debounceTimerRef.current);
+    }
+    debounceTimerRef.current = window.setTimeout(() => {
+      debounceTimerRef.current = null;
+      void loadAugment();
+    }, 1500);
+    return () => {
+      if (debounceTimerRef.current !== null) {
+        window.clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+    };
+    // recommend는 머지 후 새 객체가 되어 무한 루프 위험 — 명시 비포함.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contextPayload, domain, selectedWorkTypeId]);
+
+  // "다시 받기" 핸들러 — 5s cooldown 적용 + 카운트다운 표기.
+  // v0.2.5 PR-feedback-4 — 강제 보강 호출은 form debounce(1.5s)와 별도 경로라
+  // cooldown 더 길게(5s) 두어 빠른 연속 클릭으로 인한 backend 부하 회피.
+  const handleRefresh = useCallback(() => {
+    const now = Date.now();
+    if (now - lastRefreshAtRef.current < 5000) return; // cooldown
+    lastRefreshAtRef.current = now;
+    // 이전 타이머/인터벌이 남아있다면 정리(연속 클릭 방지 + 안전).
+    if (cooldownTimerRef.current !== null) {
+      window.clearTimeout(cooldownTimerRef.current);
+      cooldownTimerRef.current = null;
+    }
+    if (cooldownIntervalRef.current !== null) {
+      window.clearInterval(cooldownIntervalRef.current);
+      cooldownIntervalRef.current = null;
+    }
+    // 5초 카운트다운: 5 → 4 → 3 → 2 → 1 → 0.
+    setCooldownRemaining(5);
+    cooldownIntervalRef.current = window.setInterval(() => {
+      setCooldownRemaining((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    cooldownTimerRef.current = window.setTimeout(() => {
+      setCooldownRemaining(0);
+      if (cooldownIntervalRef.current !== null) {
+        window.clearInterval(cooldownIntervalRef.current);
+        cooldownIntervalRef.current = null;
+      }
+      cooldownTimerRef.current = null;
+    }, 5000);
+    // debounce 우회 — 즉시 호출.
+    if (debounceTimerRef.current !== null) {
+      window.clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = null;
+    }
+    void loadAugment({ refresh: true });
+  }, [loadAugment]);
+
+  // 언마운트 시 cooldown 타이머/인터벌 정리.
+  useEffect(() => {
+    return () => {
+      if (cooldownTimerRef.current !== null) {
+        window.clearTimeout(cooldownTimerRef.current);
+        cooldownTimerRef.current = null;
+      }
+      if (cooldownIntervalRef.current !== null) {
+        window.clearInterval(cooldownIntervalRef.current);
+        cooldownIntervalRef.current = null;
+      }
+    };
+  }, []);
 
   // ── 5. preparedHazards memo ─────────────────────────────
   const preparedHazards = useMemo<string[]>(() => {
@@ -243,9 +431,12 @@ export default function PrepareScreen() {
       ];
 
       // PR B+ NEW-H5: 영문 ID 외에 사용자 친화 라벨도 같이 저장.
-      // 현재 카탈로그가 한국어 우선이라 label_ko 사용. 다국어 전환 시 i18n.
+      // v0.2.6 PR-5: 다국어 분기 적용 — pickLabel(workType, language)로 현재
+      // 세션 언어에 맞는 라벨을 저장(label_<lang> 우선, 없으면 ko 폴백).
       const selectedWorkType = workTypes.find((w) => w.id === selectedWorkTypeId);
-      const selectedWorkTypeLabel = selectedWorkType?.label_ko;
+      const selectedWorkTypeLabel = selectedWorkType
+        ? pickLabel(selectedWorkType, language)
+        : undefined;
 
       await putSession({
         ...latest,
@@ -282,6 +473,13 @@ export default function PrepareScreen() {
       );
     }
   };
+
+  // v0.2.4 PR-feedback-2 — 비-한국어 사용자 카탈로그 ko-fallback 안내.
+  // language="korean" 일 때는 빈 문자열 → 렌더링 가드로 미노출.
+  const nonKoFallbackMicrocopy = useMemo(
+    () => getPrepareNonKoFallbackMicrocopy(language),
+    [language],
+  );
 
   const domainLabel = useMemo<string>(() => {
     switch (domain) {
@@ -364,6 +562,7 @@ export default function PrepareScreen() {
             onSelect={setSelectedWorkTypeId}
             loading={workTypesLoading}
             error={workTypesError}
+            language={language}
           />
         </section>
 
@@ -403,32 +602,54 @@ export default function PrepareScreen() {
               <h2 id="prep-hazards" className="font-serif-display text-[20px] text-pwc-ink">
                 위험 추천
               </h2>
-              {/* PR A 보강 — 다시 받기 버튼. recommendLoading 동안 disabled. */}
+              {/* PR-feedback-2 — "다시 받기"는 2단 보강 호출(debounce 우회).
+                  v0.2.5 PR-feedback-4 — 5s cooldown + 카운트다운 표기.
+                  1단 카드는 즉시 표시되어 있으므로 augmenting 표기만 보강
+                  동안 노출. */}
               <button
                 type="button"
-                onClick={() => void loadRecommend({ refresh: true })}
-                disabled={recommendLoading}
+                onClick={handleRefresh}
+                disabled={augmenting || refreshCooldownActive || !recommend}
                 className="inline-flex items-center gap-1 text-[12px] text-pwc-ink-soft hover:text-pwc-orange disabled:opacity-50 disabled:cursor-not-allowed transition-colors px-2 py-1 rounded-pwc"
-                aria-label="위험 추천 다시 받기"
-                title="위험 추천을 다시 가져옵니다"
+                aria-label={
+                  refreshCooldownActive
+                    ? `위험 추천 다시 받기 — ${cooldownRemaining}초 후 가능`
+                    : "위험 추천 다시 받기"
+                }
+                aria-live="polite"
+                title={
+                  refreshCooldownActive
+                    ? `${cooldownRemaining}초 후 다시 가능`
+                    : "위험 추천을 다시 가져옵니다"
+                }
               >
                 <IconRefresh
                   size={14}
-                  className={recommendLoading ? "animate-spin" : undefined}
+                  className={augmenting ? "animate-spin" : undefined}
                 />
-                <span>{recommendLoading ? "불러오는 중…" : "다시 받기"}</span>
+                <span>
+                  {augmenting
+                    ? "보강 중…"
+                    : refreshCooldownActive
+                      ? `${cooldownRemaining}초 후 가능`
+                      : "다시 받기"}
+                </span>
               </button>
             </div>
             <p className="text-xs text-pwc-ink-mute mt-1">
               필수 항목은 TBM 진행 중 자동으로 체크리스트에 포함됩니다.
             </p>
             <RuleLine className="mt-2 mb-3" />
-            {recommendLoading && (
+            {/* PR-feedback-2 — 1단 카드는 정적 카탈로그라 ≤300ms 표시.
+                recommendLoading은 카탈로그 chunk 로드 + (폴백 시) backend
+                호출 시간만 노출. recommend가 들어오면 augmenting 동안에도
+                카드는 그대로 노출하고 우상단 spinner로 보강 중임을 표시. */}
+            {recommendLoading && !recommend && (
               <div className="text-sm text-pwc-ink-mute py-3" role="status">
                 위험 추천 불러오는 중…
               </div>
             )}
-            {recommendError && (
+            {recommendError && !recommend && (
               <div
                 className="text-sm text-pwc-orange-deep border border-pwc-orange-deep/40 rounded-pwc px-3 py-2"
                 role="alert"
@@ -436,12 +657,34 @@ export default function PrepareScreen() {
                 위험 추천을 불러오지 못했습니다 — {recommendError}
               </div>
             )}
-            {!recommendLoading && !recommendError && recommend && (
-              <HazardRecommendCard
-                baseline={recommend.baseline}
-                conditional={recommend.conditional}
-                language={language}
-              />
+            {recommend && (
+              <>
+                {recommendError && augmenting === false && (
+                  <div
+                    className="text-[11px] text-pwc-orange-deep mb-2"
+                    role="status"
+                  >
+                    AI 보강에 실패했습니다 — 카탈로그 카드는 그대로 사용 가능합니다.
+                  </div>
+                )}
+                {/* v0.2.6 PR-5: ko-fallback 마이크로카피 노출 조건 강화.
+                    기존 `language !== "korean"` → 카탈로그가 다국어로 채워진
+                    경우에도 노출되던 false-positive 해소. 응답의
+                    `content_only_ko_fallback === true` 인 경우에만 노출 —
+                    즉 비-한국어 + 모든 항목이 ko 폴백일 때만. backend 보강
+                    (`augmenting`) 진행 중에는 표기 회피. */}
+                {recommend.content_only_ko_fallback === true && !augmenting && (
+                  <p className="text-[11px] text-pwc-ink-mute mb-2 italic">
+                    {nonKoFallbackMicrocopy}
+                  </p>
+                )}
+                <HazardRecommendCard
+                  baseline={recommend.baseline}
+                  conditional={recommend.conditional}
+                  language={language}
+                  augmenting={augmenting}
+                />
+              </>
             )}
           </section>
         )}

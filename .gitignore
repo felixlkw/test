@@ -37,6 +37,13 @@ __MACOSX/
 # --- Railway ---
 .railway/
 
+# --- Build-time generated catalog (v0.2.4 PR-feedback-2) ---
+# scripts/sync-catalog.mjs copies backend/data/checklist_catalog/*.json into
+# frontend/src/generated/catalog/ at predev/prebuild time. Backend JSON is the
+# single source of truth; the generated dir is reproducible from a clean
+# checkout, so it stays out of git to avoid PR noise on every catalog edit.
+frontend/src/generated/
+
 # --- _workspace dev notes ---
 # Cycle 리포트·prompt·draft는 미커밋. 사용자 매뉴얼 + 4 도메인 시나리오만 추적.
 _workspace/*

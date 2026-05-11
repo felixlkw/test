@@ -212,3 +212,16 @@ export async function findLatestDraft(): Promise<Session | undefined> {
     (s) => s.status === "draft" && (s.mode ?? "TBM") !== "EHS",
   );
 }
+
+/**
+ * PR-feedback-1 (v0.2.2) — 미완료 TBM 다건 관리.
+ * `findLatestDraft`와 동일 술어(`s.status === "draft"`, EHS 제외)로 N건 반환.
+ * `listSessions()` 기본값으로 archived 제외, updated_at desc 정렬 보장.
+ * DB_VERSION 인상 X (Invariant #6 보호) — read 전용 헬퍼.
+ */
+export async function listDraftTbmSessions(): Promise<Session[]> {
+  const all = await listSessions();
+  return all.filter(
+    (s) => s.status === "draft" && (s.mode ?? "TBM") !== "EHS",
+  );
+}
