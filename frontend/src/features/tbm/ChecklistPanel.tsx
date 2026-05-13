@@ -12,6 +12,7 @@ import { IconClose, IconShield, IconLock } from "../../components/Icon";
 import type { WebRTCSession } from "../../services/webrtc";
 import type { ChecklistItem } from "../../services/checklist";
 import type { PriorInformation } from "./types";
+import type { PreparedContext } from "../../services/sessionModel";
 
 interface ChecklistPanelProps {
   show: boolean;
@@ -19,6 +20,10 @@ interface ChecklistPanelProps {
   checklist: ChecklistItem[];
   setChecklist: React.Dispatch<React.SetStateAction<ChecklistItem[]>>;
   priorInfo: PriorInformation;
+  /** PR-feedback-5 (v0.2.9) — `priorInfo.numberOfWorkers` falsy일 때 의미상 동치인
+   *  `preparedContext.worker_count`를 fallback으로 표시. 다른 슬롯은 PR-2(v0.3.0)에서
+   *  PrepareContextForm 확장 후 직접 채워지므로 본 PR-1에선 worker_count만. 옵셔널 — 없으면 fallback 없음. */
+  preparedContext?: PreparedContext;
   completedCount: number;
   sessionRef: MutableRefObject<WebRTCSession | null>;
   /** PR-feedback-3 — true면 미완(completed=false && skipped=false)만 표시. */
@@ -31,6 +36,7 @@ export function ChecklistPanel({
   checklist,
   setChecklist,
   priorInfo,
+  preparedContext,
   completedCount,
   sessionRef,
   missingOnly = false,
@@ -129,11 +135,20 @@ export function ChecklistPanel({
               <h3 className="font-semibold text-pwc-orange text-lg">사전 정보</h3>
             </div>
             <div className="grid grid-cols-1 gap-3">
+              {/* PR-feedback-5 (v0.2.9) — worker_count 1건만 fallback. 0은 양쪽 모두
+                   미입력 처리(사용자 결정 — falsy 동작 유지). 나머지 3 슬롯(workLocation
+                   / workContentDetails / equipmentDetails) fallback은 PR-2에서 추가. */}
               <PriorRow label="작업장소" value={priorInfo.workLocation} />
               <PriorRow label="작업내용" value={priorInfo.workContentDetails} />
               <PriorRow
                 label="작업자수"
-                value={priorInfo.numberOfWorkers ? `${priorInfo.numberOfWorkers}명` : undefined}
+                value={
+                  priorInfo.numberOfWorkers
+                    ? `${priorInfo.numberOfWorkers}명`
+                    : preparedContext?.worker_count
+                      ? `${preparedContext.worker_count}명`
+                      : undefined
+                }
               />
               <PriorRow label="장비정보" value={priorInfo.equipmentDetails} />
             </div>

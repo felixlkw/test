@@ -23,7 +23,7 @@ app = FastAPI()
 # ---------------------------------------------------------------------------
 @app.get("/api/health")
 async def health_check():
-    return {"status": "ok", "version": "0.2.4"}
+    return {"status": "ok", "version": "0.2.9"}
 
 
 # Allow CORS for local development

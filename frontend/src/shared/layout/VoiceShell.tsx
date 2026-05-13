@@ -1941,6 +1941,9 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
             checklist={checklist}
             setChecklist={setChecklist}
             priorInfo={priorInfo}
+            // PR-feedback-5 (v0.2.9) — priorInfo.numberOfWorkers 미입력 시
+            // preparedContext.worker_count fallback 수용.
+            preparedContext={currentPreparedContext}
             completedCount={completedCount}
             sessionRef={sessionRef}
             // PR-feedback-3 — ClosingBanner "자세히 보기" 진입 시 미기입만 필터.

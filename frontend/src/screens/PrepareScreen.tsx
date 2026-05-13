@@ -438,10 +438,24 @@ export default function PrepareScreen() {
         ? pickLabel(selectedWorkType, language)
         : undefined;
 
+      // PR-feedback-5 (v0.2.9) — work_type_label → prior_info.workContentDetails
+      // 1회 hydration mirror. 이미 prior_info.workContentDetails에 값이 있으면
+      // 덮어쓰지 않음(LLM이 collect_prior_information으로 채운 값 우선).
+      // 신규 세션은 latest.prior_info === {} 이므로 본 mirror만 작동.
+      const nextPriorInfo = {
+        ...latest.prior_info,
+        ...(latest.prior_info.workContentDetails
+          ? {}
+          : selectedWorkTypeLabel
+            ? { workContentDetails: selectedWorkTypeLabel }
+            : {}),
+      };
+
       await putSession({
         ...latest,
         work_type_id: selectedWorkTypeId,
         work_type_label: selectedWorkTypeLabel,
+        prior_info: nextPriorInfo,
         // Backward-compat derive (PR A): prepared_hazards = baseline.content[].
         // Will be deprecated in a later cycle (felix decision §12-#9).
         prepared_hazards: preparedHazards,
