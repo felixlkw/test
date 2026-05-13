@@ -46,6 +46,7 @@ import WorkTypeCatalog from "../components/WorkTypeCatalog";
 import HazardRecommendCard from "../components/HazardRecommendCard";
 import SuggestedQuestionChips from "../components/SuggestedQuestionChips";
 import PrepareContextForm from "../components/PrepareContextForm";
+import type { PrepareContextFormValue } from "../components/PrepareContextForm";
 import { IconRefresh } from "../components/Icon";
 import { getPrepareNonKoFallbackMicrocopy } from "../shared/i18n/cueMessages";
 import { pickLabel } from "../services/catalogI18n";
@@ -81,8 +82,12 @@ export default function PrepareScreen() {
   const [recommendError, setRecommendError] = useState<string | null>(null);
 
   // PR A_v2-3 — 컨텍스트 입력 (felix lock c8 §5).
-  // 빈 객체로 시작; 모든 필드 옵셔널. 입력 시 debounced 500ms 재추천 트리거.
-  const [context, setContext] = useState<PreparedContext>({});
+  // 빈 객체로 시작; 모든 필드 옵셔널. 입력 시 debounced 1.5s 재추천 트리거.
+  // PR-2 (v0.3.0) — 타입 `PreparedContext` → `PrepareContextFormValue`로 확장.
+  // 추가 3 옵셔널 transient(workLocation/workContentDetails/equipmentDetails)는
+  // contextPayload memo에서 제외되어 prepared_context로 영속되지 않고, startTbm
+  // 시점에 prior_info 4 슬롯으로 hydration mirror.
+  const [context, setContext] = useState<PrepareContextFormValue>({});
 
   // 저장 동작
   const [saving, setSaving] = useState(false);
@@ -125,6 +130,37 @@ export default function PrepareScreen() {
       navigate("/", { replace: true });
     }
   }, [loadState, session, navigate]);
+
+  // ── 2-bis. PR-2 form hydration ───────────────────────────
+  // session 로드 직후 1회: PrepareContextForm value를 다음 우선순위로 hydrate.
+  //   - PreparedContext 6 필드: session.prepared_context (영속본)
+  //   - prior_info 3 슬롯(workLocation/workContentDetails/equipmentDetails):
+  //     session.prior_info에서 form value로 빌려와서 사용자에게 다시 표시.
+  //   - worker_count: prepared_context.worker_count 우선,
+  //     없으면 prior_info.numberOfWorkers 폴백 (key mirror 역방향).
+  //
+  // 확신 못함: 기존 hydration 패턴 확인 후 통합 — PrepareScreen에는 setContext를
+  // hydration에 쓰는 기존 useEffect가 없으므로 본 useEffect가 신규 분기. 향후
+  // 다른 form state가 추가되어 hydration 통합 useEffect가 생기면 본 블록을
+  // 그쪽으로 이관할 것.
+  useEffect(() => {
+    if (!session) return;
+    setContext({
+      // PreparedContext 6 필드 영속본 hydration
+      ...(session.prepared_context ?? {}),
+      // prior_info 3 슬롯 — form value로 빌려와서 사용자에게 다시 표시
+      workLocation: session.prior_info?.workLocation,
+      workContentDetails: session.prior_info?.workContentDetails,
+      equipmentDetails: session.prior_info?.equipmentDetails,
+      // worker_count ↔ prior_info.numberOfWorkers 동기화 — 우선순위:
+      // prepared_context.worker_count(직접 영속) > prior_info.numberOfWorkers
+      worker_count:
+        session.prepared_context?.worker_count ??
+        session.prior_info?.numberOfWorkers,
+    });
+    // session_id가 바뀌었을 때만 재실행(세션 단위 hydration).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.session_id]);
 
   const domain = session?.domain;
   const language: SessionLanguage = session?.language ?? "korean";
@@ -179,6 +215,10 @@ export default function PrepareScreen() {
 
   // PR A_v2-3: context payload — 도메인 토글 OFF면 무조건 undefined.
   // PreparedContext 빈 객체와 모든 필드 undefined인 객체 모두 → undefined.
+  // PR-2 (v0.3.0): context state는 PrepareContextFormValue (= PreparedContext +
+  // 3 transient 슬롯)로 확장됐으므로, prepared_context 영속에는 PreparedContext
+  // 6 필드만 추출. 3 transient 슬롯(workLocation/workContentDetails/
+  // equipmentDetails)은 startTbm에서 prior_info로 별도 hydration mirror.
   const contextPayload = useMemo<PreparedContext | undefined>(() => {
     if (!aiContextEnabled) return undefined;
     const has =
@@ -188,7 +228,16 @@ export default function PrepareScreen() {
       (context.new_material !== undefined && context.new_material !== "") ||
       (context.special_notes !== undefined && context.special_notes !== "") ||
       (context.previous_incident_keywords?.length ?? 0) > 0;
-    return has ? context : undefined;
+    if (!has) return undefined;
+    // PreparedContext 6 필드만 추출 (prior_info 3 슬롯 제외).
+    return {
+      worker_count: context.worker_count,
+      shift: context.shift,
+      wind_speed_mps: context.wind_speed_mps,
+      new_material: context.new_material,
+      special_notes: context.special_notes,
+      previous_incident_keywords: context.previous_incident_keywords,
+    };
   }, [aiContextEnabled, context]);
 
   // 1단 — 정적 카탈로그 즉시 로드. work_type 미스 시 backend 호출로 폴백.
@@ -438,16 +487,40 @@ export default function PrepareScreen() {
         ? pickLabel(selectedWorkType, language)
         : undefined;
 
-      // PR-feedback-5 (v0.2.9) — work_type_label → prior_info.workContentDetails
-      // 1회 hydration mirror. 이미 prior_info.workContentDetails에 값이 있으면
-      // 덮어쓰지 않음(LLM이 collect_prior_information으로 채운 값 우선).
-      // 신규 세션은 latest.prior_info === {} 이므로 본 mirror만 작동.
-      const nextPriorInfo = {
+      // PR-feedback-5 v0.2.9 → v0.3.0 — prior_info 4 슬롯 hydration mirror.
+      // 우선순위(높음 → 낮음, 슬롯별):
+      //   workLocation:        LLM > form
+      //   workContentDetails:  LLM > form > work_type_label (PR-1 fallback)
+      //   numberOfWorkers:     LLM > form.worker_count (key mirror; 0=falsy)
+      //   equipmentDetails:    LLM > form
+      // 규칙: prior_info에 이미 값이 있으면(LLM이 collect_prior_information으로
+      // 채웠다면) form 값으로 덮어쓰지 않는다 — 사용자가 Prepare로 돌아와
+      // form을 비웠다고 LLM update를 지우는 것은 의도와 다름. 신규 세션은
+      // latest.prior_info === {} 이라 form 값으로 채워짐.
+      // numberOfWorkers: 사용자 결정 — worker_count는 truthy 룰(0=미입력).
+      const mergedPriorInfo = {
         ...latest.prior_info,
+        ...(latest.prior_info.workLocation
+          ? {}
+          : context.workLocation
+            ? { workLocation: context.workLocation }
+            : {}),
         ...(latest.prior_info.workContentDetails
           ? {}
-          : selectedWorkTypeLabel
-            ? { workContentDetails: selectedWorkTypeLabel }
+          : context.workContentDetails
+            ? { workContentDetails: context.workContentDetails }
+            : selectedWorkTypeLabel
+              ? { workContentDetails: selectedWorkTypeLabel }
+              : {}),
+        ...(latest.prior_info.numberOfWorkers !== undefined
+          ? {}
+          : context.worker_count
+            ? { numberOfWorkers: context.worker_count }
+            : {}),
+        ...(latest.prior_info.equipmentDetails
+          ? {}
+          : context.equipmentDetails
+            ? { equipmentDetails: context.equipmentDetails }
             : {}),
       };
 
@@ -455,7 +528,7 @@ export default function PrepareScreen() {
         ...latest,
         work_type_id: selectedWorkTypeId,
         work_type_label: selectedWorkTypeLabel,
-        prior_info: nextPriorInfo,
+        prior_info: mergedPriorInfo,
         // Backward-compat derive (PR A): prepared_hazards = baseline.content[].
         // Will be deprecated in a later cycle (felix decision §12-#9).
         prepared_hazards: preparedHazards,
