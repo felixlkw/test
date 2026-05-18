@@ -13,6 +13,7 @@ import {
   isCameraEnabled,
   setCameraEnabled,
 } from "../services/cameraSettings";
+import { isDomainVisible } from "../shared/tenant/config";
 import type { SessionDomain } from "../services/sessionModel";
 import {
   exportSessions,
@@ -23,6 +24,10 @@ import {
   setRetentionOption,
   type RetentionOption,
 } from "../services/retention";
+
+// Tenant-aware visible-domain list. 비가시 도메인(예: LG Innotek의 semiconductor)은
+// 상태 초기화 / 토글 행 / 기본 도메인 드롭다운 모두에서 노출 자체를 제거.
+const VISIBLE_DOMAINS = ALL_DOMAINS.filter(isDomainVisible);
 
 // PR D Q8 — 운영 섹션 localStorage 키.
 const DEFAULT_DOMAIN_KEY = "safemate.ui.defaultDomain";
@@ -246,7 +251,7 @@ export default function SettingsScreen() {
             LLM에 전달할지 선택합니다.
           </p>
           <ul className="divide-y divide-pwc-border border border-pwc-border rounded-pwc bg-white">
-            {ALL_DOMAINS.map((d) => {
+            {VISIBLE_DOMAINS.map((d) => {
               const enabled = aiContextByDomain[d];
               return (
                 <li
@@ -297,7 +302,7 @@ export default function SettingsScreen() {
             보안)
           </p>
           <ul className="divide-y divide-pwc-border border border-pwc-border rounded-pwc bg-white">
-            {ALL_DOMAINS.map((d) => {
+            {VISIBLE_DOMAINS.map((d) => {
               const enabled = cameraByDomain[d];
               return (
                 <li
@@ -359,7 +364,7 @@ export default function SettingsScreen() {
               aria-label="기본 도메인 선택"
             >
               <option value="">선택 안 함</option>
-              {ALL_DOMAINS.map((d) => (
+              {VISIBLE_DOMAINS.map((d) => (
                 <option key={d} value={d}>
                   {DOMAIN_LABEL_KO[d]}
                 </option>

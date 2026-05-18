@@ -14,13 +14,22 @@ import {
   getHistoryFilterDraftLabel,
   getHistoryShowMoreLabel,
 } from "../shared/i18n/draftLabels";
+import { domainLabel, isDomainVisible } from "../shared/tenant/config";
 
+// Tenant-aware: 라벨과 가시성 모두 shared/tenant/config.ts에서 결정.
+// hiddenDomains에 포함된 도메인은 filter chip 자체가 노출되지 않음.
+const DOMAIN_FILTER_ORDER: SessionDomain[] = [
+  "manufacturing",
+  "construction",
+  "heavy_industry",
+  "semiconductor",
+];
 const DOMAIN_FILTERS: { value: SessionDomain | "all"; label: string }[] = [
   { value: "all", label: "전체" },
-  { value: "manufacturing", label: "제조" },
-  { value: "construction", label: "건설" },
-  { value: "heavy_industry", label: "중공업" },
-  { value: "semiconductor", label: "반도체" },
+  ...DOMAIN_FILTER_ORDER.filter(isDomainVisible).map((value) => ({
+    value,
+    label: domainLabel(value),
+  })),
 ];
 
 // PR-feedback-1 (v0.2.2) — 상태 세그먼트 컨트롤(전체/미완료/완료).
