@@ -1,6 +1,14 @@
-// EHS 모드 추천 질문 풀. PR 1: App.tsx L74-110 그대로 이전.
+// EHS 모드 추천 질문 풀.
+// 활성 tenant의 도메인별 시드가 있으면 모두 합쳐서 풀로 사용하고,
+// 없으면 기본 풀(아래)을 사용. 신규 PoC를 추가할 때는 tenant config의
+// ehsRecommendedQuestions 만 채우면 되며 이 파일은 손대지 않아도 된다.
+import { tenant } from "../../shared/tenant/config";
 
-export const RECOMMENDED_QUESTIONS: string[] = [
+const TENANT_POOL: string[] = Object.values(
+  tenant.ehsRecommendedQuestions ?? {},
+).flatMap((arr) => arr ?? []);
+
+const DEFAULT_POOL: string[] = [
   "셀 조립 라인에서 신규 설비가 도입됐는데 어떤 위험요소가 있는지 알려줘.",
   "판금 작업 중 손가락 끼임 사고를 방지하려면 어떤 보호장비를 착용해야 해?",
   "포장작업 라인에서 박스 사이즈가 변경됐을 때 작업자의 부하 위험은 어떻게 평가해야 할까?",
@@ -37,3 +45,6 @@ export const RECOMMENDED_QUESTIONS: string[] = [
   "유니트 고정 볼트 사양이 바뀐 뒤 반복적인 손목통증 호소가 늘었는데, 이런 근골격계 질환은 어떻게 예방해야 해?",
   "에어컨 제품의 고용량화로 유니트 중량이 증가했을 때, 리프터와 인력배치 기준은 어떻게 조정하는 게 맞을까?",
 ];
+
+export const RECOMMENDED_QUESTIONS: string[] =
+  TENANT_POOL.length > 0 ? TENANT_POOL : DEFAULT_POOL;

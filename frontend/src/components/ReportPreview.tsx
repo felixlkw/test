@@ -41,7 +41,7 @@ export function ReportPreview({
       <header className="flex items-start justify-between border-b-2 border-pwc-orange pb-3 mb-4">
         <div>
           <div className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold">
-            SafeMate · TBM 보고서
+            Safety Vision · TBM 보고서
           </div>
           <h2 className="font-serif-display text-[20px] text-pwc-ink mt-0.5 leading-tight">
             {session.work_type_label || session.work_type || "제목 없음"}
@@ -223,7 +223,7 @@ export function ReportPreview({
       )}
 
       <footer className="text-[10px] text-pwc-ink-mute pt-3 mt-3 border-t border-pwc-border">
-        SafeMate · 산업안전 데모 · 클라이언트 PDF 생성(오프라인)
+        Safety Vision · LG Innotek Industrial Safety PoC · 클라이언트 PDF 생성(오프라인)
       </footer>
     </div>
   );

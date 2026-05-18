@@ -1,6 +1,5 @@
-// PwcMark — official PwC logo asset (frontend/public/pwc-logo.svg).
-// Wikimedia Commons SVG source. variant prop kept for backward compatibility
-// but both variants now render the same single-asset logo.
+// PwcMark — brand wordmark asset. Component name retained for backward
+// compatibility (referenced across screens); asset is the active brand logo.
 interface PwcMarkProps {
   size?: number;
   className?: string;
@@ -8,16 +7,16 @@ interface PwcMarkProps {
   variant?: "wordmark" | "accent";
 }
 
-// SVG viewBox: 0.54 5.5 359.39 173.84 → aspect ratio ≈ 2.067:1
-const PWC_ASPECT = 359.39 / 173.84;
+// SVG viewBox: 0 0 420.271 77.241 → aspect ratio ≈ 5.441:1 (wide wordmark)
+const BRAND_ASPECT = 420.271 / 77.241;
 
 export default function PwcMark({ size = 32, className = "" }: PwcMarkProps) {
   const h = size;
-  const w = Math.round(size * PWC_ASPECT);
+  const w = Math.round(size * BRAND_ASPECT);
   return (
     <img
-      src="/pwc-logo.svg"
-      alt="PwC"
+      src="/LG_Innotek_logo_(english).svg"
+      alt="LG Innotek"
       width={w}
       height={h}
       className={className}

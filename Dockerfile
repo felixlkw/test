@@ -24,6 +24,7 @@ COPY backend/src/__init__.py ./src/__init__.py
 COPY backend/src/main.py ./src/main.py
 COPY backend/src/llm.py ./src/llm.py
 COPY backend/src/prompt.py ./src/prompt.py
+COPY backend/src/tenant.py ./src/tenant.py
 
 # Copy data files
 COPY backend/data ./data

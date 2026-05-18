@@ -1,5 +1,16 @@
 import json
 
+from .tenant import get_active_tenant
+
+
+def _apply_tenant_branding(text: str) -> str:
+    """Rewrite the canonical Samsung/SafeMate identity strings in a prompt
+    skeleton with the active tenant's company/app names. Keeps the prompt
+    source readable while making the persona configurable per PoC."""
+    t = get_active_tenant()
+    return text.replace("Samsung", t.company_name).replace("SafeMate", t.app_name)
+
+
 # Language configurations (v0.2.0: polish deprecated -> folded to english,
 # thai and indonesian added. Polish kept as a stub for legacy callers.)
 # v0.4.0 — Bilingual / multilingual UX (issue 5):
@@ -910,7 +921,14 @@ def get_system_prompt(
     preserves byte-identical voice prompt — backward compat 100%.
     """
     lang_config = LANGUAGE_CONFIG.get(language, LANGUAGE_CONFIG["korean"])
-    domain_text = DOMAIN_CONTEXT.get(domain, "") if domain else ""
+    # Tenant overlay takes precedence over the canonical DOMAIN_CONTEXT so
+    # customer PoCs can describe their own business context for the LLM.
+    _t_overlay = get_active_tenant().domain_context_overlay
+    domain_text = (
+        (_t_overlay.get(domain) or DOMAIN_CONTEXT.get(domain, ""))
+        if domain
+        else ""
+    )
     _nl = "\n- "
     is_chat = (transport == "chat")
     # Phase chat-PR1 — In chat mode, the BRIEFING_REVIEW_MODE / BROADCAST_MODE_RULE
@@ -1212,7 +1230,7 @@ def get_system_prompt(
             chat_notice = (
                 CHAT_MODE_NOTICE["korean"] + "\n" + CHAT_MODE_NOTICE["english"]
             )
-            return f'''General Information:
+            return _apply_tenant_branding(f'''General Information:
 - You are an AI assistant for EHS (Environment, Health, Safety) Q&A in a chat interface.
 - The users are construction site workers and managers using a mobile chat app.
 - You are developed by Samsung and your name is SafeMate.
@@ -1263,8 +1281,8 @@ Citation format (chat mode, EHS only):
 - When referencing an internal SOP, use [SOP-<id>].
 - When referencing a placeholder/uncertain source, use [출처 미확인 — 참고 권고] (or English equivalent).
 - One sentence = at most 1 citation. Do not bundle multiple citations on one sentence.
-'''
-        return f'''General Information:
+''')
+        return _apply_tenant_branding(f'''General Information:
 - You are an AI assistant for EHS (Environment, Health, Safety) voice chat.
 - The users are construction site workers and managers using a mobile voice-chat app.
 - You are developed by Samsung and your name is SafeMate.
@@ -1317,7 +1335,7 @@ Guidelines:
 - Encourage proactive safety behavior.
 - When users ask about specific safety topics, use the retrieve_documents tool to get relevant information.
 - After retrieving documents, use display_document_citations to provide users with additional resources.
-'''
+''')
     else:  # TBM mode
         if is_chat:
             # Phase chat-PR1 — TBM chat branch.
@@ -1327,7 +1345,7 @@ Guidelines:
             chat_notice_tbm = (
                 CHAT_MODE_NOTICE["korean"] + "\n" + CHAT_MODE_NOTICE["english"]
             )
-            return f'''General Information:
+            return _apply_tenant_branding(f'''General Information:
 - You are an AI assistant for construction site toolbox meetings (TBM, 툴박스 미팅).
 - The users are construction site managers using a mobile chat app.
 - You are developed by Samsung and your name is SafeMate.
@@ -1512,8 +1530,8 @@ Markdown formatting (chat mode):
 {natural_slot_block}
 
 {closing_reminder_block}
-'''
-        return f'''General Information:
+''')
+        return _apply_tenant_branding(f'''General Information:
 - You are an AI assistant for construction site toolbox meetings (TBM, 툴박스 미팅).
 - The users are construction site managers using a mobile voice-chat app.
 - You are developed by Samsung and your name is SafeMate.
@@ -1743,7 +1761,7 @@ AI Message: "오늘 TBM 요약을 정리했습니다. 내용을 확인하고 확
 {natural_slot_block}
 
 {closing_reminder_block}
-'''
+''')
 
 # Legacy prompts for backwards compatibility
 EHS_SYSTEM = get_system_prompt("ehs", "korean")

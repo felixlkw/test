@@ -1,552 +1,859 @@
 {
   "domain": "construction",
-  "version": "0.3.0",
-  "note": "PR A placeholder catalog — 12 work types total (3 per domain). Phase 2.x PR-1: per-item scenarios/mitigations/ppe added inside each baseline. v0.3.0: 4언어(en/vi/th/id) 번역 추가, ko 원문 유지. regulation 인용은 felix 검수 필요.",
+  "version": "0.4.0-lg_innotek",
+  "note": "LG이노텍 PoC tenant 카탈로그 — 신규 팹·라인 증설·클린룸 시공·대형 설비 반입(rigging)·특수가스/케미컬 라인 시공·MEP 시공 특화. 광학솔루션/패키지솔루션(FC-BGA, 포토마스크)/모빌리티솔루션 양산 라인 인프라 신축·증설 현장 가정. 일반 토목/주거 건설 콘텐츠 제외. regulation 인용은 산업안전보건기준규칙 우선이며 felix 검수 필요.",
   "work_types": {
-    "WORKING_AT_HEIGHT": {
-      "label_ko": "고소작업",
-      "label_en": "Working at Height",
-      "label_vi": "Làm việc trên cao",
-      "label_th": "ทำงานบนที่สูง",
-      "label_id": "Kerja di Ketinggian",
+    "CLEANROOM_FITOUT": {
+      "label_ko": "클린룸 시공",
+      "label_en": "Cleanroom Fit-out",
+      "label_vi": "Thi công phòng sạch",
+      "label_th": "การติดตั้งห้องคลีนรูม",
+      "label_id": "Pemasangan Cleanroom",
       "baseline": [
         {
-          "id": "WAH-01",
-          "content": "안전대 착용 및 생명줄(수평/수직) 연결 확인",
-          "content_en": "Confirm full-body harness donned and lifeline (horizontal/vertical) connected",
-          "content_vi": "Kiểm tra dây an toàn toàn thân đã đeo và dây cứu sinh (ngang/dọc) đã móc",
-          "content_th": "ตรวจสอบการสวมเข็มขัดนิรภัยแบบเต็มตัวและการเชื่อมต่อ lifeline (แนวนอน/แนวตั้ง)",
-          "content_id": "Pastikan full body harness terpasang dan lifeline (horizontal/vertikal) terhubung",
-          "regulation": "산업안전보건기준규칙 §42",
+          "id": "CRF-01",
+          "content": "FFU(Fan Filter Unit) 및 천정 그리드 설치 — 고소작업 안전대 체결 및 사다리/MEWP 사용 확인",
+          "content_en": "FFU (Fan Filter Unit) and ceiling grid installation — verify harness use and approved ladder/MEWP",
+          "content_vi": "Lắp FFU và lưới trần — kiểm tra dây an toàn và thang/MEWP được phê duyệt",
+          "content_th": "ติดตั้ง FFU และ ceiling grid — ตรวจสอบการคล้องเข็มขัดนิรภัยและบันได/MEWP ที่ได้รับอนุมัติ",
+          "content_id": "Pemasangan FFU dan grid plafon — verifikasi penggunaan harness dan tangga/MEWP yang disetujui",
+          "regulation": "산업안전보건기준규칙 §42, §43 (안전대·작업발판)",
           "evidence_required": "photo|verbal",
           "scenarios": [
             {
-              "id": "WAH-01-SC-1",
-              "content": "안전대 미체결 작업자가 균형 상실 시 추락 (4m 이상)",
-              "content_en": "Worker without harness hooked loses balance and falls (over 4m)",
-              "content_vi": "Công nhân không móc dây an toàn mất thăng bằng và rơi (trên 4m)",
-              "content_th": "ผู้ปฏิบัติงานที่ไม่ได้คล้องเข็มขัดเสียการทรงตัวและตกจากที่สูง (เกิน 4 เมตร)",
-              "content_id": "Pekerja yang tidak mengaitkan harness kehilangan keseimbangan dan jatuh (lebih dari 4m)"
+              "id": "CRF-01-SC-1",
+              "content": "FFU(20~25kg) 양중 중 천정 그리드에서 추락 또는 FFU 낙하",
+              "content_en": "Worker falls from ceiling grid or FFU (20–25kg) drops during lifting",
+              "content_vi": "Công nhân ngã từ lưới trần hoặc FFU (20–25kg) rơi khi nâng",
+              "content_th": "ผู้ปฏิบัติงานตกจาก ceiling grid หรือ FFU (20–25 กก.) ตกระหว่างยก",
+              "content_id": "Pekerja jatuh dari grid plafon atau FFU (20–25kg) terjatuh saat diangkat"
+            },
+            {
+              "id": "CRF-01-SC-2",
+              "content": "임시 가설 사다리·발판이 raised floor 미설치 구간에서 전도",
+              "content_en": "Temporary ladder/platform tips over on area without raised floor",
+              "content_vi": "Thang/sàn tạm bị lật ở khu vực chưa lắp raised floor",
+              "content_th": "บันได/แท่นชั่วคราวล้มในบริเวณที่ยังไม่ติดตั้ง raised floor",
+              "content_id": "Tangga/platform sementara terjatuh di area tanpa raised floor"
             }
           ],
           "mitigations": [
             {
-              "id": "WAH-01-MIT-1",
-              "content": "작업 시작 전 인원별 생명줄 체결 상태 1:1 확인 (추정: KOSHA G-49, felix 검수 필요)",
-              "content_en": "Verify each worker's lifeline attachment 1:1 before work starts",
-              "content_vi": "Kiểm tra 1:1 tình trạng móc dây cứu sinh của từng người trước khi bắt đầu công việc",
-              "content_th": "ตรวจสอบสถานะการคล้อง lifeline ของแต่ละคนแบบ 1:1 ก่อนเริ่มงาน",
-              "content_id": "Verifikasi 1:1 status pengaitan lifeline setiap pekerja sebelum mulai bekerja"
+              "id": "CRF-01-MIT-1",
+              "content": "MEWP(고소작업대) 사용 우선, 사다리 사용 시 2인 1조 + 양손 자유 확보",
+              "content_en": "Use MEWP as primary access; if ladder used, 2-person buddy + both hands free",
+              "content_vi": "Ưu tiên MEWP; nếu dùng thang phải đi 2 người + 2 tay rảnh",
+              "content_th": "ใช้ MEWP เป็นหลัก หากใช้บันไดต้องไปเป็นคู่ 2 คน + ปลดมือทั้งสองข้าง",
+              "content_id": "Gunakan MEWP sebagai prioritas; jika tangga, 2 orang + kedua tangan bebas"
+            },
+            {
+              "id": "CRF-01-MIT-2",
+              "content": "FFU 양중 시 인양 보조구(strap/jig) 사용 및 하부 출입통제 라인 설정",
+              "content_en": "Use lifting strap/jig for FFU hoisting and set drop zone exclusion below",
+              "content_vi": "Dùng dây/jig nâng FFU và lập vùng cấm bên dưới",
+              "content_th": "ใช้ strap/jig ยก FFU และตั้ง drop zone ด้านล่าง",
+              "content_id": "Gunakan strap/jig untuk mengangkat FFU dan tetapkan zona larangan di bawah"
             }
           ],
           "ppe": [
             {
-              "id": "WAH-01-PPE-1",
-              "content": "전신 안전대 (생명줄 일체형)",
-              "content_en": "Full-body harness (integrated lifeline)",
-              "content_vi": "Dây an toàn toàn thân (tích hợp dây cứu sinh)",
-              "content_th": "เข็มขัดนิรภัยแบบเต็มตัว (รวม lifeline)",
-              "content_id": "Full body harness (lifeline terintegrasi)"
+              "id": "CRF-01-PPE-1",
+              "content": "전신 안전대 + 클린룸 부직포 작업복 + 안전화(클린타입)",
+              "content_en": "Full-body harness + cleanroom coverall + cleanroom-rated safety shoes",
+              "content_vi": "Dây an toàn toàn thân + áo liền quần phòng sạch + giày bảo hộ loại phòng sạch",
+              "content_th": "เข็มขัดนิรภัยเต็มตัว + ชุดคลีนรูม + รองเท้านิรภัยแบบคลีนรูม",
+              "content_id": "Full body harness + coverall cleanroom + sepatu safety tipe cleanroom"
             }
           ]
         },
         {
-          "id": "WAH-02",
-          "content": "작업발판·안전난간 설치 상태 점검",
-          "content_en": "Inspect work platform and safety guardrails",
-          "content_vi": "Kiểm tra tình trạng lắp đặt sàn thao tác và lan can an toàn",
-          "content_th": "ตรวจสอบสภาพการติดตั้งแผ่นรองทำงานและราวกันตก",
-          "content_id": "Periksa kondisi pemasangan platform kerja dan railing pengaman",
-          "regulation": "산업안전보건기준규칙 §13",
+          "id": "CRF-02",
+          "content": "에폭시 도장·시너 사용 시 환기 확보 및 화기 격리 (클린룸 밀폐공간 작업)",
+          "content_en": "Epoxy coating/thinner work — ensure ventilation and ignition isolation (cleanroom confined work)",
+          "content_vi": "Sơn epoxy/thinner — đảm bảo thông gió và cách ly nguồn lửa (làm việc trong không gian kín phòng sạch)",
+          "content_th": "งานทาสีอีพ็อกซี/ทินเนอร์ — รับรองการระบายอากาศและแยกแหล่งจุดไฟ (งานในพื้นที่จำกัดคลีนรูม)",
+          "content_id": "Pekerjaan epoxy/thinner — pastikan ventilasi dan isolasi sumber api (kerja ruang terbatas cleanroom)",
+          "regulation": "산업안전보건기준규칙 §618~625(밀폐공간), §239~245(화기작업)",
           "evidence_required": "photo|verbal",
           "scenarios": [
             {
-              "id": "WAH-02-SC-1",
-              "content": "작업발판 미끄러짐 또는 결속 풀림으로 균형 상실 → 추락",
-              "content_en": "Platform slip or loose fastening causes loss of balance and fall",
-              "content_vi": "Sàn thao tác trượt hoặc dây buộc lỏng gây mất thăng bằng và rơi",
-              "content_th": "แผ่นรองลื่นหรือการผูกหลวมทำให้เสียการทรงตัวและตก",
-              "content_id": "Platform tergelincir atau ikatan lepas menyebabkan kehilangan keseimbangan dan jatuh"
+              "id": "CRF-02-SC-1",
+              "content": "환기 미가동 상태에서 시너 증기 축적 → 인화·중독",
+              "content_en": "Thinner vapor accumulates without ventilation → ignition/intoxication",
+              "content_vi": "Hơi thinner tích tụ khi không thông gió → cháy/ngộ độc",
+              "content_th": "ไอทินเนอร์สะสมโดยไม่ระบายอากาศ → ติดไฟ/พิษ",
+              "content_id": "Uap thinner menumpuk tanpa ventilasi → terbakar/keracunan"
             }
           ],
           "mitigations": [
             {
-              "id": "WAH-02-MIT-1",
-              "content": "발판 폭 40cm 이상 + 안전난간 90cm 설치 확인 후 작업 시작",
-              "content_en": "Start work only after confirming platform width 40cm+ and guardrail 90cm height",
-              "content_vi": "Chỉ bắt đầu công việc sau khi xác nhận sàn rộng từ 40cm và lan can cao 90cm",
-              "content_th": "เริ่มงานหลังจากยืนยันว่าความกว้างแผ่นรอง 40 ซม. ขึ้นไปและราวกันตกสูง 90 ซม.",
-              "content_id": "Mulai bekerja hanya setelah memastikan lebar platform 40cm+ dan railing setinggi 90cm"
+              "id": "CRF-02-MIT-1",
+              "content": "작업 전 산소·VOC 농도 측정(LEL 10% 미만), 임시 송배기 팬 가동, 화기작업 허가서 발급",
+              "content_en": "Pre-work O2/VOC measurement (LEL <10%), temporary supply/exhaust fan on, hot work permit issued",
+              "content_vi": "Đo O2/VOC trước (LEL <10%), bật quạt cấp/hút tạm, cấp giấy phép làm việc nóng",
+              "content_th": "วัด O2/VOC ก่อน (LEL <10%) เปิดพัดลมจ่าย/ดูดชั่วคราว ออกใบอนุญาตงานร้อน",
+              "content_id": "Ukur O2/VOC sebelum kerja (LEL <10%), fan supply/exhaust sementara nyala, terbitkan hot work permit"
             }
           ],
           "ppe": [
             {
-              "id": "WAH-02-PPE-1",
-              "content": "미끄럼 방지 안전화",
-              "content_en": "Anti-slip safety shoes",
-              "content_vi": "Giày bảo hộ chống trượt",
-              "content_th": "รองเท้านิรภัยกันลื่น",
-              "content_id": "Sepatu safety anti-selip"
+              "id": "CRF-02-PPE-1",
+              "content": "유기용제 방독마스크(A형) + 내화학 장갑(니트릴) + 보안경",
+              "content_en": "Organic-vapor respirator (Type A) + nitrile chemical gloves + safety goggles",
+              "content_vi": "Mặt nạ phòng độc hữu cơ (Loại A) + găng nitrile + kính bảo hộ",
+              "content_th": "หน้ากากกันไอระเหยอินทรีย์ (Type A) + ถุงมือไนไตรล์ + แว่นตานิรภัย",
+              "content_id": "Respirator uap organik (Type A) + sarung tangan nitril + kacamata safety"
             }
           ]
         },
         {
-          "id": "WAH-03",
-          "content": "추락방지망 설치 또는 개구부 덮개 확인",
-          "content_en": "Confirm fall-arrest net installed or floor opening covered",
-          "content_vi": "Xác nhận lưới chống rơi đã lắp hoặc nắp che lỗ mở sàn",
-          "content_th": "ตรวจสอบการติดตั้งตาข่ายกันตกหรือฝาปิดช่องเปิด",
-          "content_id": "Pastikan jaring pengaman jatuh terpasang atau penutup lubang lantai",
-          "regulation": "산업안전보건기준규칙 §14",
-          "evidence_required": "photo|verbal",
+          "id": "CRF-03",
+          "content": "인접 가동 라인과의 분리(파티션·임시벽·차폐막) 및 분진·소음 격리 확인",
+          "content_en": "Separation from adjacent live line (partition/temp wall/shield) and dust/noise isolation verified",
+          "content_vi": "Cách ly với dây chuyền đang vận hành liền kề (vách/ tường tạm/ màn chắn) và cách ly bụi/ồn",
+          "content_th": "การแยกจากไลน์ที่ทำงานอยู่ติดกัน (พาร์ทิชัน/ผนังชั่วคราว/ฉากกั้น) และการแยกฝุ่น/เสียง",
+          "content_id": "Pemisahan dari line aktif berdekatan (partisi/dinding sementara/penutup) dan isolasi debu/kebisingan",
+          "regulation": "산업안전보건기준규칙 제3편 제2장(건설공사), KOSHA GUIDE C-104(건축물 증·개축)",
+          "evidence_required": "photo",
           "scenarios": [
             {
-              "id": "WAH-03-SC-1",
-              "content": "개구부 덮개 미설치로 작업자/자재가 하부층으로 추락",
-              "content_en": "Worker or material falls to lower floor through uncovered opening",
-              "content_vi": "Công nhân hoặc vật liệu rơi xuống tầng dưới qua lỗ mở không có nắp che",
-              "content_th": "ผู้ปฏิบัติงานหรือวัสดุตกลงชั้นล่างผ่านช่องเปิดที่ไม่มีฝาปิด",
-              "content_id": "Pekerja atau material jatuh ke lantai bawah melalui lubang yang tidak ditutup"
+              "id": "CRF-03-SC-1",
+              "content": "차폐 미흡으로 시공 분진이 가동 중인 클린룸 라인에 유입 → 양산 수율 손실",
+              "content_en": "Construction dust enters live cleanroom line due to weak barrier → production yield loss",
+              "content_vi": "Bụi thi công lọt vào dây chuyền phòng sạch đang chạy → giảm yield sản xuất",
+              "content_th": "ฝุ่นก่อสร้างเข้าไปในไลน์คลีนรูมที่ทำงานอยู่ → สูญเสีย yield การผลิต",
+              "content_id": "Debu konstruksi masuk ke line cleanroom aktif → kerugian yield produksi"
             }
           ],
           "mitigations": [
             {
-              "id": "WAH-03-MIT-1",
-              "content": "개구부 덮개 고정 + 추락방지망(10m 이내) 이중 설치",
-              "content_en": "Fix opening cover plus install fall-arrest net (within 10m) as a double layer",
-              "content_vi": "Cố định nắp che lỗ mở và lắp lưới chống rơi (trong vòng 10m) thành 2 lớp",
-              "content_th": "ยึดฝาปิดช่องเปิดและติดตั้งตาข่ายกันตก (ภายใน 10 เมตร) แบบสองชั้น",
-              "content_id": "Pasang penutup lubang dan jaring pengaman jatuh (dalam 10m) sebagai lapisan ganda"
+              "id": "CRF-03-MIT-1",
+              "content": "임시 격벽(스터드+드라이월+비닐) 이중 + 음압 유지 + 출입구 에어샤워 임시 설치, 발주처(LG이노텍 EHS) 사전 승인",
+              "content_en": "Double temporary partition (stud+drywall+vinyl) + negative pressure + temporary air shower at access; pre-approval from LG Innotek EHS",
+              "content_vi": "Vách ngăn tạm 2 lớp (stud+drywall+vinyl) + áp suất âm + air shower tạm tại lối vào; LG Innotek EHS phê duyệt trước",
+              "content_th": "พาร์ทิชันชั่วคราวสองชั้น (stud+drywall+ไวนิล) + แรงดันลบ + air shower ชั่วคราวที่ทางเข้า รับอนุมัติจาก LG Innotek EHS ล่วงหน้า",
+              "content_id": "Partisi sementara dua lapis (stud+drywall+vinyl) + tekanan negatif + air shower sementara di akses; persetujuan awal dari LG Innotek EHS"
             }
           ],
           "ppe": [
             {
-              "id": "WAH-03-PPE-1",
-              "content": "안전모 (턱끈 체결)",
-              "content_en": "Hard hat (chin strap fastened)",
-              "content_vi": "Mũ bảo hộ (cài quai cằm)",
-              "content_th": "หมวกนิรภัย (รัดสายคาง)",
-              "content_id": "Helm safety (tali dagu terpasang)"
+              "id": "CRF-03-PPE-1",
+              "content": "방진마스크(KF94 이상) + 클린룸 부직포 작업복 + 안전화",
+              "content_en": "Dust mask (KF94+) + cleanroom coverall + safety shoes",
+              "content_vi": "Khẩu trang chống bụi (KF94+) + áo liền quần phòng sạch + giày bảo hộ",
+              "content_th": "หน้ากากกันฝุ่น (KF94+) + ชุดคลีนรูม + รองเท้านิรภัย",
+              "content_id": "Masker debu (KF94+) + coverall cleanroom + sepatu safety"
             }
           ]
         },
         {
-          "id": "WAH-04",
-          "content": "사다리·이동식 비계 사용 시 전도 방지 조치",
-          "content_en": "Take tip-over prevention measures when using ladders or mobile scaffolds",
-          "content_vi": "Áp dụng biện pháp chống đổ khi sử dụng thang hoặc giàn giáo di động",
-          "content_th": "ใช้มาตรการป้องกันการล้มเมื่อใช้บันไดหรือนั่งร้านเคลื่อนที่",
-          "content_id": "Terapkan langkah pencegahan terjungkal saat menggunakan tangga atau scaffold mobile",
-          "regulation": "추정: KOSHA G-49, felix 검수 필요",
-          "evidence_required": "verbal",
+          "id": "CRF-04",
+          "content": "Raised floor(액세스 플로어) 시공 — 개구부 추락방지 및 패널 적재 안정성",
+          "content_en": "Raised floor installation — opening fall protection and panel stacking stability",
+          "content_vi": "Lắp raised floor — chống rơi tại lỗ mở và ổn định khi xếp panel",
+          "content_th": "ติดตั้ง raised floor — ป้องกันตกที่ช่องเปิดและความมั่นคงในการวางแผง",
+          "content_id": "Pemasangan raised floor — proteksi jatuh lubang dan stabilitas tumpukan panel",
+          "regulation": "산업안전보건기준규칙 §43(개구부 등의 방호)",
+          "evidence_required": "photo",
           "scenarios": [
             {
-              "id": "WAH-04-SC-1",
-              "content": "이동식 비계 캐스터 미고정 상태에서 작업자 이동 시 전도",
-              "content_en": "Mobile scaffold tips over when worker moves with casters unlocked",
-              "content_vi": "Giàn giáo di động bị đổ khi công nhân di chuyển mà bánh xe chưa khóa",
-              "content_th": "นั่งร้านเคลื่อนที่ล้มเมื่อผู้ปฏิบัติงานเคลื่อนตัวขณะล้อยังไม่ล็อก",
-              "content_id": "Scaffold mobile terjungkal saat pekerja bergerak dengan caster tidak terkunci"
+              "id": "CRF-04-SC-1",
+              "content": "raised floor 패널 미설치 개구부(400×400mm 이상)에 작업자 발 빠짐",
+              "content_en": "Worker's foot falls into opening (>400×400mm) where raised floor panel not yet placed",
+              "content_vi": "Chân công nhân lọt vào lỗ mở (>400×400mm) chưa lắp panel raised floor",
+              "content_th": "เท้าผู้ปฏิบัติงานตกลงในช่องเปิด (>400×400 มม.) ที่ยังไม่ได้ติดตั้ง panel",
+              "content_id": "Kaki pekerja jatuh ke lubang (>400×400mm) yang belum dipasang panel"
             }
           ],
           "mitigations": [
             {
-              "id": "WAH-04-MIT-1",
-              "content": "캐스터 4개 모두 잠금 + 아웃리거 전개 후 승강",
-              "content_en": "Lock all 4 casters and deploy outriggers before climbing",
-              "content_vi": "Khóa cả 4 bánh xe và mở chân chống outrigger trước khi leo lên",
-              "content_th": "ล็อกล้อทั้ง 4 และกาง outrigger ก่อนปีนขึ้น",
-              "content_id": "Kunci keempat caster dan rentangkan outrigger sebelum menaiki"
-            }
-          ],
-          "ppe": []
-        },
-        {
-          "id": "WAH-05",
-          "content": "공구·자재 낙하 방지(공구벨트, 낙하물 방지망)",
-          "content_en": "Prevent tool and material drops (tool lanyard, debris net)",
-          "content_vi": "Ngăn rơi dụng cụ và vật liệu (dây buộc dụng cụ, lưới chống rơi vật)",
-          "content_th": "ป้องกันเครื่องมือและวัสดุตก (สายรัดเครื่องมือ ตาข่ายกันของตก)",
-          "content_id": "Cegah jatuhnya alat dan material (tool lanyard, jaring penangkap puing)",
-          "regulation": "산업안전보건기준규칙 §14",
-          "evidence_required": "photo|verbal",
-          "scenarios": [
-            {
-              "id": "WAH-05-SC-1",
-              "content": "공구 낙하로 하부 작업자/통행자 충격 부상",
-              "content_en": "Falling tool strikes worker or passerby below causing injury",
-              "content_vi": "Dụng cụ rơi va đập gây thương tích cho công nhân/người đi bên dưới",
-              "content_th": "เครื่องมือตกกระแทกผู้ปฏิบัติงานหรือผู้สัญจรด้านล่างได้รับบาดเจ็บ",
-              "content_id": "Alat yang jatuh menghantam pekerja atau pejalan kaki di bawah dan menyebabkan cedera"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "WAH-05-MIT-1",
-              "content": "공구벨트 스트랩 체결 + 낙하물 방지망 1차/2차 설치",
-              "content_en": "Fasten tool belt strap and install primary/secondary debris nets",
-              "content_vi": "Cài dây thắt lưng dụng cụ và lắp lưới chống rơi vật lớp 1 và lớp 2",
-              "content_th": "ติดสายเข็มขัดเครื่องมือและติดตั้งตาข่ายกันของตกชั้นที่ 1 และ 2",
-              "content_id": "Pasang tali tool belt dan jaring penangkap puing lapisan 1 dan 2"
+              "id": "CRF-04-MIT-1",
+              "content": "미시공 개구부에 안전판 또는 형광 테이프 표시, 시야 확보 조명 설치, 1일 종료 시 패널 복원",
+              "content_en": "Cover unfinished openings with hard cover or hi-vis tape, ensure lighting, restore panels at end of shift",
+              "content_vi": "Che lỗ mở chưa hoàn thiện bằng tấm cứng hoặc băng phản quang, đảm bảo chiếu sáng, phục hồi panel cuối ca",
+              "content_th": "ปิดช่องเปิดที่ยังไม่เสร็จด้วยแผ่นแข็งหรือเทปสะท้อนแสง จัดแสงสว่าง คืนแผง panel เมื่อสิ้นกะ",
+              "content_id": "Tutup lubang yang belum selesai dengan penutup keras atau pita reflektif, pastikan pencahayaan, kembalikan panel di akhir shift"
             }
           ],
           "ppe": [
             {
-              "id": "WAH-05-PPE-1",
-              "content": "공구벨트(스트랩 일체형)",
-              "content_en": "Tool belt (integrated strap)",
-              "content_vi": "Thắt lưng đựng dụng cụ (tích hợp dây buộc)",
-              "content_th": "เข็มขัดเครื่องมือ (รวมสายรัด)",
-              "content_id": "Tool belt (tali terintegrasi)"
+              "id": "CRF-04-PPE-1",
+              "content": "안전화(미끄럼방지) + 무릎보호대 + 클린룸 장갑",
+              "content_en": "Anti-slip safety shoes + knee pads + cleanroom gloves",
+              "content_vi": "Giày bảo hộ chống trượt + đệm đầu gối + găng phòng sạch",
+              "content_th": "รองเท้านิรภัยกันลื่น + สนับเข่า + ถุงมือคลีนรูม",
+              "content_id": "Sepatu safety anti-slip + pelindung lutut + sarung tangan cleanroom"
             }
           ]
-        }
-      ],
-      "conditional": [
-        {
-          "if": "wind_speed >= 10",
-          "add": {
-            "id": "WAH-W01",
-            "content": "강풍주의(10m/s 이상) — 작업속도 제한, 신호수 추가",
-            "content_en": "Strong wind caution (10m/s+) — limit work pace, add signal person",
-            "content_vi": "Cảnh báo gió mạnh (từ 10m/s) — giới hạn tốc độ làm việc, thêm người ra hiệu",
-            "content_th": "ระวังลมแรง (10 ม./วินาทีขึ้นไป) — จำกัดความเร็วงาน เพิ่มผู้ให้สัญญาณ",
-            "content_id": "Peringatan angin kencang (10m/s+) — batasi kecepatan kerja, tambah signal man",
-            "regulation": "추정: KOSHA G-99, felix 검수 필요"
-          }
-        },
-        {
-          "if": "wind_speed >= 15",
-          "add": {
-            "id": "WAH-W02",
-            "content": "강풍 작업중단(15m/s 이상) — 외부 고소작업 금지",
-            "content_en": "Stop work in high wind (15m/s+) — outdoor work-at-height prohibited",
-            "content_vi": "Ngừng việc khi gió mạnh (từ 15m/s) — cấm làm việc trên cao ngoài trời",
-            "content_th": "หยุดงานเมื่อลมแรง (15 ม./วินาทีขึ้นไป) — ห้ามทำงานบนที่สูงภายนอกอาคาร",
-            "content_id": "Hentikan pekerjaan saat angin tinggi (15m/s+) — kerja di ketinggian luar ruangan dilarang",
-            "regulation": "산업안전보건기준규칙 §37"
-          }
         }
       ]
     },
-    "HOT_WORK": {
-      "label_ko": "화기작업",
-      "label_en": "Hot Work",
-      "label_vi": "Công việc sinh nhiệt/lửa",
-      "label_th": "งานที่ใช้ความร้อน/ประกายไฟ",
-      "label_id": "Pekerjaan Panas (Hot Work)",
+    "EQUIPMENT_RIGGING_INSTALL": {
+      "label_ko": "대형 설비 반입·세팅(Rigging)",
+      "label_en": "Large Equipment Rigging & Installation",
+      "label_vi": "Vận chuyển và lắp đặt thiết bị lớn (Rigging)",
+      "label_th": "การขนย้ายและติดตั้งเครื่องจักรขนาดใหญ่ (Rigging)",
+      "label_id": "Rigging & Instalasi Peralatan Besar",
       "baseline": [
         {
-          "id": "HW-01",
-          "content": "화기작업 허가서(PTW) 발급 및 유효기간 확인",
-          "content_en": "Confirm hot work permit (PTW) issued and within validity period",
-          "content_vi": "Xác nhận giấy phép công việc sinh nhiệt (PTW) đã cấp và còn hiệu lực",
-          "content_th": "ตรวจสอบใบอนุญาตทำงานที่ใช้ความร้อน (PTW) ออกแล้วและยังไม่หมดอายุ",
-          "content_id": "Pastikan permit to work (PTW) hot work telah dikeluarkan dan masih berlaku",
-          "regulation": "산업안전보건기준규칙 §241",
+          "id": "RIG-01",
+          "content": "노광·에칭·도금·검사 장비 반입 경로(rigging path) 사전 답사 및 하중 검토",
+          "content_en": "Pre-survey of rigging path and floor-load review for lithography/etch/plating/inspection tools",
+          "content_vi": "Khảo sát trước đường rigging và xem xét tải sàn cho máy lithography/etch/mạ/kiểm tra",
+          "content_th": "สำรวจเส้นทาง rigging และตรวจสอบโหลดพื้นสำหรับเครื่อง lithography/etch/ชุบ/ตรวจสอบ",
+          "content_id": "Survei jalur rigging dan tinjauan beban lantai untuk mesin lithography/etch/plating/inspeksi",
+          "regulation": "산업안전보건기준규칙 §131~169(양중기), §385(낙하물 방지)",
           "evidence_required": "photo|verbal",
           "scenarios": [
             {
-              "id": "HW-01-SC-1",
-              "content": "허가서 없이 임의 용접 진행 → 가연물 인근 작업으로 화재",
-              "content_en": "Unauthorized welding near combustibles leads to fire",
-              "content_vi": "Hàn tự ý không có giấy phép gần vật liệu dễ cháy gây hỏa hoạn",
-              "content_th": "การเชื่อมโดยไม่มีใบอนุญาตใกล้วัสดุติดไฟทำให้เกิดไฟไหม้",
-              "content_id": "Pengelasan tanpa izin di dekat material mudah terbakar menyebabkan kebakaran"
+              "id": "RIG-01-SC-1",
+              "content": "장비 무게(5~30톤) 대비 raised floor 또는 가설 통로 하중 부족 → 함몰",
+              "content_en": "Floor or temp pathway insufficient for tool weight (5–30t) → collapse",
+              "content_vi": "Sàn hoặc lối tạm không đủ tải cho thiết bị (5–30t) → sụp đổ",
+              "content_th": "พื้นหรือทางเดินชั่วคราวรับน้ำหนักเครื่อง (5–30 ตัน) ไม่ได้ → ยุบตัว",
+              "content_id": "Lantai atau jalur sementara tidak cukup untuk beban alat (5–30t) → runtuh"
+            },
+            {
+              "id": "RIG-01-SC-2",
+              "content": "장비 반입 중 천정 배관·케이블 트레이와 간섭 → 인입 인프라 손상",
+              "content_en": "Interference with overhead piping/cable tray during move-in → infrastructure damage",
+              "content_vi": "Va chạm với đường ống/khay cáp trên trần khi đưa vào → hỏng hạ tầng",
+              "content_th": "ชนกับท่อ/รางเคเบิลบนเพดานขณะเคลื่อนย้าย → ความเสียหายโครงสร้างพื้นฐาน",
+              "content_id": "Bertabrakan dengan pipa/tray kabel atas saat masuk → kerusakan infrastruktur"
             }
           ],
           "mitigations": [
             {
-              "id": "HW-01-MIT-1",
-              "content": "PTW 사본 작업 위치 게시 + 유효시간 내 작업 종료",
-              "content_en": "Post PTW copy at the work location and finish work within validity",
-              "content_vi": "Niêm yết bản sao PTW tại vị trí làm việc và hoàn tất trong thời hạn hiệu lực",
-              "content_th": "ติดสำเนา PTW ที่จุดทำงานและให้งานเสร็จสิ้นภายในเวลาที่กำหนด",
-              "content_id": "Tempel salinan PTW di lokasi kerja dan selesaikan dalam masa berlaku"
-            }
-          ],
-          "ppe": []
-        },
-        {
-          "id": "HW-02",
-          "content": "작업 반경 11m 이내 가연물 제거 또는 불연포 보양",
-          "content_en": "Remove combustibles within 11m radius or cover with fire blankets",
-          "content_vi": "Dọn vật liệu dễ cháy trong bán kính 11m hoặc che bằng bạt chống cháy",
-          "content_th": "เคลื่อนย้ายวัสดุติดไฟในรัศมี 11 เมตรหรือคลุมด้วยผ้าทนไฟ",
-          "content_id": "Singkirkan material mudah terbakar dalam radius 11m atau tutup dengan fire blanket",
-          "regulation": "추정: KOSHA P-93, felix 검수 필요",
-          "evidence_required": "photo",
-          "scenarios": [
-            {
-              "id": "HW-02-SC-1",
-              "content": "가연물 잔존 상태 용접 불티 비산 → 화재 발생",
-              "content_en": "Welding sparks scatter to remaining combustibles and ignite a fire",
-              "content_vi": "Tia hàn bắn vào vật liệu dễ cháy còn sót lại gây hỏa hoạn",
-              "content_th": "ประกายไฟจากการเชื่อมกระเด็นไปยังวัสดุติดไฟที่ยังเหลืออยู่ทำให้เกิดไฟไหม้",
-              "content_id": "Percikan api las menyebar ke material mudah terbakar yang tersisa dan memicu kebakaran"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "HW-02-MIT-1",
-              "content": "11m 이내 가연물 이동 + 불연포 2겹 보양 후 점화",
-              "content_en": "Move combustibles within 11m and cover with 2 layers of fire blanket before ignition",
-              "content_vi": "Di chuyển vật liệu dễ cháy trong 11m và phủ 2 lớp bạt chống cháy trước khi mồi lửa",
-              "content_th": "เคลื่อนย้ายวัสดุติดไฟในระยะ 11 เมตรและคลุมผ้าทนไฟ 2 ชั้นก่อนจุดไฟ",
-              "content_id": "Pindahkan material mudah terbakar dalam 11m dan tutup 2 lapis fire blanket sebelum penyalaan"
+              "id": "RIG-01-MIT-1",
+              "content": "구조 검토서(structural review)와 rigging plan(3D 클리어런스 포함) 사전 제출·승인, 무거운 장비는 강판 deck 깔고 하중 분산",
+              "content_en": "Submit structural review + rigging plan (3D clearance) for approval; spread load with steel deck for heavy tools",
+              "content_vi": "Nộp báo cáo kết cấu + kế hoạch rigging (clearance 3D) để duyệt; phân tán tải bằng deck thép cho thiết bị nặng",
+              "content_th": "ส่งรายงานโครงสร้าง + แผน rigging (clearance 3D) ขออนุมัติ กระจายโหลดด้วย deck เหล็กสำหรับเครื่องหนัก",
+              "content_id": "Ajukan tinjauan struktur + rigging plan (clearance 3D) untuk persetujuan; sebar beban dengan deck baja untuk alat berat"
             }
           ],
           "ppe": [
             {
-              "id": "HW-02-PPE-1",
-              "content": "용접용 가죽 앞치마",
-              "content_en": "Welding leather apron",
-              "content_vi": "Tạp dề da hàn",
-              "content_th": "ผ้ากันเปื้อนหนังสำหรับงานเชื่อม",
-              "content_id": "Apron kulit las"
+              "id": "RIG-01-PPE-1",
+              "content": "안전모(턱끈) + 안전화(강심) + 형광조끼 + 신호수용 무전기",
+              "content_en": "Hard hat (chin strap) + steel-toe boots + hi-vis vest + signaler radio",
+              "content_vi": "Mũ cứng (quai cằm) + giày mũi thép + áo phản quang + bộ đàm cho người ra hiệu",
+              "content_th": "หมวกนิรภัย (สายรัดคาง) + รองเท้าหัวเหล็ก + เสื้อสะท้อนแสง + วิทยุสำหรับผู้ให้สัญญาณ",
+              "content_id": "Helm safety (tali dagu) + sepatu ujung baja + rompi reflektif + radio untuk signalman"
             }
           ]
         },
         {
-          "id": "HW-03",
-          "content": "소화기·소화전 작업장 인접 배치(2개 이상)",
-          "content_en": "Place fire extinguishers/hydrants adjacent to work area (2 or more)",
-          "content_vi": "Đặt bình chữa cháy/họng nước chữa cháy cạnh khu vực làm việc (từ 2 cái trở lên)",
-          "content_th": "วางถังดับเพลิงและหัวจ่ายน้ำดับเพลิงใกล้พื้นที่ทำงาน (อย่างน้อย 2 ชุด)",
-          "content_id": "Tempatkan APAR/hydran berdekatan dengan area kerja (minimal 2 unit)",
-          "regulation": "산업안전보건기준규칙 §242",
+          "id": "RIG-02",
+          "content": "양중 작업 — 신호수 배치 및 인양물 하부 출입통제 라인 설정",
+          "content_en": "Lifting operation — assign signaler and set load-zone exclusion line",
+          "content_vi": "Công tác nâng — phân công người ra hiệu và lập rào cấm dưới tải",
+          "content_th": "งานยก — มอบหมายผู้ให้สัญญาณและตั้งแนวห้ามใต้โหลด",
+          "content_id": "Operasi pengangkatan — tugaskan signalman dan tetapkan garis larangan di bawah beban",
+          "regulation": "산업안전보건기준규칙 §132(양중기 운전), §172(달기구), §382(작업반경 내 출입금지)",
           "evidence_required": "photo|verbal",
           "scenarios": [
             {
-              "id": "HW-03-SC-1",
-              "content": "초동 진화 지연으로 소규모 화재가 인근 가연물로 확산",
-              "content_en": "Delayed initial response lets a small fire spread to nearby combustibles",
-              "content_vi": "Phản ứng ban đầu chậm khiến đám cháy nhỏ lan sang vật liệu dễ cháy lân cận",
-              "content_th": "การดับเพลิงเริ่มต้นล่าช้าทำให้ไฟลามไปยังวัสดุติดไฟใกล้เคียง",
-              "content_id": "Respons awal yang terlambat membuat api kecil menyebar ke material mudah terbakar di sekitarnya"
+              "id": "RIG-02-SC-1",
+              "content": "장비(EUV scanner 50톤급) 양중 중 슬링 파단·이탈로 낙하",
+              "content_en": "Sling failure/slip during lifting of heavy tool (EUV scanner class, ~50t) causes drop",
+              "content_vi": "Đứt/tuột sling khi nâng thiết bị nặng (cấp EUV scanner ~50t) gây rơi",
+              "content_th": "Sling ขาด/หลุดขณะยกเครื่องหนัก (ระดับ EUV scanner ~50t) ทำให้ตก",
+              "content_id": "Sling putus/tergelincir saat mengangkat alat berat (kelas EUV scanner ~50t) menyebabkan jatuh"
             }
           ],
           "mitigations": [
             {
-              "id": "HW-03-MIT-1",
-              "content": "ABC급 소화기 2개 + 소화전 호스 길이 확보 사전 배치",
-              "content_en": "Pre-position 2 ABC fire extinguishers and ensure hydrant hose reach",
-              "content_vi": "Bố trí sẵn 2 bình chữa cháy loại ABC và đảm bảo độ dài vòi họng nước",
-              "content_th": "เตรียมถังดับเพลิงชนิด ABC 2 ถังและจัดสายส่งน้ำให้มีความยาวเพียงพอ",
-              "content_id": "Siapkan 2 APAR tipe ABC dan pastikan panjang selang hydran mencukupi"
+              "id": "RIG-02-MIT-1",
+              "content": "정격하중 안전율 5 이상 슬링 사용, 매 양중 전 슬링·후크 외관 점검, 인양물 직하 출입금지 + 신호수 단독 지휘",
+              "content_en": "Slings with safety factor ≥5, pre-lift inspection of sling/hook, no entry under load, single signaler in command",
+              "content_vi": "Sling hệ số an toàn ≥5, kiểm tra sling/móc trước mỗi lần nâng, cấm vào dưới tải, một người ra hiệu chỉ huy",
+              "content_th": "Sling safety factor ≥5 ตรวจ sling/hook ก่อนยกทุกครั้ง ห้ามเข้าใต้โหลด มีผู้ให้สัญญาณคนเดียวควบคุม",
+              "content_id": "Sling safety factor ≥5, inspeksi sling/hook sebelum tiap angkat, larangan masuk di bawah beban, satu signalman komando"
+            },
+            {
+              "id": "RIG-02-MIT-2",
+              "content": "풍속 10m/s 초과 또는 강우 시 외부 양중 즉시 중단(LG이노텍 EHS 양중 SOP)",
+              "content_en": "Suspend outdoor lifting immediately when wind >10m/s or rain (LG Innotek EHS lifting SOP)",
+              "content_vi": "Ngừng nâng ngoài trời ngay khi gió >10m/s hoặc mưa (LG Innotek EHS lifting SOP)",
+              "content_th": "หยุดยกกลางแจ้งทันทีเมื่อลม >10m/s หรือฝน (LG Innotek EHS lifting SOP)",
+              "content_id": "Hentikan pengangkatan luar segera bila angin >10m/s atau hujan (SOP lifting EHS LG Innotek)"
             }
           ],
-          "ppe": []
+          "ppe": [
+            {
+              "id": "RIG-02-PPE-1",
+              "content": "안전모(턱끈) + 안전화(강심) + 형광조끼 + 신호수 표식",
+              "content_en": "Hard hat (chin strap) + steel-toe boots + hi-vis vest + signaler armband",
+              "content_vi": "Mũ cứng (quai cằm) + giày mũi thép + áo phản quang + băng tay người ra hiệu",
+              "content_th": "หมวกนิรภัย (สายรัดคาง) + รองเท้าหัวเหล็ก + เสื้อสะท้อนแสง + ปลอกแขนผู้ให้สัญญาณ",
+              "content_id": "Helm safety (tali dagu) + sepatu ujung baja + rompi reflektif + ban lengan signalman"
+            }
+          ]
         },
         {
-          "id": "HW-04",
-          "content": "화재감시자 배치 및 작업 종료 후 30분 이상 잔불 점검",
-          "content_en": "Assign fire watcher and inspect for embers for at least 30 minutes after work",
-          "content_vi": "Bố trí người giám sát hỏa hoạn và kiểm tra tàn lửa ít nhất 30 phút sau khi kết thúc",
-          "content_th": "จัดผู้เฝ้าระวังไฟและตรวจสอบขี้เถ้าอย่างน้อย 30 นาทีหลังเสร็จงาน",
-          "content_id": "Tugaskan fire watcher dan periksa bara api minimal 30 menit setelah pekerjaan selesai",
-          "regulation": "산업안전보건기준규칙 §241",
+          "id": "RIG-03",
+          "content": "Anchor 시공 및 정밀 leveling — 진동·소음이 인접 가동 장비에 미치는 영향 최소화",
+          "content_en": "Anchor installation and precision leveling — minimize vibration/noise impact on adjacent live tools",
+          "content_vi": "Thi công anchor và cân chỉnh tinh — giảm rung/ồn ảnh hưởng thiết bị đang chạy lân cận",
+          "content_th": "ติดตั้ง anchor และปรับระดับละเอียด — ลดการสั่น/เสียงที่กระทบเครื่องที่ทำงานอยู่ข้างเคียง",
+          "content_id": "Pemasangan anchor dan leveling presisi — minimalkan dampak getaran/kebisingan ke alat aktif berdekatan",
+          "regulation": "산업안전보건기준규칙 §35(작업지휘자), 산업안전보건법 §38(안전조치)",
           "evidence_required": "verbal",
           "scenarios": [
             {
-              "id": "HW-04-SC-1",
-              "content": "작업 종료 후 잔불 미확인으로 야간 재발화",
-              "content_en": "Unchecked embers after work cause re-ignition at night",
-              "content_vi": "Không kiểm tra tàn lửa sau khi xong việc dẫn đến cháy lại vào ban đêm",
-              "content_th": "ไม่ตรวจสอบขี้เถ้าหลังเสร็จงานทำให้เกิดไฟไหม้ซ้ำในเวลากลางคืน",
-              "content_id": "Bara yang tidak diperiksa setelah kerja menyebabkan kebakaran ulang di malam hari"
+              "id": "RIG-03-SC-1",
+              "content": "anchor 천공(hammer drill) 진동이 인접 노광기 alignment에 영향 → 생산 손실",
+              "content_en": "Hammer-drill vibration during anchoring disturbs adjacent lithography tool alignment → production loss",
+              "content_vi": "Rung khoan đóng anchor làm sai lệch alignment máy lithography lân cận → tổn thất sản xuất",
+              "content_th": "การสั่นจากการเจาะ anchor รบกวน alignment ของเครื่อง lithography ข้างเคียง → สูญเสียการผลิต",
+              "content_id": "Getaran hammer drill saat anchoring mengganggu alignment alat lithography terdekat → kerugian produksi"
             }
           ],
           "mitigations": [
             {
-              "id": "HW-04-MIT-1",
-              "content": "전담 화재감시자 + 종료 후 30분 잔불 순찰 기록",
-              "content_en": "Dedicated fire watcher with 30-minute post-work ember patrol log",
-              "content_vi": "Người giám sát hỏa hoạn chuyên trách và ghi nhận tuần tra tàn lửa 30 phút sau khi xong",
-              "content_th": "ผู้เฝ้าระวังไฟเฉพาะกิจและบันทึกการตรวจขี้เถ้า 30 นาทีหลังเสร็จงาน",
-              "content_id": "Fire watcher khusus dan catat patroli bara 30 menit setelah pekerjaan"
+              "id": "RIG-03-MIT-1",
+              "content": "발주처와 진동 허용치 사전 협의(예: 0.5 mm/s 이하), 가동 라인 비가동 시간대(셧다운 윈도우) 활용, 진동 모니터링 센서 부착",
+              "content_en": "Agree vibration limit with owner (e.g. ≤0.5 mm/s), use shutdown window of live line, attach vibration sensors",
+              "content_vi": "Thỏa thuận giới hạn rung với chủ đầu tư (≤0.5 mm/s), tận dụng cửa sổ shutdown của dây chuyền, gắn cảm biến rung",
+              "content_th": "ตกลงขีดจำกัดการสั่นกับเจ้าของงาน (≤0.5 mm/s) ใช้หน้าต่าง shutdown ของไลน์ที่ทำงานอยู่ ติดเซ็นเซอร์วัดการสั่น",
+              "content_id": "Sepakati batas getaran dengan pemilik (≤0.5 mm/s), gunakan jendela shutdown line aktif, pasang sensor getaran"
             }
           ],
           "ppe": [
             {
-              "id": "HW-04-PPE-1",
-              "content": "용접면(차광 등급 9 이상)",
-              "content_en": "Welding helmet (shade grade 9 or higher)",
-              "content_vi": "Mặt nạ hàn (cấp che sáng từ 9 trở lên)",
-              "content_th": "หน้ากากเชื่อม (เกรดกรองแสง 9 ขึ้นไป)",
-              "content_id": "Topeng las (shade grade 9 atau lebih tinggi)"
+              "id": "RIG-03-PPE-1",
+              "content": "방진장갑 + 청력보호구(귀마개/귀덮개) + 보안경",
+              "content_en": "Anti-vibration gloves + hearing protection + safety goggles",
+              "content_vi": "Găng chống rung + bảo vệ thính giác + kính bảo hộ",
+              "content_th": "ถุงมือกันสั่น + อุปกรณ์ป้องกันการได้ยิน + แว่นตานิรภัย",
+              "content_id": "Sarung tangan anti-getar + pelindung pendengaran + kacamata safety"
             }
           ]
-        }
-      ],
-      "conditional": [
-        {
-          "if": "confined_space == true",
-          "add": {
-            "id": "HW-CS01",
-            "content": "밀폐공간 화기작업 — 가스농도 측정 및 환기 확인",
-            "content_en": "Hot work in confined space — measure gas concentration and confirm ventilation",
-            "content_vi": "Công việc sinh nhiệt trong không gian hạn chế — đo nồng độ khí và xác nhận thông gió",
-            "content_th": "งานใช้ความร้อนในที่อับอากาศ — วัดความเข้มข้นก๊าซและตรวจสอบการระบายอากาศ",
-            "content_id": "Hot work di confined space — ukur konsentrasi gas dan pastikan ventilasi",
-            "regulation": "산업안전보건기준규칙 §619"
-          }
         }
       ]
     },
-    "EXCAVATION": {
-      "label_ko": "굴착작업",
-      "label_en": "Excavation",
-      "label_vi": "Công tác đào đất",
-      "label_th": "งานขุดดิน",
-      "label_id": "Pekerjaan Galian",
+    "SPECIAL_GAS_PIPING": {
+      "label_ko": "특수가스 라인 시공",
+      "label_en": "Specialty Gas Piping Installation",
+      "label_vi": "Thi công đường ống khí đặc biệt",
+      "label_th": "การติดตั้งท่อก๊าซพิเศษ",
+      "label_id": "Pemasangan Pipa Gas Khusus",
       "baseline": [
         {
-          "id": "EX-01",
-          "content": "굴착작업 전 지하 매설물(전기·가스·통신) 사전조사 및 도면 확인",
-          "content_en": "Survey underground utilities (power/gas/comms) and review drawings before excavation",
-          "content_vi": "Khảo sát công trình ngầm (điện/khí/viễn thông) và xem bản vẽ trước khi đào",
-          "content_th": "สำรวจสาธารณูปโภคใต้ดิน (ไฟฟ้า/แก๊ส/สื่อสาร) และตรวจสอบแบบก่อนการขุด",
-          "content_id": "Survei utilitas bawah tanah (listrik/gas/komunikasi) dan periksa gambar sebelum penggalian",
-          "regulation": "산업안전보건기준규칙 §340",
-          "evidence_required": "verbal",
+          "id": "SGP-01",
+          "content": "특수가스 배관(SiH4·NH3·Cl2·HBr 등) 용접·오비탈 용접 — 화기작업 허가서 및 N2 purge 절차 준수",
+          "content_en": "Specialty gas piping (SiH4/NH3/Cl2/HBr) welding (incl. orbital) — comply with hot work permit and N2 purge",
+          "content_vi": "Hàn ống khí đặc biệt (SiH4/NH3/Cl2/HBr, gồm hàn orbital) — tuân thủ giấy phép làm việc nóng và N2 purge",
+          "content_th": "เชื่อมท่อก๊าซพิเศษ (SiH4/NH3/Cl2/HBr รวมถึง orbital) — ปฏิบัติตามใบอนุญาตงานร้อนและการ purge N2",
+          "content_id": "Pengelasan pipa gas khusus (SiH4/NH3/Cl2/HBr termasuk orbital) — patuhi izin hot work dan N2 purge",
+          "regulation": "산업안전보건기준규칙 §239~245(화기작업), §296(특수화학설비), 고압가스 안전관리법",
+          "evidence_required": "photo|verbal",
           "scenarios": [
             {
-              "id": "EX-01-SC-1",
-              "content": "도면 미확인 굴착 시 가스관 손상 → 가스 누출/폭발",
-              "content_en": "Excavating without checking drawings damages gas pipe causing leak or explosion",
-              "content_vi": "Đào không kiểm tra bản vẽ làm hỏng đường ống khí gây rò rỉ hoặc nổ",
-              "content_th": "ขุดดินโดยไม่ตรวจแบบทำให้ท่อแก๊สเสียหายเกิดการรั่วหรือระเบิด",
-              "content_id": "Penggalian tanpa cek gambar merusak pipa gas menyebabkan kebocoran atau ledakan"
+              "id": "SGP-01-SC-1",
+              "content": "기존 가스 라인 잔류가스(예: SiH4) 미배기 상태에서 용접 → 자연발화·폭발",
+              "content_en": "Welding on existing gas line without purging residual gas (e.g. SiH4) → pyrophoric ignition/explosion",
+              "content_vi": "Hàn trên đường khí cũ chưa xả khí dư (SiH4) → tự cháy/nổ",
+              "content_th": "เชื่อมท่อก๊าซเก่าที่ยังไม่ purge ก๊าซตกค้าง (เช่น SiH4) → ติดไฟเอง/ระเบิด",
+              "content_id": "Pengelasan pada pipa gas eksisting tanpa purge gas sisa (mis. SiH4) → ignition pyrophoric/ledakan"
             }
           ],
           "mitigations": [
             {
-              "id": "EX-01-MIT-1",
-              "content": "관할 지자체 도면 + 시굴 점검 후 굴착 착수",
-              "content_en": "Obtain local authority drawings and perform trial pit before starting excavation",
-              "content_vi": "Lấy bản vẽ của chính quyền địa phương và đào thăm dò trước khi bắt đầu",
-              "content_th": "ขอแบบจากหน่วยงานท้องถิ่นและทำหลุมทดลองก่อนเริ่มขุดจริง",
-              "content_id": "Dapatkan gambar dari otoritas setempat dan lakukan trial pit sebelum penggalian dimulai"
-            }
-          ],
-          "ppe": []
-        },
-        {
-          "id": "EX-02",
-          "content": "흙막이 지보공 설치 또는 굴착면 기울기 준수(흙 종류별)",
-          "content_en": "Install earth retaining shoring or maintain slope angle per soil type",
-          "content_vi": "Lắp hệ chống vách đất hoặc duy trì độ dốc mái dốc theo loại đất",
-          "content_th": "ติดตั้งระบบค้ำยันดินหรือรักษามุมลาดเอียงตามชนิดของดิน",
-          "content_id": "Pasang shoring penahan tanah atau pertahankan kemiringan sesuai jenis tanah",
-          "regulation": "산업안전보건기준규칙 §339",
-          "evidence_required": "photo",
-          "scenarios": [
+              "id": "SGP-01-MIT-1",
+              "content": "삼중 차단(LOTO) → N2 purge(O2 1% 미만 도달까지) → 가스 검지기 잔류 0ppm 확인 → 용접 시작. 발주처(LG이노텍 FAC) 입회 필수",
+              "content_en": "Triple isolation (LOTO) → N2 purge until O2 <1% → confirm 0 ppm residual on gas detector → start welding. LG Innotek FAC witness required",
+              "content_vi": "Cô lập 3 lớp (LOTO) → N2 purge đến O2 <1% → xác nhận 0 ppm dư trên đầu dò → bắt đầu hàn. Cần đại diện LG Innotek FAC chứng kiến",
+              "content_th": "ตัดแยก 3 ชั้น (LOTO) → N2 purge จนกว่า O2 <1% → ยืนยันก๊าซตกค้าง 0 ppm บนเครื่องตรวจจับ → เริ่มเชื่อม ต้องมี LG Innotek FAC เป็นพยาน",
+              "content_id": "Isolasi tiga lapis (LOTO) → N2 purge sampai O2 <1% → konfirmasi sisa 0 ppm pada detektor → mulai pengelasan. Saksi LG Innotek FAC wajib"
+            },
             {
-              "id": "EX-02-SC-1",
-              "content": "흙막이 미설치/기울기 미준수로 굴착면 붕괴 → 작업자 매몰",
-              "content_en": "Excavation face collapses without shoring or proper slope, burying worker",
-              "content_vi": "Mái đào sụp đổ do không có hệ chống hoặc sai độ dốc, vùi lấp công nhân",
-              "content_th": "หน้าขุดถล่มเนื่องจากไม่มีค้ำยันหรือไม่ได้ลาดตามมาตรฐาน ผู้ปฏิบัติงานถูกฝัง",
-              "content_id": "Dinding galian runtuh karena tidak ada shoring atau kemiringan tidak sesuai, pekerja tertimbun"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "EX-02-MIT-1",
-              "content": "토질 확인 후 기울기 1:1.2 이하 또는 흙막이 설치 후 진입",
-              "content_en": "Check soil and either keep slope 1:1.2 or less, or install shoring before entry",
-              "content_vi": "Kiểm tra đất và giữ độ dốc 1:1.2 trở xuống hoặc lắp hệ chống trước khi vào",
-              "content_th": "ตรวจสอบดินและรักษามุมลาด 1:1.2 หรือต่ำกว่า หรือติดตั้งค้ำยันก่อนเข้าทำงาน",
-              "content_id": "Periksa tanah dan jaga kemiringan 1:1.2 atau lebih landai, atau pasang shoring sebelum masuk"
+              "id": "SGP-01-MIT-2",
+              "content": "화재 감시자(fire watcher) 1명 상주, 작업 종료 후 30분 잔류 감시",
+              "content_en": "Dedicated fire watcher present, 30-min post-work monitoring",
+              "content_vi": "Có người canh lửa riêng, theo dõi 30 phút sau khi hoàn tất",
+              "content_th": "มีผู้เฝ้าระวังไฟประจำ ตรวจสอบหลังจบงาน 30 นาที",
+              "content_id": "Pengawas api khusus hadir, pemantauan 30 menit pasca pekerjaan"
             }
           ],
           "ppe": [
             {
-              "id": "EX-02-PPE-1",
-              "content": "안전모 (턱끈 체결)",
-              "content_en": "Hard hat (chin strap fastened)",
-              "content_vi": "Mũ bảo hộ (cài quai cằm)",
-              "content_th": "หมวกนิรภัย (รัดสายคาง)",
-              "content_id": "Helm safety (tali dagu terpasang)"
+              "id": "SGP-01-PPE-1",
+              "content": "용접 방염복(난연) + 용접면 + 가죽 장갑 + 안전화(절연)",
+              "content_en": "FR welding jacket + welding hood + leather gloves + dielectric safety shoes",
+              "content_vi": "Áo hàn chống cháy + mặt nạ hàn + găng da + giày cách điện",
+              "content_th": "เสื้อเชื่อมกันไฟ + หน้ากากเชื่อม + ถุงมือหนัง + รองเท้านิรภัยฉนวน",
+              "content_id": "Jaket las FR + topeng las + sarung tangan kulit + sepatu safety dielectric"
             }
           ]
         },
         {
-          "id": "EX-03",
-          "content": "굴착면 단부 안전난간 또는 출입금지 표시",
-          "content_en": "Install guardrails or no-entry signage at excavation edges",
-          "content_vi": "Lắp lan can an toàn hoặc biển cấm vào khu vực mép hố đào",
-          "content_th": "ติดตั้งราวกันตกหรือป้ายห้ามเข้าที่ขอบหน้าขุด",
-          "content_id": "Pasang railing pengaman atau rambu larangan masuk di tepi galian",
-          "regulation": "산업안전보건기준규칙 §340",
+          "id": "SGP-02",
+          "content": "Leak test(He·N2 가압) — 시험압 단계별 상승 및 인접 인원 격리",
+          "content_en": "Leak test (He/N2 pressurization) — stepped pressure rise and personnel exclusion",
+          "content_vi": "Kiểm tra rò rỉ (He/N2 nén) — tăng áp theo bậc và cô lập nhân sự",
+          "content_th": "Leak test (He/N2 อัดความดัน) — เพิ่มแรงดันเป็นขั้นและกันคนออก",
+          "content_id": "Leak test (tekanan He/N2) — kenaikan tekanan bertahap dan isolasi personel",
+          "regulation": "산업안전보건기준규칙 §296(특수화학설비 시험), 고압가스 안전관리법 시행규칙",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            {
+              "id": "SGP-02-SC-1",
+              "content": "급격한 가압으로 fitting 파열 → 비산물에 의한 충돌·청력 손상",
+              "content_en": "Rapid pressurization bursts fitting → flying debris/hearing damage",
+              "content_vi": "Tăng áp đột ngột làm vỡ fitting → mảnh văng/ tổn thương thính giác",
+              "content_th": "การอัดความดันเร็วทำให้ fitting แตก → เศษกระเด็น/ทำลายการได้ยิน",
+              "content_id": "Tekanan cepat memecah fitting → serpihan terbang/kerusakan pendengaran"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "SGP-02-MIT-1",
+              "content": "시험압 25%/50%/100% 단계별 가압(각 단계 10분 hold), 시험구역 출입통제 + 안전거리 5m 유지",
+              "content_en": "Stepped pressurize at 25%/50%/100% (10-min hold each), exclusion zone with 5 m standoff",
+              "content_vi": "Tăng áp theo bậc 25%/50%/100% (giữ 10 phút mỗi bậc), khu vực cấm và khoảng cách an toàn 5 m",
+              "content_th": "เพิ่มแรงดันเป็นขั้น 25%/50%/100% (ค้าง 10 นาทีต่อขั้น) เขตห้ามเข้าและระยะปลอดภัย 5 ม.",
+              "content_id": "Tekan bertahap 25%/50%/100% (tahan 10 menit per langkah), zona eksklusi dengan jarak 5 m"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "SGP-02-PPE-1",
+              "content": "보안경(측면 차폐) + 청력보호구 + 안전모",
+              "content_en": "Side-shield safety goggles + hearing protection + hard hat",
+              "content_vi": "Kính bảo hộ có chắn bên + bảo vệ thính giác + mũ cứng",
+              "content_th": "แว่นตานิรภัยมีกันด้านข้าง + อุปกรณ์ป้องกันการได้ยิน + หมวกนิรภัย",
+              "content_id": "Kacamata safety side shield + pelindung pendengaran + helm safety"
+            }
+          ]
+        },
+        {
+          "id": "SGP-03",
+          "content": "가스 캐비닛 설치 및 환기·검지기 연동 확인",
+          "content_en": "Gas cabinet installation and verify ventilation/detector interlock",
+          "content_vi": "Lắp tủ khí và kiểm tra liên động thông gió/đầu dò",
+          "content_th": "ติดตั้งตู้ก๊าซและตรวจสอบ interlock ระบายอากาศ/ตัวตรวจจับ",
+          "content_id": "Instalasi gas cabinet dan verifikasi interlock ventilasi/detektor",
+          "regulation": "고압가스 안전관리법, KOSHA GUIDE P-110(가스공급설비)",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            {
+              "id": "SGP-03-SC-1",
+              "content": "캐비닛 배기 미연동 상태에서 시운전 가스 주입 → 누출 시 검지·차단 실패",
+              "content_en": "Trial gas charge with cabinet exhaust not interlocked → leak detection/shutoff fails",
+              "content_vi": "Nạp khí thử nghiệm khi hút khí tủ chưa liên động → phát hiện/cắt rò thất bại",
+              "content_th": "ชาร์จก๊าซทดลองโดยที่ระบบดูดอากาศตู้ยังไม่ interlock → ตรวจจับ/ตัดการรั่วล้มเหลว",
+              "content_id": "Pengisian gas uji saat exhaust kabinet belum interlock → deteksi/penutupan kebocoran gagal"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "SGP-03-MIT-1",
+              "content": "Pre-commissioning checklist 발주처와 합동 — 배기 차압 / 검지기 alarm / EFV(emergency flow valve) / 캐비닛 도어 인터록 4종 동작 검증 후 가스 주입",
+              "content_en": "Joint pre-commissioning with owner — verify exhaust differential, detector alarm, EFV, cabinet door interlock before gas charge",
+              "content_vi": "Pre-commissioning chung với chủ đầu tư — xác nhận chênh áp hút, alarm đầu dò, EFV, interlock cửa tủ trước khi nạp khí",
+              "content_th": "Pre-commissioning ร่วมกับเจ้าของงาน — ตรวจสอบ exhaust differential, alarm detector, EFV, interlock ประตูตู้ ก่อนชาร์จก๊าซ",
+              "content_id": "Pre-commissioning bersama dengan pemilik — verifikasi differential exhaust, alarm detektor, EFV, interlock pintu kabinet sebelum pengisian gas"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "SGP-03-PPE-1",
+              "content": "전면형 방독마스크(가스 종별 정화통) + 내화학 장갑 + 화학복(Level C)",
+              "content_en": "Full-face gas respirator (gas-specific cartridge) + chemical gloves + Level C chemical suit",
+              "content_vi": "Mặt nạ phòng độc toàn mặt (theo loại khí) + găng hóa chất + bộ Level C",
+              "content_th": "หน้ากากกันก๊าซเต็มหน้า (ตามชนิดก๊าซ) + ถุงมือเคมี + ชุดเคมี Level C",
+              "content_id": "Respirator full-face (kartrij sesuai gas) + sarung tangan kimia + setelan kimia Level C"
+            }
+          ]
+        }
+      ]
+    },
+    "CHEMICAL_LINE_INSTALL": {
+      "label_ko": "케미컬·약액 라인 시공",
+      "label_en": "Chemical Line Installation",
+      "label_vi": "Thi công đường ống hóa chất",
+      "label_th": "การติดตั้งท่อสารเคมี",
+      "label_id": "Pemasangan Pipa Bahan Kimia",
+      "baseline": [
+        {
+          "id": "CHM-01",
+          "content": "도금액·약액 배관(PFA·PVDF) 융착·체결 — MSDS 확인 및 잔류 약액 배출",
+          "content_en": "Plating/process chemical piping (PFA/PVDF) fusion/joining — verify SDS and drain residual chemical",
+          "content_vi": "Hàn nhiệt/đấu nối ống hóa chất (PFA/PVDF) — kiểm tra SDS và xả hóa chất dư",
+          "content_th": "การเชื่อม/ต่อท่อสารเคมี (PFA/PVDF) — ตรวจสอบ SDS และระบายสารเคมีตกค้าง",
+          "content_id": "Penyambungan/fusi pipa kimia (PFA/PVDF) — verifikasi SDS dan kuras kimia sisa",
+          "regulation": "산업안전보건기준규칙 §225~272(화학설비), 화학물질관리법",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            {
+              "id": "CHM-01-SC-1",
+              "content": "기존 라인 잔류 약액(예: 황산·도금 Ni 액)이 fitting 해체 시 분출 → 화상·시력 손상",
+              "content_en": "Residual chemical (e.g. H2SO4/Ni plating bath) spurts on fitting break → burn/eye injury",
+              "content_vi": "Hóa chất dư (H2SO4/dung dịch mạ Ni) bắn khi tháo fitting → bỏng/tổn thương mắt",
+              "content_th": "สารเคมีตกค้าง (H2SO4/น้ำยาชุบ Ni) พุ่งออกตอนถอด fitting → ไหม้/ดวงตาบาดเจ็บ",
+              "content_id": "Kimia sisa (H2SO4/Ni plating) menyembur saat fitting dilepas → luka bakar/cedera mata"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "CHM-01-MIT-1",
+              "content": "라인 isolation + DI flushing 3회 + pH 중성 확인 후 해체. 비상 샤워·세안 시설 15m 이내 운용",
+              "content_en": "Line isolation + 3× DI flushing + neutral pH check before disassembly. Emergency shower/eyewash within 15 m",
+              "content_vi": "Cô lập đường ống + xả DI 3 lần + xác nhận pH trung tính trước khi tháo. Vòi tắm/rửa mắt khẩn cấp trong 15 m",
+              "content_th": "แยกท่อ + ล้าง DI 3 ครั้ง + ตรวจ pH เป็นกลางก่อนถอด ฝักบัว/ล้างตาฉุกเฉินภายใน 15 ม.",
+              "content_id": "Isolasi line + DI flushing 3× + verifikasi pH netral sebelum dibongkar. Pancuran/cuci mata darurat dalam 15 m"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "CHM-01-PPE-1",
+              "content": "화학복(Level B/C, 약액 종별) + 페이스 쉴드 + 내화학 부츠 + 부틸 장갑",
+              "content_en": "Chemical suit (Level B/C per chemical) + face shield + chemical boots + butyl gloves",
+              "content_vi": "Bộ hóa chất (Level B/C theo hóa chất) + tấm chắn mặt + ủng hóa chất + găng butyl",
+              "content_th": "ชุดเคมี (Level B/C ตามสารเคมี) + face shield + รองเท้าบูทเคมี + ถุงมือ butyl",
+              "content_id": "Setelan kimia (Level B/C sesuai bahan) + face shield + boot kimia + sarung tangan butyl"
+            }
+          ]
+        },
+        {
+          "id": "CHM-02",
+          "content": "약액 캐비닛(VMB·CDM) 설치 및 누액 받이(secondary containment) 시공 확인",
+          "content_en": "Chemical cabinet (VMB/CDM) install and secondary containment confirmed",
+          "content_vi": "Lắp tủ hóa chất (VMB/CDM) và kiểm tra containment thứ cấp",
+          "content_th": "ติดตั้งตู้สารเคมี (VMB/CDM) และตรวจสอบ containment ทุติยภูมิ",
+          "content_id": "Instalasi kabinet kimia (VMB/CDM) dan konfirmasi containment sekunder",
+          "regulation": "화학물질관리법 §28(취급시설 기준), KOSHA GUIDE D-32",
           "evidence_required": "photo",
           "scenarios": [
             {
-              "id": "EX-03-SC-1",
-              "content": "야간/우천 시 굴착면 단부 미인지로 통행자 추락",
-              "content_en": "Pedestrian fails to recognize edge at night or in rain and falls into excavation",
-              "content_vi": "Người đi bộ không nhận ra mép hố đào ban đêm hoặc khi mưa và rơi xuống",
-              "content_th": "ผู้สัญจรไม่เห็นขอบหน้าขุดในเวลากลางคืนหรือฝนตกแล้วตกลงไป",
-              "content_id": "Pejalan kaki tidak menyadari tepi galian di malam hari atau saat hujan dan terjatuh"
+              "id": "CHM-02-SC-1",
+              "content": "이중 배관·누액 받이 미시공 상태에서 시운전 → 누액 시 클린룸 바닥 손상 및 fab 전체 영향",
+              "content_en": "Commissioning without double-piping/sump → leak damages cleanroom floor and impacts entire fab",
+              "content_vi": "Vận hành thử khi chưa có ống đôi/khay hứng → rò làm hỏng sàn phòng sạch và ảnh hưởng toàn fab",
+              "content_th": "เริ่มทดสอบโดยยังไม่ติดท่อคู่/ถาดรอง → รั่วทำพื้นคลีนรูมเสียหายและกระทบทั้ง fab",
+              "content_id": "Commissioning tanpa pipa ganda/sump → bocoran merusak lantai cleanroom dan berdampak ke seluruh fab"
             }
           ],
           "mitigations": [
             {
-              "id": "EX-03-MIT-1",
-              "content": "단부 90cm 안전난간 + 점멸 라이트 + 출입금지 표지 설치",
-              "content_en": "Install 90cm guardrail, flashing light, and no-entry signage at edges",
-              "content_vi": "Lắp lan can 90cm, đèn nháy và biển cấm vào tại các mép hố",
-              "content_th": "ติดตั้งราวกันตกสูง 90 ซม. ไฟกะพริบ และป้ายห้ามเข้าที่ขอบ",
-              "content_id": "Pasang railing 90cm, lampu kedip, dan rambu larangan masuk di tepi"
+              "id": "CHM-02-MIT-1",
+              "content": "이중 배관(double containment)·sump·누액 검지기 설치 검수, 미시공 시 시운전 금지(turnover gate)",
+              "content_en": "Inspect double containment / sump / leak detector before turnover; no commissioning if missing",
+              "content_vi": "Kiểm tra ống đôi / sump / đầu dò rò trước bàn giao; không vận hành thử nếu thiếu",
+              "content_th": "ตรวจ double containment / sump / leak detector ก่อน turnover ห้ามเริ่มทดสอบหากไม่ครบ",
+              "content_id": "Inspeksi double containment / sump / detektor bocor sebelum turnover; tidak ada commissioning bila kurang"
             }
           ],
-          "ppe": []
+          "ppe": [
+            {
+              "id": "CHM-02-PPE-1",
+              "content": "내화학 장갑 + 보안경 + 안전화",
+              "content_en": "Chemical gloves + safety goggles + safety shoes",
+              "content_vi": "Găng hóa chất + kính bảo hộ + giày bảo hộ",
+              "content_th": "ถุงมือเคมี + แว่นตานิรภัย + รองเท้านิรภัย",
+              "content_id": "Sarung tangan kimia + kacamata safety + sepatu safety"
+            }
+          ]
         },
         {
-          "id": "EX-04",
-          "content": "굴착 깊이 1.5m 이상 시 승강설비(사다리) 확보",
-          "content_en": "Provide ladder access when excavation depth is 1.5m or more",
-          "content_vi": "Bố trí thang lên xuống khi độ sâu đào từ 1.5m trở lên",
-          "content_th": "จัดบันไดขึ้นลงเมื่อความลึกการขุดตั้งแต่ 1.5 เมตรขึ้นไป",
-          "content_id": "Sediakan tangga akses saat kedalaman galian 1.5m atau lebih",
-          "regulation": "추정: KOSHA C-104, felix 검수 필요",
+          "id": "CHM-03",
+          "content": "발연성·부식성 약액(HF·H2SO4·HCl) 시운전 — 단계별 농도 상승 및 비상 대응 동선 확인",
+          "content_en": "Fuming/corrosive chemical commissioning (HF/H2SO4/HCl) — staged concentration ramp and emergency route check",
+          "content_vi": "Vận hành thử hóa chất bốc khói/ăn mòn (HF/H2SO4/HCl) — tăng nồng độ theo bậc và kiểm tra lối thoát khẩn",
+          "content_th": "การเริ่มเดินสารเคมีฟูม/กัดกร่อน (HF/H2SO4/HCl) — เพิ่มความเข้มข้นเป็นขั้นและตรวจเส้นทางฉุกเฉิน",
+          "content_id": "Commissioning kimia fuming/korosif (HF/H2SO4/HCl) — kenaikan konsentrasi bertahap dan jalur darurat",
+          "regulation": "산업안전보건기준규칙 §225, §242(화학설비 시운전), 화관법 §13",
           "evidence_required": "verbal",
           "scenarios": [
             {
-              "id": "EX-04-SC-1",
-              "content": "사다리 미설치 깊은 굴착부에서 비상 탈출 지연",
-              "content_en": "Delayed emergency egress from deep excavation without ladder",
-              "content_vi": "Chậm thoát hiểm từ hố đào sâu do không có thang",
-              "content_th": "การหนีออกฉุกเฉินจากหลุมขุดที่ลึกล่าช้าเพราะไม่มีบันได",
-              "content_id": "Evakuasi darurat dari galian dalam tertunda karena tidak ada tangga"
+              "id": "CHM-03-SC-1",
+              "content": "HF 시운전 중 누출 → 피부 흡수형 화학화상(지연성·치명적)",
+              "content_en": "HF leak during commissioning → absorbed chemical burn (delayed, lethal)",
+              "content_vi": "Rò HF khi vận hành thử → bỏng hóa chất thấm da (chậm, có thể tử vong)",
+              "content_th": "HF รั่วระหว่างทดสอบ → ไหม้สารเคมีดูดซึมผ่านผิว (ออกฤทธิ์ช้า ถึงตาย)",
+              "content_id": "Bocoran HF saat commissioning → luka bakar kimia terserap kulit (tertunda, fatal)"
             }
           ],
           "mitigations": [
             {
-              "id": "EX-04-MIT-1",
-              "content": "굴착 깊이 1.5m 이상 시 8m 이내 간격 사다리 1개 이상 확보",
-              "content_en": "When excavation depth is 1.5m+, provide at least 1 ladder within every 8m interval",
-              "content_vi": "Khi độ sâu đào từ 1.5m, bố trí ít nhất 1 thang trong khoảng cách 8m",
-              "content_th": "เมื่อความลึกขุดตั้งแต่ 1.5 เมตร ต้องมีบันไดอย่างน้อย 1 อันต่อระยะทุก 8 เมตร",
-              "content_id": "Saat kedalaman galian 1.5m+, sediakan minimal 1 tangga setiap interval 8m"
+              "id": "CHM-03-MIT-1",
+              "content": "HF 전용 칼슘글루코네이트 젤(2.5%) 작업장 배치, 노출 시 즉시 도포 + 응급 후송 SOP. 농도 25%/50%/100% 단계 시운전",
+              "content_en": "Place 2.5% calcium gluconate gel at HF site, apply on exposure + emergency evacuation SOP. Stage commissioning at 25%/50%/100%",
+              "content_vi": "Đặt gel canxi gluconat 2.5% tại hiện trường HF, thoa ngay khi phơi nhiễm + SOP sơ tán. Vận hành thử theo bậc 25%/50%/100%",
+              "content_th": "วางเจล calcium gluconate 2.5% ที่หน้างาน HF ทาทันทีเมื่อโดน + SOP อพยพฉุกเฉิน เริ่มทดสอบเป็นขั้น 25%/50%/100%",
+              "content_id": "Sediakan gel calcium gluconate 2.5% di area HF, oles segera saat terpapar + SOP evakuasi. Commissioning bertahap 25%/50%/100%"
             }
           ],
-          "ppe": []
+          "ppe": [
+            {
+              "id": "CHM-03-PPE-1",
+              "content": "전면 화학복(Level B) + SCBA 또는 강제송기식 마스크 + 부틸·바이톤 장갑",
+              "content_en": "Level B chemical suit + SCBA or supplied-air respirator + butyl/Viton gloves",
+              "content_vi": "Bộ Level B + SCBA hoặc mặt nạ cấp khí + găng butyl/Viton",
+              "content_th": "ชุดเคมี Level B + SCBA หรือหน้ากากจ่ายอากาศ + ถุงมือ butyl/Viton",
+              "content_id": "Setelan kimia Level B + SCBA atau respirator suplai udara + sarung tangan butyl/Viton"
+            }
+          ]
         }
-      ],
-      "conditional": [
+      ]
+    },
+    "MEP_HVAC_INSTALL": {
+      "label_ko": "MEP/공조/유틸리티 시공",
+      "label_en": "MEP/HVAC/Utility Installation",
+      "label_vi": "Thi công MEP/HVAC/tiện ích",
+      "label_th": "การติดตั้ง MEP/HVAC/สาธารณูปโภค",
+      "label_id": "Pemasangan MEP/HVAC/Utilitas",
+      "baseline": [
         {
-          "if": "depth >= 2",
-          "add": {
-            "id": "EX-D01",
-            "content": "굴착 2m 이상 — 산소농도 측정 및 환기, 신호수 배치",
-            "content_en": "Excavation 2m+ — measure oxygen concentration, ventilate, and assign signal person",
-            "content_vi": "Đào từ 2m — đo nồng độ oxy, thông gió và bố trí người ra hiệu",
-            "content_th": "ขุดดินตั้งแต่ 2 เมตร — วัดความเข้มข้นออกซิเจน ระบายอากาศ และจัดผู้ให้สัญญาณ",
-            "content_id": "Galian 2m+ — ukur konsentrasi oksigen, ventilasi, dan tugaskan signal man",
-            "regulation": "산업안전보건기준규칙 §619"
-          }
+          "id": "MEP-01",
+          "content": "고압 전기 인입·patch — LOTO(에너지 차단) 및 활선 근접작업 금지",
+          "content_en": "HV electrical incoming/patch — LOTO and no live-line work",
+          "content_vi": "Đấu nối/đi cao thế — LOTO và cấm làm việc trên dây sống",
+          "content_th": "ต่อ/แพตช์ไฟแรงสูงเข้าระบบ — LOTO และห้ามทำงานกับสายมีไฟ",
+          "content_id": "Incoming/patch listrik tegangan tinggi — LOTO dan larangan kerja live",
+          "regulation": "산업안전보건기준규칙 §301~322(전기작업), KOSHA GUIDE E-91(LOTO)",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            {
+              "id": "MEP-01-SC-1",
+              "content": "변전실 LOTO 미적용·다른 작업자 무단 재가압 → 감전·아크 플래시",
+              "content_en": "Missing LOTO at substation or unauthorized re-energize by others → electric shock/arc flash",
+              "content_vi": "Thiếu LOTO trạm biến áp hoặc người khác đóng điện trái phép → điện giật/arc flash",
+              "content_th": "ไม่มี LOTO ที่สถานีไฟฟ้าหรือมีคนจ่ายไฟกลับโดยพลการ → ไฟดูด/arc flash",
+              "content_id": "LOTO substation tidak ada atau orang lain re-energize tanpa izin → tersengat/arc flash"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "MEP-01-MIT-1",
+              "content": "다중 자물쇠(group LOTO) 작업자 본인 잠금, 검전기 0V 확인 후 접지, LG이노텍 전기 책임자 입회",
+              "content_en": "Group LOTO with personal locks, verify 0 V with tester then ground, LG Innotek electrical authority witness",
+              "content_vi": "Group LOTO mỗi người khóa riêng, đo 0 V bằng tester rồi tiếp địa, đại diện điện LG Innotek chứng kiến",
+              "content_th": "Group LOTO ล็อกรายบุคคล วัด 0 V ด้วยเทสเตอร์แล้วต่อกราวด์ ผู้รับผิดชอบไฟฟ้า LG Innotek เป็นพยาน",
+              "content_id": "Group LOTO dengan kunci pribadi, verifikasi 0 V dengan tester lalu grounding, otoritas listrik LG Innotek menyaksikan"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "MEP-01-PPE-1",
+              "content": "절연장갑(Class 2 이상) + 아크 플래시 슈트(Cat. 2) + 안면보호 + 절연안전화",
+              "content_en": "Insulated gloves (Class 2+) + arc flash suit (Cat. 2) + face shield + dielectric boots",
+              "content_vi": "Găng cách điện (Class 2+) + bộ arc flash (Cat. 2) + chắn mặt + giày cách điện",
+              "content_th": "ถุงมือฉนวน (Class 2+) + ชุด arc flash (Cat. 2) + face shield + รองเท้าฉนวน",
+              "content_id": "Sarung tangan isolasi (Class 2+) + setelan arc flash (Cat. 2) + face shield + sepatu dielectric"
+            }
+          ]
+        },
+        {
+          "id": "MEP-02",
+          "content": "UPW(초순수)·DI·PCW 배관 시공 — 가압 시험 및 누수 시 인접 라인 영향 평가",
+          "content_en": "UPW/DI/PCW piping — pressure test and assess impact on adjacent lines if leak",
+          "content_vi": "Đường ống UPW/DI/PCW — kiểm tra áp lực và đánh giá ảnh hưởng nếu rò",
+          "content_th": "ท่อ UPW/DI/PCW — ทดสอบความดันและประเมินผลต่อไลน์ข้างเคียงหากรั่ว",
+          "content_id": "Pipa UPW/DI/PCW — uji tekanan dan nilai dampak ke line berdekatan bila bocor",
+          "regulation": "산업안전보건기준규칙 §296(특수화학설비)",
+          "evidence_required": "photo",
+          "scenarios": [
+            {
+              "id": "MEP-02-SC-1",
+              "content": "가압 시험 중 fitting 누수가 천정 위 전기 panel에 떨어짐 → 누전",
+              "content_en": "Pressure test leak drips onto overhead electrical panel → short circuit",
+              "content_vi": "Rò khi thử áp nhỏ giọt xuống panel điện trên trần → chập điện",
+              "content_th": "การรั่วระหว่างทดสอบความดันหยดลง panel ไฟฟ้าบนเพดาน → ไฟลัด",
+              "content_id": "Bocoran saat uji tekanan menetes ke panel listrik atas → korsleting"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "MEP-02-MIT-1",
+              "content": "시험 전 천정 내 전기·통신 trunk 위치 매핑 + 임시 방수 cover. 누수 시 즉시 차단 SOP",
+              "content_en": "Map overhead electrical/telecom trunks + place temporary drip cover; immediate shutoff SOP on leak",
+              "content_vi": "Lập bản đồ trục điện/viễn thông trên trần + đậy chống nhỏ giọt tạm; SOP cắt ngay khi rò",
+              "content_th": "ทำแผนผัง trunk ไฟฟ้า/สื่อสารบนเพดาน + ครอบกันหยดชั่วคราว ตัดทันที SOP เมื่อรั่ว",
+              "content_id": "Petakan trunk listrik/telekomunikasi atas + pasang penutup tetes sementara; SOP putus segera saat bocor"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "MEP-02-PPE-1",
+              "content": "보안경 + 안전화 + 절연장갑(인접 전기 작업 시)",
+              "content_en": "Safety goggles + safety shoes + insulated gloves (if near electrical)",
+              "content_vi": "Kính bảo hộ + giày bảo hộ + găng cách điện (nếu gần điện)",
+              "content_th": "แว่นตานิรภัย + รองเท้านิรภัย + ถุงมือฉนวน (เมื่อใกล้ไฟฟ้า)",
+              "content_id": "Kacamata safety + sepatu safety + sarung tangan isolasi (bila dekat listrik)"
+            }
+          ]
+        },
+        {
+          "id": "MEP-03",
+          "content": "Scrubber·exhaust duct 시공 — 천정 고소작업 및 인접 가동 scrubber와의 격리",
+          "content_en": "Scrubber/exhaust duct install — overhead work and isolation from adjacent live scrubber",
+          "content_vi": "Lắp scrubber/ống xả — làm việc trên cao và cách ly với scrubber đang chạy lân cận",
+          "content_th": "ติดตั้ง scrubber/ท่อ exhaust — งานบนที่สูงและแยกจาก scrubber ที่ทำงานอยู่ข้างเคียง",
+          "content_id": "Pemasangan scrubber/duct exhaust — kerja ketinggian dan isolasi dari scrubber aktif berdekatan",
+          "regulation": "산업안전보건기준규칙 §42, §72(작업발판), 산안법 §38",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            {
+              "id": "MEP-03-SC-1",
+              "content": "인접 가동 scrubber 출구 측 작업 중 유해가스(NH3·HF fume) 역류 노출",
+              "content_en": "Reverse-flow exposure to scrubber off-gas (NH3/HF fume) while working at adjacent live exhaust",
+              "content_vi": "Phơi nhiễm khí thải scrubber (NH3/HF fume) do dòng ngược khi làm gần đầu xả đang vận hành",
+              "content_th": "การสัมผัสก๊าซย้อนทาง (NH3/HF fume) ขณะทำงานใกล้ exhaust ที่ทำงานอยู่",
+              "content_id": "Paparan aliran balik gas (NH3/HF fume) saat kerja dekat exhaust scrubber aktif"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "MEP-03-MIT-1",
+              "content": "인접 scrubber 정지·blind 격리 또는 작업자 강제송기식 호흡기 착용 + 가스 측정기 휴대",
+              "content_en": "Stop/blind-isolate adjacent scrubber, or use supplied-air respirator + personal gas monitor",
+              "content_vi": "Dừng/blind scrubber lân cận, hoặc dùng mặt nạ cấp khí + máy đo khí cá nhân",
+              "content_th": "หยุด/blind scrubber ข้างเคียง หรือใช้หน้ากากจ่ายอากาศ + เครื่องวัดก๊าซส่วนบุคคล",
+              "content_id": "Hentikan/blind scrubber berdekatan, atau gunakan respirator suplai udara + gas monitor pribadi"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "MEP-03-PPE-1",
+              "content": "전신 안전대 + 방독마스크(다목적 정화통) + 안전모 + 4가스 검지기(O2/LEL/CO/H2S)",
+              "content_en": "Full-body harness + multi-gas respirator + hard hat + 4-gas detector (O2/LEL/CO/H2S)",
+              "content_vi": "Dây an toàn toàn thân + mặt nạ phòng độc đa năng + mũ cứng + máy đo 4 khí (O2/LEL/CO/H2S)",
+              "content_th": "เข็มขัดนิรภัยเต็มตัว + หน้ากากกันก๊าซ multi-gas + หมวกนิรภัย + เครื่องวัดก๊าซ 4 ชนิด (O2/LEL/CO/H2S)",
+              "content_id": "Full body harness + respirator multi-gas + helm safety + detektor 4 gas (O2/LEL/CO/H2S)"
+            }
+          ]
+        }
+      ]
+    },
+    "FAB_EXTENSION_STRUCTURE": {
+      "label_ko": "팹 증설 구조물·외장",
+      "label_en": "Fab Extension Structure & Envelope",
+      "label_vi": "Kết cấu và lớp vỏ mở rộng nhà máy",
+      "label_th": "โครงสร้างและเปลือกอาคารส่วนต่อขยาย Fab",
+      "label_id": "Struktur dan Envelope Ekspansi Fab",
+      "baseline": [
+        {
+          "id": "FAB-01",
+          "content": "굴착·기초 공사 — 흙막이 가시설 및 지하 매설물(가스·전력) 사전 탐사",
+          "content_en": "Excavation/foundation — shoring and pre-survey of underground utilities (gas/power)",
+          "content_vi": "Đào và móng — chống vách và khảo sát công trình ngầm (khí/điện)",
+          "content_th": "งานขุดและฐานราก — shoring และสำรวจสาธารณูปโภคใต้ดิน (ก๊าซ/ไฟฟ้า) ล่วงหน้า",
+          "content_id": "Galian/fondasi — shoring dan survei utilitas bawah tanah (gas/listrik)",
+          "regulation": "산업안전보건기준규칙 §339~377(굴착), KOSHA GUIDE C-39",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            {
+              "id": "FAB-01-SC-1",
+              "content": "기존 팹의 특수가스 매설 배관 미확인 굴착 → 손상·누출",
+              "content_en": "Excavation without identifying existing fab specialty-gas buried pipe → damage/leak",
+              "content_vi": "Đào không xác định ống khí đặc biệt ngầm của fab cũ → hư hỏng/rò",
+              "content_th": "ขุดโดยไม่ระบุท่อก๊าซพิเศษฝังของ fab เดิม → เสียหาย/รั่ว",
+              "content_id": "Galian tanpa identifikasi pipa gas khusus terkubur fab eksisting → kerusakan/bocor"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "FAB-01-MIT-1",
+              "content": "GPR(지하탐사) + LG이노텍 FAC as-built 도면 대조 후 굴착 허가서 발급, 수작업 굴착 우선 50cm",
+              "content_en": "GPR + cross-check LG Innotek FAC as-built, issue dig permit, hand-dig first 50 cm",
+              "content_vi": "GPR + đối chiếu as-built LG Innotek FAC, cấp giấy phép đào, đào tay 50 cm đầu",
+              "content_th": "GPR + เทียบ as-built ของ LG Innotek FAC ออกใบอนุญาตขุด ขุดมือ 50 ซม. แรก",
+              "content_id": "GPR + cocokkan as-built FAC LG Innotek, terbitkan dig permit, gali manual 50 cm pertama"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "FAB-01-PPE-1",
+              "content": "안전모 + 형광조끼 + 안전화 + 4가스 검지기(굴착부 진입 시)",
+              "content_en": "Hard hat + hi-vis vest + safety shoes + 4-gas detector (when entering pit)",
+              "content_vi": "Mũ cứng + áo phản quang + giày bảo hộ + máy đo 4 khí (khi xuống hố)",
+              "content_th": "หมวกนิรภัย + เสื้อสะท้อนแสง + รองเท้านิรภัย + เครื่องวัด 4 ก๊าซ (เมื่อลงหลุม)",
+              "content_id": "Helm safety + rompi reflektif + sepatu safety + detektor 4 gas (saat masuk pit)"
+            }
+          ]
+        },
+        {
+          "id": "FAB-02",
+          "content": "철골·데크 조립 — 고소작업 + 양중 동시 작업 시 구역 분리",
+          "content_en": "Steel/deck erection — separate zones for working-at-height and lifting concurrent ops",
+          "content_vi": "Lắp thép/deck — tách khu vực khi làm trên cao và nâng diễn ra đồng thời",
+          "content_th": "ติดตั้งโครงเหล็ก/deck — แยกโซนเมื่อทำงานบนที่สูงและยกพร้อมกัน",
+          "content_id": "Erection baja/deck — pisahkan zona saat kerja ketinggian dan pengangkatan bersamaan",
+          "regulation": "산업안전보건기준규칙 §42(안전대), §385(낙하물), §170(혼재작업)",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            {
+              "id": "FAB-02-SC-1",
+              "content": "철골 볼팅 작업자 직하 구역에서 데크 양중 → 추락·낙하물 동시 노출",
+              "content_en": "Deck lift below steel bolting crew → simultaneous fall and falling object exposure",
+              "content_vi": "Nâng deck ngay dưới đội bắt bu lông thép → đồng thời ngã và vật rơi",
+              "content_th": "ยก deck ใต้ทีมขันโบลต์เหล็ก → เสี่ยงตกและของหล่นพร้อมกัน",
+              "content_id": "Pengangkatan deck di bawah crew bolting baja → paparan jatuh dan benda jatuh bersamaan"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "FAB-02-MIT-1",
+              "content": "양중 시간대 별도 지정(작업 분리), 안전대 이중고리 + 추락방지망 + 낙하물 방지망 동시 설치, 신호수 + safety supervisor 상주",
+              "content_en": "Dedicated lift windows separate from work-at-height, double-hook harness + fall net + debris net, signaler + safety supervisor on site",
+              "content_vi": "Khung giờ nâng riêng, dây an toàn móc đôi + lưới chống ngã + lưới chống vật rơi, có người ra hiệu + giám sát an toàn",
+              "content_th": "กำหนดช่วงเวลายกแยก สายเข็มขัดสองตะขอ + ตาข่ายกันตก + ตาข่ายกันของหล่น มีผู้ให้สัญญาณ + safety supervisor",
+              "content_id": "Slot waktu pengangkatan terpisah, harness dua hook + jaring jatuh + jaring debris, signalman + safety supervisor di lokasi"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "FAB-02-PPE-1",
+              "content": "안전모(턱끈) + 전신 안전대(이중고리) + 안전화(강심) + 형광조끼",
+              "content_en": "Hard hat (chin strap) + full-body harness (double lanyard) + steel-toe boots + hi-vis vest",
+              "content_vi": "Mũ cứng (quai cằm) + dây an toàn toàn thân (móc đôi) + giày mũi thép + áo phản quang",
+              "content_th": "หมวกนิรภัย (สายรัดคาง) + เข็มขัดนิรภัยเต็มตัว (lanyard คู่) + รองเท้าหัวเหล็ก + เสื้อสะท้อนแสง",
+              "content_id": "Helm safety (tali dagu) + full body harness (lanyard ganda) + sepatu ujung baja + rompi reflektif"
+            }
+          ]
+        },
+        {
+          "id": "FAB-03",
+          "content": "외장 panel·창호 시공 — 풍속·강우 게이트 및 인접 가동 fab 외벽 보호",
+          "content_en": "External panel/glazing — wind/rain stoppage gate and protection of adjacent live fab envelope",
+          "content_vi": "Lắp panel ngoài/cửa kính — cổng dừng theo gió/mưa và bảo vệ vỏ fab đang vận hành lân cận",
+          "content_th": "ติดตั้ง panel ภายนอก/กระจก — gate หยุดงานตามลม/ฝน และป้องกันเปลือก fab ที่ทำงานอยู่ข้างเคียง",
+          "content_id": "Pemasangan panel luar/kaca — gate berhenti karena angin/hujan dan proteksi envelope fab aktif berdekatan",
+          "regulation": "산업안전보건기준규칙 §37(악천후 작업금지), 건설기술진흥법 안전관리계획",
+          "evidence_required": "verbal",
+          "scenarios": [
+            {
+              "id": "FAB-03-SC-1",
+              "content": "풍속 10m/s 초과 시 panel 비산 → 인접 가동 fab 외벽 파손 → 양산 라인 양압 손실",
+              "content_en": "Panel flies in wind >10m/s → damage to adjacent live fab envelope → positive-pressure loss in production line",
+              "content_vi": "Panel bay khi gió >10m/s → vỏ fab đang chạy lân cận hư → mất áp suất dương dây chuyền",
+              "content_th": "panel ปลิวเมื่อลม >10m/s → ทำเปลือก fab ที่ทำงานอยู่ข้างเคียงเสียหาย → สูญเสียแรงดันบวกในไลน์ผลิต",
+              "content_id": "Panel terbang saat angin >10m/s → kerusakan envelope fab aktif → kehilangan tekanan positif line produksi"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "FAB-03-MIT-1",
+              "content": "풍속계 상주 측정 — 8m/s 경고·10m/s 외장 작업 즉시 중단, 강풍 시 자재 결박 표준 + LG이노텍 EHS와 합동 weather hold 결정",
+              "content_en": "On-site anemometer — alert at 8 m/s, stop external work at 10 m/s, secure materials, joint weather-hold decision with LG Innotek EHS",
+              "content_vi": "Có máy đo gió tại chỗ — báo động 8m/s, ngừng việc ngoài 10m/s, neo vật tư, quyết định weather-hold cùng LG Innotek EHS",
+              "content_th": "มี anemometer ประจำ — เตือนที่ 8m/s หยุดงานภายนอกที่ 10m/s ผูกรัดวัสดุ ตัดสินใจ weather-hold ร่วมกับ LG Innotek EHS",
+              "content_id": "Anemometer di lokasi — peringatan 8m/s, hentikan kerja luar 10m/s, ikat material, keputusan weather-hold bersama EHS LG Innotek"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "FAB-03-PPE-1",
+              "content": "안전모(턱끈) + 전신 안전대 + 안전화 + 작업복(방한 또는 통풍)",
+              "content_en": "Hard hat (chin strap) + full-body harness + safety shoes + weather-appropriate coverall",
+              "content_vi": "Mũ cứng (quai cằm) + dây an toàn toàn thân + giày bảo hộ + áo liền quần theo thời tiết",
+              "content_th": "หมวกนิรภัย (สายรัดคาง) + เข็มขัดนิรภัยเต็มตัว + รองเท้านิรภัย + ชุดทำงานตามสภาพอากาศ",
+              "content_id": "Helm safety (tali dagu) + full body harness + sepatu safety + coverall sesuai cuaca"
+            }
+          ]
         }
       ]
     }

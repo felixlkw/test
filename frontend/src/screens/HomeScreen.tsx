@@ -11,6 +11,7 @@ import RuleLine from "../components/RuleLine";
 import { IconSettings, IconChevronRight, IconArrowRight } from "../components/Icon";
 import { DomainBadge } from "../shared/ui/DomainBadge";
 import { getDraftCountBadgeLabel } from "../shared/i18n/draftLabels";
+import { tenant, isDomainVisible } from "../shared/tenant/config";
 
 // PR D Q8 — Settings 기본 도메인 키 (Settings와 동일 키).
 const DEFAULT_DOMAIN_KEY = "safemate.ui.defaultDomain";
@@ -32,12 +33,37 @@ function readDefaultDomain(): SessionDomain | undefined {
   }
 }
 
-const DOMAIN_OPTIONS: { value: SessionDomain; label: string; hint: string }[] = [
-  { value: "manufacturing", label: "제조", hint: "가전·금속·조립·포장 라인" },
-  { value: "construction", label: "건설", hint: "신축·리모델링·토목·플랜트" },
-  { value: "heavy_industry", label: "중공업", hint: "조선·해양·철강·중장비" },
-  { value: "semiconductor", label: "반도체", hint: "FAB·후공정·가스/화학" },
+// Domain selector options. Labels follow the active tenant; hidden domains
+// are filtered out so customer PoCs can present only the relevant domains.
+// Hints are tenant-specific so each PoC describes domains in its own terms.
+const DOMAIN_HINTS_BY_TENANT: Record<string, Partial<Record<SessionDomain, string>>> = {
+  default: {
+    manufacturing: "가전·금속·조립·포장 라인",
+    construction: "신축·리모델링·토목·플랜트",
+    heavy_industry: "조선·해양·철강·중장비",
+    semiconductor: "FAB·후공정·가스/화학",
+  },
+  lg_innotek: {
+    manufacturing: "광학·패키지·모빌리티 양산 라인",
+    construction: "팹/라인 신축·증설·클린룸 시공",
+    heavy_industry: "클린룸 장비·노광/검사·도금 PM",
+    semiconductor: "",
+  },
+};
+
+const ALL_DOMAINS: SessionDomain[] = [
+  "manufacturing",
+  "construction",
+  "heavy_industry",
+  "semiconductor",
 ];
+
+const DOMAIN_OPTIONS: { value: SessionDomain; label: string; hint: string }[] =
+  ALL_DOMAINS.filter(isDomainVisible).map((value) => ({
+    value,
+    label: tenant.domainLabels[value],
+    hint: DOMAIN_HINTS_BY_TENANT[tenant.id]?.[value] ?? "",
+  }));
 
 export default function HomeScreen() {
   const navigate = useNavigate();
@@ -123,7 +149,7 @@ export default function HomeScreen() {
           <PwcMark size={22} />
           <span className="h-4 w-px bg-pwc-border" aria-hidden="true" />
           <span className="text-[13px] font-bold tracking-wide uppercase text-pwc-ink">
-            SafeMate
+            Safety Vision
           </span>
         </div>
         <button
@@ -142,7 +168,7 @@ export default function HomeScreen() {
             현장의 안전을,<br />대화로 정리합니다
           </h1>
           <p className="mt-3 text-sm text-pwc-ink-soft max-w-sm">
-            TBM 리더와 SafeMate가 음성으로 대화하며 체크리스트를 함께 작성합니다.
+            TBM 리더와 Safety Vision이 음성으로 대화하며 체크리스트를 함께 작성합니다.
           </p>
         </div>
         <div className="absolute right-[-10px] bottom-4 opacity-95">
@@ -242,7 +268,7 @@ export default function HomeScreen() {
       </section>
 
       <footer className="mt-auto px-6 pb-6 text-[11px] text-pwc-ink-mute">
-        SafeMate · 산업안전 데모
+        Safety Vision · LG Innotek Industrial Safety PoC
       </footer>
 
       {showDomainSheet && (

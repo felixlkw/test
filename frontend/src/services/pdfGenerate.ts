@@ -36,6 +36,7 @@ import type {
 } from "./sessionModel";
 import type { ChecklistItem } from "./checklist";
 import { pickContent } from "./catalogI18n";
+import { tenant as tenantConfig } from "../shared/tenant/config";
 
 // PwC 토큰 (tailwind.config.js 1:1 매핑).
 const PWC_ORANGE = rgb(0xe0 / 255, 0x30 / 255, 0x1e / 255);
@@ -79,12 +80,10 @@ function getPdfFontUrl(language: SessionLanguage): string {
   }
 }
 
-const DOMAIN_LABEL_KO_LOCAL: Record<string, string> = {
-  manufacturing: "제조",
-  construction: "건설",
-  heavy_industry: "중공업",
-  semiconductor: "반도체",
-};
+// PDF domain labels follow the active tenant so customer-branded reports
+// match the in-app terminology.
+const DOMAIN_LABEL_KO_LOCAL: Record<string, string> =
+  tenantConfig.domainLabels as Record<string, string>;
 
 interface FontPair {
   /** 사용자 언어 풀 글리프 폰트(NotoSansKR/NotoSansThai/NotoSans Latin 중 1).
@@ -491,7 +490,7 @@ export async function generateSessionPdf(
     color: PWC_ORANGE,
   });
   let cursor: DrawCursor = { page, y: PAGE_H - MARGIN_Y - 20 };
-  cursor = drawText(doc, cursor, "SafeMate · TBM 보고서", {
+  cursor = drawText(doc, cursor, "Safety Vision · TBM 보고서", {
     font,
     size: 22,
     color: PWC_INK,
@@ -657,7 +656,7 @@ export async function generateSessionPdf(
   const pages = doc.getPages();
   for (let i = 0; i < pages.length; i += 1) {
     const p = pages[i];
-    p.drawText(`SafeMate · ${i + 1} / ${pages.length}`, {
+    p.drawText(`Safety Vision · ${i + 1} / ${pages.length}`, {
       x: MARGIN_X,
       y: 24,
       size: 8,
@@ -1110,7 +1109,7 @@ export async function generateBroadcastReportPdf(
   cursor.y -= 4;
   drawDivider(cursor.page, cursor.y, PWC_ORANGE);
   cursor.y -= 12;
-  cursor = drawKv(doc, cursor, "회사", "SafeMate · PwC", fonts);
+  cursor = drawKv(doc, cursor, "회사", "Safety Vision · LG Innotek", fonts);
   cursor = drawKv(
     doc,
     cursor,
@@ -1241,7 +1240,7 @@ export async function generateBroadcastReportPdf(
   const pages = doc.getPages();
   for (let i = 0; i < pages.length; i += 1) {
     const p = pages[i];
-    p.drawText(`SafeMate · TBM Broadcast Report · ${i + 1} / ${pages.length}`, {
+    p.drawText(`Safety Vision · TBM Broadcast Report · ${i + 1} / ${pages.length}`, {
       x: MARGIN_X,
       y: 24,
       size: 8,

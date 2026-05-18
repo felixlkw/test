@@ -57,9 +57,8 @@ export const ALL_DOMAINS: ReadonlyArray<SessionDomain> = [
   "semiconductor",
 ];
 
-export const DOMAIN_LABEL_KO: Record<SessionDomain, string> = {
-  manufacturing: "제조",
-  construction: "건설",
-  heavy_industry: "중공업",
-  semiconductor: "반도체",
-};
+// Domain labels are tenant-driven so each customer PoC presents its own
+// terminology. Backend domain keys remain stable for IndexedDB/API compat.
+import { tenant } from "../shared/tenant/config";
+
+export const DOMAIN_LABEL_KO: Record<SessionDomain, string> = tenant.domainLabels;

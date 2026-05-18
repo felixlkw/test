@@ -1,622 +1,850 @@
 {
   "domain": "heavy_industry",
-  "version": "0.3.0",
-  "note": "PR A placeholder catalog — 3 work types. Phase 2.x PR-1: per-item scenarios/mitigations/ppe. v0.3.0: multi-language (en/vi/th/id) added. regulation 인용은 felix 검수 필요.",
+  "version": "0.4.0-lg_innotek",
+  "note": "LG이노텍 PoC tenant 카탈로그 — 클린룸·노광·검사·도금 설비 PM/MRO. 백엔드 키는 heavy_industry이지만 사용자에게는 '설비관리'로 노출. 광학솔루션(카메라 모듈/3D 센싱), 패키지솔루션(반도체 패키지 기판/포토마스크/FC-BGA), 모빌리티솔루션(자율주행 센서/파워 모듈) 양산 라인 PM/MRO 대상. 핵심 위험: 잔류 화학물질(HF/KOH/황산/인산/도금액) 폭로, LOTO 잔류 에너지, 클린룸 협소공간, 특수가스(SiH4/NH3/Cl2) 누출, 고전압(RF generator/EFEM), 잔류 진공, 추락(고소 설비). regulation 인용은 felix 검수 필요.",
   "work_types": {
-    "LIFTING": {
-      "label_ko": "양중작업",
-      "label_en": "Lifting / Hoisting",
-      "label_vi": "Công tác nâng / cẩu",
-      "label_th": "งานยก / ยกของหนัก",
-      "label_id": "Pekerjaan Angkat / Hoisting",
+    "CLEANROOM_EQUIPMENT_PM": {
+      "label_ko": "클린룸 장비 정기 점검(PM)",
+      "label_en": "Cleanroom Equipment Preventive Maintenance",
+      "label_vi": "Bảo trì phòng ngừa (PM) thiết bị phòng sạch",
+      "label_th": "งานบำรุงรักษาเชิงป้องกัน (PM) อุปกรณ์ห้องคลีนรูม",
+      "label_id": "Pemeliharaan Preventif (PM) Peralatan Cleanroom",
       "baseline": [
         {
-          "id": "LIFT-01",
-          "content": "리프팅 플랜 검토 — 중량물 무게·중심·줄걸이 방법 확인",
-          "content_en": "Review lifting plan — verify load weight, center of gravity, and rigging method",
-          "content_vi": "Xem xét kế hoạch nâng — xác nhận trọng lượng, trọng tâm và phương pháp móc cáp của vật nâng",
-          "content_th": "ตรวจสอบแผนการยก — ยืนยันน้ำหนัก จุดศูนย์ถ่วง และวิธีการคล้องสลิงของวัสดุ",
-          "content_id": "Tinjau rencana pengangkatan — verifikasi berat, titik pusat gravitasi, dan metode rigging beban",
-          "regulation": "산업안전보건기준규칙 §38",
-          "evidence_required": "verbal",
-          "scenarios": [
-            {
-              "id": "LIFT-01-SC-1",
-              "content": "중심점 오판으로 양중 중 회전·기울어 인근 작업자 충돌",
-              "content_en": "Misjudged center of gravity causes the load to rotate/tilt during lifting, striking nearby workers",
-              "content_vi": "Đánh giá sai trọng tâm khiến vật nâng xoay/nghiêng trong khi nâng, va vào công nhân gần đó",
-              "content_th": "การประเมินจุดศูนย์ถ่วงผิดพลาด ทำให้วัสดุหมุน/เอียงระหว่างการยก และชนคนงานใกล้เคียง",
-              "content_id": "Kesalahan penilaian titik pusat gravitasi menyebabkan beban berputar/miring saat diangkat dan menabrak pekerja di sekitarnya"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "LIFT-01-MIT-1",
-              "content": "리프팅 플랜에 무게 중심 표시 + 시양중(test lift) 1회 시행",
-              "content_en": "Mark center of gravity on lifting plan and perform one trial/test lift before full lift",
-              "content_vi": "Đánh dấu trọng tâm trên kế hoạch nâng và thực hiện một lần nâng thử (test lift) trước khi nâng chính thức",
-              "content_th": "ทำเครื่องหมายจุดศูนย์ถ่วงในแผนการยก และทำการยกทดสอบ (test lift) 1 ครั้งก่อนยกจริง",
-              "content_id": "Tandai titik pusat gravitasi pada rencana pengangkatan dan lakukan satu kali test lift sebelum pengangkatan penuh"
-            }
-          ],
-          "ppe": []
-        },
-        {
-          "id": "LIFT-02",
-          "content": "크레인 정기점검 유효기간 및 SWL(safe working load) 확인",
-          "content_en": "Verify crane periodic inspection validity and SWL (safe working load)",
-          "content_vi": "Kiểm tra thời hạn kiểm định định kỳ của cẩu và SWL (tải trọng làm việc an toàn)",
-          "content_th": "ตรวจสอบอายุการตรวจสอบประจำของเครน และค่า SWL (safe working load)",
-          "content_id": "Verifikasi masa berlaku inspeksi berkala crane dan SWL (safe working load)",
-          "regulation": "산업안전보건기준규칙 §142",
+          "id": "CR-01",
+          "content": "장비 전원·RF·구동부 LOTO 시행 및 잔류전압·잔류압력 확인",
+          "content_en": "Apply LOTO to power, RF, and drive systems; verify zero residual voltage and pressure",
+          "content_vi": "Áp dụng LOTO cho nguồn điện, RF và hệ truyền động; kiểm tra điện áp và áp suất dư bằng 0",
+          "content_th": "ดำเนินการ LOTO กับแหล่งจ่ายไฟ, RF และระบบขับเคลื่อน; ตรวจสอบแรงดันไฟฟ้าและความดันคงค้างเป็นศูนย์",
+          "content_id": "Terapkan LOTO pada sumber daya listrik, RF, dan sistem penggerak; verifikasi tegangan dan tekanan sisa nol",
+          "regulation": "산업안전보건기준규칙 제319조(정전작업) 및 제38조",
           "evidence_required": "photo|verbal",
           "scenarios": [
             {
-              "id": "LIFT-02-SC-1",
-              "content": "정격 초과 양중으로 크레인 전도 또는 와이어 절단",
-              "content_en": "Lifting beyond rated capacity causes crane to overturn or wire rope to snap",
-              "content_vi": "Nâng vượt tải định mức khiến cẩu lật đổ hoặc cáp thép đứt",
-              "content_th": "การยกเกินพิกัดทำให้เครนพลิกคว่ำหรือลวดสลิงขาด",
-              "content_id": "Pengangkatan melebihi kapasitas terukur menyebabkan crane terbalik atau wire rope putus"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "LIFT-02-MIT-1",
-              "content": "양중물 중량 사전 측정 + SWL 80% 이내 운용 원칙 준수",
-              "content_en": "Pre-weigh the load and operate within 80% of SWL as a working principle",
-              "content_vi": "Cân trọng lượng vật nâng trước và tuân thủ nguyên tắc vận hành trong phạm vi 80% SWL",
-              "content_th": "ชั่งน้ำหนักวัสดุล่วงหน้าและปฏิบัติตามหลักการทำงานในขอบเขต 80% ของ SWL",
-              "content_id": "Timbang beban terlebih dahulu dan operasikan dalam batas 80% SWL sebagai prinsip kerja"
-            }
-          ],
-          "ppe": []
-        },
-        {
-          "id": "LIFT-03",
-          "content": "줄걸이용구(슬링·체인·후크) 손상 점검 및 안전핀 결속",
-          "content_en": "Inspect rigging gear (slings, chains, hooks) for damage and secure safety latches/pins",
-          "content_vi": "Kiểm tra hư hỏng của thiết bị móc cáp (dây cáp, xích, móc) và cài chốt an toàn",
-          "content_th": "ตรวจสอบความเสียหายของอุปกรณ์คล้อง (สลิง โซ่ ตะขอ) และล็อกสลักนิรภัย",
-          "content_id": "Periksa kerusakan alat rigging (sling, rantai, hook) dan kunci safety latch/pin",
-          "regulation": "추정: KOSHA G-91, felix 검수 필요",
-          "evidence_required": "photo",
-          "scenarios": [
-            {
-              "id": "LIFT-03-SC-1",
-              "content": "슬링 손상 미인지로 양중 중 절단 → 중량물 낙하",
-              "content_en": "Undetected sling damage causes failure during lift, resulting in load drop",
-              "content_vi": "Hư hỏng dây cáp không được phát hiện dẫn đến đứt trong khi nâng → vật nặng rơi",
-              "content_th": "ความเสียหายของสลิงที่ตรวจไม่พบทำให้ขาดระหว่างการยก → วัสดุหนักตก",
-              "content_id": "Kerusakan sling yang tidak terdeteksi menyebabkan putus saat pengangkatan → beban jatuh"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "LIFT-03-MIT-1",
-              "content": "교대 시작 시 슬링·후크 안전핀 시각 점검 + 색깔 라벨 갱신",
-              "content_en": "Visually inspect slings and hook safety pins at shift start and renew color-coded inspection tags",
-              "content_vi": "Kiểm tra trực quan dây cáp và chốt an toàn móc khi bắt đầu ca, cập nhật nhãn màu kiểm định",
-              "content_th": "ตรวจสอบสลิงและสลักนิรภัยตะขอด้วยสายตาเมื่อเริ่มกะ และอัปเดตป้ายสีตรวจสอบ",
-              "content_id": "Inspeksi visual sling dan safety pin hook saat awal shift dan perbarui label warna inspeksi"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "LIFT-03-PPE-1",
-              "content": "안전모 (턱끈 체결)",
-              "content_en": "Safety helmet (chin strap fastened)",
-              "content_vi": "Mũ bảo hộ (cài quai cằm)",
-              "content_th": "หมวกนิรภัย (รัดสายคาง)",
-              "content_id": "Helm pengaman (tali dagu terikat)"
-            }
-          ]
-        },
-        {
-          "id": "LIFT-04",
-          "content": "신호수 배치 및 신호체계(수신호/무전) 통일",
-          "content_en": "Assign signal person and standardize signaling protocol (hand signals/radio)",
-          "content_vi": "Bố trí người ra tín hiệu và thống nhất hệ thống tín hiệu (ra dấu tay/bộ đàm)",
-          "content_th": "จัดเจ้าหน้าที่ให้สัญญาณ และกำหนดมาตรฐานระบบสัญญาณ (สัญญาณมือ/วิทยุสื่อสาร)",
-          "content_id": "Tugaskan signalman dan standarisasi sistem sinyal (hand signal/radio)",
-          "regulation": "산업안전보건기준규칙 §146",
-          "evidence_required": "verbal",
-          "scenarios": [
-            {
-              "id": "LIFT-04-SC-1",
-              "content": "신호 혼선 시 운전자가 잘못된 방향으로 양중 → 충돌",
-              "content_en": "Signal confusion causes the operator to lift in the wrong direction, resulting in collision",
-              "content_vi": "Tín hiệu nhiễu loạn khiến người vận hành nâng sai hướng → va chạm",
-              "content_th": "สัญญาณสับสนทำให้ผู้ปฏิบัติงานยกผิดทิศทาง → เกิดการชน",
-              "content_id": "Sinyal yang membingungkan menyebabkan operator mengangkat ke arah salah → terjadi tabrakan"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "LIFT-04-MIT-1",
-              "content": "전담 신호수 1명 지정 + 무전 채널 단일화",
-              "content_en": "Designate one dedicated signal person and use a single unified radio channel",
-              "content_vi": "Chỉ định 1 người ra tín hiệu chuyên trách và thống nhất một kênh bộ đàm duy nhất",
-              "content_th": "กำหนดเจ้าหน้าที่ให้สัญญาณเฉพาะ 1 คน และใช้ช่องวิทยุสื่อสารช่องเดียว",
-              "content_id": "Tetapkan satu signalman khusus dan gunakan satu channel radio terpadu"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "LIFT-04-PPE-1",
-              "content": "고시인성 반사조끼",
-              "content_en": "High-visibility reflective vest",
-              "content_vi": "Áo phản quang độ nhận diện cao",
-              "content_th": "เสื้อกั๊กสะท้อนแสงทัศนวิสัยสูง",
-              "content_id": "Rompi reflektif visibilitas tinggi"
-            }
-          ]
-        },
-        {
-          "id": "LIFT-05",
-          "content": "양중 반경 내 출입금지 구역 설정·표시",
-          "content_en": "Establish and mark a no-entry exclusion zone within the lifting radius",
-          "content_vi": "Thiết lập và đánh dấu khu vực cấm vào trong bán kính nâng",
-          "content_th": "กำหนดและทำเครื่องหมายเขตห้ามเข้าในรัศมีการยก",
-          "content_id": "Tetapkan dan tandai zona terlarang dalam radius pengangkatan",
-          "regulation": "산업안전보건기준규칙 §20",
-          "evidence_required": "photo|verbal",
-          "scenarios": [
-            {
-              "id": "LIFT-05-SC-1",
-              "content": "출입금지 표시 미준수로 작업자 양중 반경 진입 → 추돌/추락",
-              "content_en": "Failure to observe no-entry markings allows a worker to enter the lifting radius, resulting in being struck or falling",
-              "content_vi": "Không tuân thủ biển cấm vào khiến công nhân tiến vào bán kính nâng → va chạm/rơi ngã",
-              "content_th": "การไม่ปฏิบัติตามป้ายห้ามเข้า ทำให้คนงานเข้าไปในรัศมีการยก → ถูกชนหรือตก",
-              "content_id": "Pengabaian tanda larangan masuk menyebabkan pekerja memasuki radius pengangkatan → tertabrak/terjatuh"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "LIFT-05-MIT-1",
-              "content": "라바콘 + 점멸 라이트 + 출입금지 게시 후 양중 시작",
-              "content_en": "Begin lifting only after placing traffic cones, flashing lights, and no-entry signage",
-              "content_vi": "Chỉ bắt đầu nâng sau khi đặt cọc tiêu, đèn nhấp nháy và biển cấm vào",
-              "content_th": "เริ่มยกหลังจากวางกรวยจราจร ไฟกระพริบ และป้ายห้ามเข้าแล้วเท่านั้น",
-              "content_id": "Mulai pengangkatan hanya setelah memasang traffic cone, lampu flashing, dan rambu larangan masuk"
-            }
-          ],
-          "ppe": []
-        }
-      ],
-      "conditional": [
-        {
-          "if": "wind_speed >= 15",
-          "add": {
-            "id": "LIFT-W01",
-            "content": "풍속 15m/s 이상 — 양중작업 중단, 스톰핀 체결",
-            "content_en": "Wind speed ≥ 15 m/s — suspend lifting operations and engage storm pins",
-            "content_vi": "Tốc độ gió ≥ 15 m/s — ngừng công tác nâng và cài chốt chống bão (storm pin)",
-            "content_th": "ความเร็วลม ≥ 15 m/s — หยุดงานยกและล็อกสลักกันพายุ (storm pin)",
-            "content_id": "Kecepatan angin ≥ 15 m/s — hentikan pekerjaan pengangkatan dan pasang storm pin",
-            "regulation": "추정: KOSHA Heavy-Industry P-XX, felix 검수 필요"
-          }
-        }
-      ]
-    },
-    "HOT_WORK": {
-      "label_ko": "화기작업",
-      "label_en": "Hot Work",
-      "label_vi": "Công tác sinh nhiệt / hàn cắt",
-      "label_th": "งานที่ก่อให้เกิดประกายไฟ (Hot Work)",
-      "label_id": "Pekerjaan Panas (Hot Work)",
-      "baseline": [
-        {
-          "id": "HHW-01",
-          "content": "화기작업 허가서 발급 및 유효시간 확인(8시간 단위)",
-          "content_en": "Issue hot work permit (PTW) and verify validity period (8-hour basis)",
-          "content_vi": "Cấp phiếu phép công tác sinh nhiệt (PTW) và kiểm tra thời hạn hiệu lực (theo đơn vị 8 giờ)",
-          "content_th": "ออกใบอนุญาตงาน Hot Work (PTW) และตรวจสอบระยะเวลามีผล (หน่วยละ 8 ชั่วโมง)",
-          "content_id": "Terbitkan Hot Work Permit (PTW) dan verifikasi masa berlaku (basis 8 jam)",
-          "regulation": "산업안전보건기준규칙 §241",
-          "evidence_required": "photo|verbal",
-          "scenarios": [
-            {
-              "id": "HHW-01-SC-1",
-              "content": "허가 만료 후 추가 작업 강행 → 통제 외 화기 발생",
-              "content_en": "Continuing work after the permit expires leads to uncontrolled hot work activity",
-              "content_vi": "Tiếp tục công việc sau khi giấy phép hết hạn → phát sinh nguồn nhiệt ngoài kiểm soát",
-              "content_th": "ดำเนินงานต่อหลังใบอนุญาตหมดอายุ → เกิดประกายไฟนอกการควบคุม",
-              "content_id": "Melanjutkan pekerjaan setelah izin kedaluwarsa → terjadi aktivitas panas di luar kendali"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "HHW-01-MIT-1",
-              "content": "PTW 만료 30분 전 알람 + 연장 발급 절차 명문화",
-              "content_en": "Set an alarm 30 minutes before PTW expiry and document the extension/re-issue procedure",
-              "content_vi": "Thiết lập cảnh báo 30 phút trước khi PTW hết hạn và quy định hóa thủ tục gia hạn/cấp mới",
-              "content_th": "ตั้งการแจ้งเตือน 30 นาทีก่อน PTW หมดอายุ และจัดทำขั้นตอนต่ออายุเป็นเอกสาร",
-              "content_id": "Atur alarm 30 menit sebelum PTW kedaluwarsa dan dokumentasikan prosedur perpanjangan/penerbitan ulang"
-            }
-          ],
-          "ppe": []
-        },
-        {
-          "id": "HHW-02",
-          "content": "용접·용단 시 차광판·불티 비산 방지포 설치",
-          "content_en": "Install welding screens and fire-resistant spark/slag containment blankets during welding and cutting",
-          "content_vi": "Lắp tấm chắn hồ quang và tấm chống bắn tia lửa khi hàn/cắt",
-          "content_th": "ติดตั้งฉากกันแสงเชื่อมและผ้าทนไฟกันสะเก็ดไฟกระเด็นระหว่างงานเชื่อม/ตัด",
-          "content_id": "Pasang welding screen dan fire blanket anti percikan saat pengelasan/pemotongan",
-          "regulation": "추정: KOSHA W-2, felix 검수 필요",
-          "evidence_required": "photo",
-          "scenarios": [
-            {
-              "id": "HHW-02-SC-1",
-              "content": "불티 비산으로 인근 가연물 발화 또는 통행자 화상",
-              "content_en": "Spark scattering ignites nearby combustibles or burns passing workers",
-              "content_vi": "Tia lửa bắn ra làm cháy vật liệu dễ cháy gần đó hoặc gây bỏng người qua lại",
-              "content_th": "สะเก็ดไฟกระเด็นทำให้วัสดุติดไฟใกล้เคียงลุกไหม้ หรือทำให้ผู้สัญจรผ่านถูกไฟไหม้",
-              "content_id": "Percikan api menyalakan bahan mudah terbakar di dekatnya atau membakar pekerja yang lewat"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "HHW-02-MIT-1",
-              "content": "비산 반경 3m 차광판/불연포 2겹 + 통행자 우회 동선",
-              "content_en": "Install welding screens/fire blankets in 2 layers within a 3 m radius and divert pedestrian traffic",
-              "content_vi": "Lắp tấm chắn/tấm chống cháy 2 lớp trong bán kính 3 m và bố trí lối đi vòng cho người qua lại",
-              "content_th": "ติดตั้งฉากกัน/ผ้าทนไฟ 2 ชั้นในรัศมี 3 ม. และจัดเส้นทางเดินอ้อมสำหรับผู้สัญจร",
-              "content_id": "Pasang welding screen/fire blanket 2 lapis dalam radius 3 m dan alihkan jalur lalu lintas pejalan kaki"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "HHW-02-PPE-1",
-              "content": "용접면 (차광 등급 9 이상)",
-              "content_en": "Welding helmet (shade grade 9 or higher)",
-              "content_vi": "Mặt nạ hàn (cấp lọc sáng từ 9 trở lên)",
-              "content_th": "หน้ากากเชื่อม (เกรดกรองแสงระดับ 9 ขึ้นไป)",
-              "content_id": "Welding helmet (shade grade 9 atau lebih tinggi)"
+              "id": "CR-01-SC-1",
+              "content": "RF generator 전원 차단 누락 상태에서 챔버 커버 분해 → 감전·아크플래시",
+              "content_en": "Disassembling chamber cover while RF generator power is not isolated → electric shock / arc flash",
+              "content_vi": "Tháo nắp buồng khi chưa cách ly nguồn RF generator → điện giật / arc flash",
+              "content_th": "ถอดฝาห้องขณะที่ยังไม่ตัดแหล่งจ่าย RF generator → ไฟฟ้าช็อต / arc flash",
+              "content_id": "Membongkar penutup chamber saat sumber RF generator belum diisolasi → tersengat listrik / arc flash"
             },
             {
-              "id": "HHW-02-PPE-2",
-              "content": "용접용 가죽 앞치마",
-              "content_en": "Leather welding apron",
-              "content_vi": "Tạp dề da chuyên dụng cho thợ hàn",
-              "content_th": "ผ้ากันเปื้อนหนังสำหรับงานเชื่อม",
-              "content_id": "Apron kulit untuk pengelasan"
-            }
-          ]
-        },
-        {
-          "id": "HHW-03",
-          "content": "용접흄 국소배기장치 가동 또는 송기마스크 착용",
-          "content_en": "Operate local exhaust ventilation for welding fumes or wear supplied-air respirator",
-          "content_vi": "Vận hành hệ thống hút cục bộ cho khói hàn hoặc đeo mặt nạ cấp khí",
-          "content_th": "เดินระบบดูดอากาศเฉพาะจุดสำหรับฟูมเชื่อม หรือสวมหน้ากากจ่ายอากาศ",
-          "content_id": "Operasikan local exhaust ventilation untuk welding fume atau pakai supplied-air respirator",
-          "regulation": "산업안전보건기준규칙 §422",
-          "evidence_required": "verbal",
-          "scenarios": [
-            {
-              "id": "HHW-03-SC-1",
-              "content": "용접흄 장기 노출로 작업자 호흡기·중금속 중독",
-              "content_en": "Long-term welding fume exposure causes respiratory disease and heavy-metal poisoning",
-              "content_vi": "Phơi nhiễm lâu dài với khói hàn gây bệnh đường hô hấp và ngộ độc kim loại nặng",
-              "content_th": "การสัมผัสฟูมเชื่อมระยะยาวทำให้คนงานเป็นโรคทางเดินหายใจและพิษโลหะหนัก",
-              "content_id": "Paparan welding fume jangka panjang menyebabkan penyakit pernapasan dan keracunan logam berat pada pekerja"
+              "id": "CR-01-SC-2",
+              "content": "압축공기·진공 잔압 상태에서 라인 분해 → 부품 비산",
+              "content_en": "Disassembling lines under residual compressed-air / vacuum pressure → parts ejection",
+              "content_vi": "Tháo đường ống khi còn áp dư khí nén / chân không → văng linh kiện",
+              "content_th": "ถอดท่อขณะที่ยังมีแรงดันคงค้างของอากาศอัด / สุญญากาศ → ชิ้นส่วนกระเด็น",
+              "content_id": "Membongkar saluran saat masih ada tekanan sisa udara tekan / vakum → komponen terlempar"
             }
           ],
           "mitigations": [
             {
-              "id": "HHW-03-MIT-1",
-              "content": "국소배기 풍속 0.5m/s 이상 또는 송기마스크 의무 착용",
-              "content_en": "Maintain local exhaust face velocity ≥ 0.5 m/s or mandate supplied-air respirator use",
-              "content_vi": "Duy trì tốc độ hút cục bộ ≥ 0,5 m/s hoặc bắt buộc đeo mặt nạ cấp khí",
-              "content_th": "รักษาความเร็วลมดูดเฉพาะจุด ≥ 0.5 m/s หรือบังคับสวมหน้ากากจ่ายอากาศ",
-              "content_id": "Pertahankan kecepatan udara local exhaust ≥ 0,5 m/s atau wajibkan penggunaan supplied-air respirator"
+              "id": "CR-01-MIT-1",
+              "content": "전원·RF·공압·진공 4분야 개별 LOTO + 검전기로 0V / 0 kPa 확인 + Tag 부착",
+              "content_en": "Apply individual LOTO to all four (power/RF/pneumatic/vacuum); verify 0 V and 0 kPa with testers; attach tag",
+              "content_vi": "Áp dụng LOTO riêng cho cả bốn (điện/RF/khí nén/chân không); xác nhận 0 V và 0 kPa bằng máy đo; gắn thẻ",
+              "content_th": "ดำเนินการ LOTO แยกสำหรับทั้งสี่ระบบ (ไฟฟ้า/RF/นิวเมติก/สุญญากาศ); ยืนยัน 0 V และ 0 kPa ด้วยเครื่องวัด; ติดป้าย",
+              "content_id": "Terapkan LOTO terpisah untuk keempat sistem (listrik/RF/pneumatik/vakum); verifikasi 0 V dan 0 kPa dengan tester; pasang tag"
             }
           ],
           "ppe": [
             {
-              "id": "HHW-03-PPE-1",
-              "content": "송기마스크 또는 방진방독 겸용 마스크",
-              "content_en": "Supplied-air respirator or combined dust/gas respirator",
-              "content_vi": "Mặt nạ cấp khí hoặc khẩu trang lọc bụi/lọc hơi kết hợp",
-              "content_th": "หน้ากากจ่ายอากาศ หรือหน้ากากกรองฝุ่น/แก๊สแบบรวม",
-              "content_id": "Supplied-air respirator atau masker kombinasi anti-debu/anti-gas"
+              "id": "CR-01-PPE-1",
+              "content": "절연 장갑(Class 0 이상) + 아크플래시 페이스쉴드",
+              "content_en": "Insulating gloves (Class 0+) and arc-flash face shield",
+              "content_vi": "Găng tay cách điện (Class 0+) và tấm che mặt chống arc flash",
+              "content_th": "ถุงมือฉนวน (Class 0+) และเฟซชิลด์กันอาร์กแฟลช",
+              "content_id": "Sarung tangan isolasi (Class 0+) dan face shield anti arc-flash"
             }
           ]
         },
         {
-          "id": "HHW-04",
-          "content": "탱크·블록 내부 화기작업 시 가스농도(LEL) 측정",
-          "content_en": "Measure gas concentration (LEL) when performing hot work inside tanks or blocks",
-          "content_vi": "Đo nồng độ khí (LEL) khi thực hiện công tác sinh nhiệt bên trong bồn/khối kết cấu",
-          "content_th": "วัดความเข้มข้นก๊าซ (LEL) เมื่อทำงาน Hot Work ภายในแท็งก์/บล็อก",
-          "content_id": "Ukur konsentrasi gas (LEL) saat melakukan hot work di dalam tangki/blok",
-          "regulation": "산업안전보건기준규칙 §242",
-          "evidence_required": "photo|verbal",
+          "id": "CR-02",
+          "content": "클린룸 등급(Class 100/1000) 유지 — 가먼팅·작업영역 격리 확인",
+          "content_en": "Maintain cleanroom class (Class 100/1000) — verify garmenting and work-area isolation",
+          "content_vi": "Duy trì cấp độ phòng sạch (Class 100/1000) — kiểm tra trang phục và cách ly khu vực làm việc",
+          "content_th": "รักษาระดับคลีนรูม (Class 100/1000) — ตรวจสอบการสวมชุดและการกั้นพื้นที่ทำงาน",
+          "content_id": "Pertahankan kelas cleanroom (Class 100/1000) — verifikasi gowning dan isolasi area kerja",
+          "regulation": "ISO 14644-1 (Cleanroom classification), KOSHA GUIDE H-80",
+          "evidence_required": "photo",
           "scenarios": [
             {
-              "id": "HHW-04-SC-1",
-              "content": "탱크 잔류 가연성 가스 미측정 상태에서 화기 점화 → 폭발",
-              "content_en": "Igniting hot work without measuring residual flammable gas in the tank leads to explosion",
-              "content_vi": "Mồi lửa khi chưa đo khí cháy còn dư trong bồn → nổ",
-              "content_th": "การจุดไฟทำงานโดยไม่วัดก๊าซติดไฟตกค้างในแท็งก์ → ระเบิด",
-              "content_id": "Menyalakan hot work tanpa mengukur sisa gas mudah terbakar di tangki → ledakan"
+              "id": "CR-02-SC-1",
+              "content": "PM 중 격리 커튼 미설치 → 인접 라인 입자 오염 + 양품 불량 + 라인 정지",
+              "content_en": "No isolation curtain during PM → particle contamination of adjacent lines, yield loss, line stop",
+              "content_vi": "Không có rèm cách ly trong khi PM → nhiễm hạt sang dây chuyền liền kề, mất sản lượng, dừng dây",
+              "content_th": "ไม่มีม่านกั้นระหว่างทำ PM → อนุภาคปนเปื้อนสายการผลิตข้างเคียง สูญเสีย yield และสายหยุด",
+              "content_id": "Tidak ada tirai isolasi saat PM → kontaminasi partikel jalur sebelahnya, kehilangan yield, jalur berhenti"
             }
           ],
           "mitigations": [
             {
-              "id": "HHW-04-MIT-1",
-              "content": "작업 전·중 LEL 10% 미만 확인 (1시간 간격 재측정)",
-              "content_en": "Verify LEL is below 10% before and during work and remeasure every hour",
-              "content_vi": "Kiểm tra LEL dưới 10% trước và trong khi làm việc, đo lại mỗi 1 giờ",
-              "content_th": "ตรวจสอบ LEL ต่ำกว่า 10% ก่อนและระหว่างทำงาน และวัดซ้ำทุก 1 ชั่วโมง",
-              "content_id": "Verifikasi LEL di bawah 10% sebelum dan selama pekerjaan, dan ukur ulang setiap 1 jam"
+              "id": "CR-02-MIT-1",
+              "content": "임시 soft-wall + 차압 모니터링(>5 Pa) 유지, 작업 후 파티클 카운터로 회복 확인",
+              "content_en": "Erect temporary soft-wall and maintain pressure differential (>5 Pa); verify recovery with particle counter after work",
+              "content_vi": "Dựng vách mềm tạm thời và duy trì chênh áp (>5 Pa); xác nhận hồi phục bằng máy đếm hạt sau khi xong",
+              "content_th": "ติดตั้งผนังอ่อนชั่วคราวและรักษาความต่างความดัน (>5 Pa); ยืนยันการคืนสภาพด้วยเครื่องนับอนุภาคหลังงาน",
+              "content_id": "Pasang dinding lunak sementara dan jaga beda tekanan (>5 Pa); verifikasi pemulihan dengan particle counter setelah pekerjaan"
             }
           ],
-          "ppe": []
+          "ppe": [
+            {
+              "id": "CR-02-PPE-1",
+              "content": "방진복(Class 100 등급), 후드, 부츠, 마스크, 장갑 (전신 가먼팅)",
+              "content_en": "Cleanroom suit (Class 100), hood, boots, mask, gloves (full bunny suit)",
+              "content_vi": "Bộ đồ phòng sạch (Class 100), mũ trùm, ủng, khẩu trang, găng tay (bunny suit toàn thân)",
+              "content_th": "ชุดคลีนรูม (Class 100), ฮู้ด, รองเท้าบูท, หน้ากาก, ถุงมือ (bunny suit เต็มตัว)",
+              "content_id": "Pakaian cleanroom (Class 100), hood, boots, masker, sarung tangan (bunny suit lengkap)"
+            }
+          ]
         },
         {
-          "id": "HHW-05",
-          "content": "화재감시자 배치 및 작업 종료 후 1시간 잔불 점검(중공업 야드 강화)",
-          "content_en": "Assign fire watch and conduct a 1-hour post-work residual ember inspection (heavy-industry yard standard)",
-          "content_vi": "Bố trí người giám sát cháy (fire watch) và kiểm tra tàn lửa 1 giờ sau khi kết thúc công việc (tăng cường cho yard công nghiệp nặng)",
-          "content_th": "จัดเจ้าหน้าที่เฝ้าระวังเพลิงไหม้ (fire watch) และตรวจสอบไฟค้างเป็นเวลา 1 ชั่วโมงหลังเสร็จงาน (มาตรฐานเข้มสำหรับยาร์ดอุตสาหกรรมหนัก)",
-          "content_id": "Tugaskan fire watch dan lakukan inspeksi bara sisa selama 1 jam setelah pekerjaan selesai (standar diperkuat untuk yard industri berat)",
-          "regulation": "추정: KOSHA G-2, felix 검수 필요",
+          "id": "CR-03",
+          "content": "장비 인터록·E-stop·도어 센서 기능 시험 후 가동 복귀",
+          "content_en": "Test interlocks, E-stop, and door sensors before returning equipment to service",
+          "content_vi": "Kiểm tra liên động, E-stop và cảm biến cửa trước khi cho thiết bị vận hành lại",
+          "content_th": "ทดสอบอินเตอร์ล็อก, E-stop และเซ็นเซอร์ประตูก่อนนำเครื่องกลับใช้งาน",
+          "content_id": "Uji interlock, E-stop, dan sensor pintu sebelum mengembalikan peralatan ke operasi",
+          "regulation": "산업안전보건기준규칙 제87조(원동기·회전축 등의 위험방지), SEMI S2 §10",
           "evidence_required": "verbal",
           "scenarios": [
             {
-              "id": "HHW-05-SC-1",
-              "content": "야드 환경에서 잔불이 강풍에 의해 인접 자재로 비산",
-              "content_en": "In an outdoor yard environment, residual embers are blown by strong wind to adjacent materials",
-              "content_vi": "Trong môi trường yard ngoài trời, tàn lửa bị gió mạnh thổi sang vật liệu lân cận",
-              "content_th": "ในสภาพแวดล้อมยาร์ดกลางแจ้ง ไฟค้างถูกลมแรงพัดไปยังวัสดุข้างเคียง",
-              "content_id": "Pada lingkungan yard terbuka, bara sisa terbawa angin kencang ke material di sekitarnya"
+              "id": "CR-03-SC-1",
+              "content": "PM 중 인터록 강제 우회한 채 복귀 → 도어 개방 상태 가동 → 협착",
+              "content_en": "Returning equipment with interlock bypassed during PM → operation with door open → pinch injury",
+              "content_vi": "Khôi phục thiết bị khi đang bypass liên động trong PM → vận hành với cửa mở → kẹp tay",
+              "content_th": "นำเครื่องกลับมาใช้ขณะที่บายพาสอินเตอร์ล็อกระหว่าง PM → ทำงานขณะประตูเปิด → ถูกหนีบ",
+              "content_id": "Mengembalikan peralatan dengan interlock di-bypass saat PM → beroperasi dengan pintu terbuka → terjepit"
             }
           ],
           "mitigations": [
             {
-              "id": "HHW-05-MIT-1",
-              "content": "전담 화재감시자 + 종료 후 1시간 잔불 순찰 + 살수 처리",
-              "content_en": "Dedicated fire watch plus 1-hour post-work patrol with water dousing of residual embers",
-              "content_vi": "Người giám sát cháy chuyên trách + tuần tra tàn lửa 1 giờ sau khi kết thúc + tưới nước dập lửa",
-              "content_th": "เจ้าหน้าที่เฝ้าระวังเพลิงไหม้เฉพาะ + ตรวจตราไฟค้าง 1 ชั่วโมงหลังเสร็จงาน + ราดน้ำดับ",
-              "content_id": "Fire watch khusus + patroli bara sisa 1 jam pasca-pekerjaan + penyiraman air"
+              "id": "CR-03-MIT-1",
+              "content": "PM 종료 시 bypass key 회수 + 인터록·E-stop·도어 센서 3종 동작시험 기록",
+              "content_en": "Retrieve bypass keys after PM and log functional tests of interlocks, E-stop, and door sensors",
+              "content_vi": "Thu hồi chìa khóa bypass sau PM và ghi nhật ký kiểm tra liên động, E-stop và cảm biến cửa",
+              "content_th": "เก็บกุญแจบายพาสคืนหลัง PM และบันทึกการทดสอบอินเตอร์ล็อก, E-stop และเซ็นเซอร์ประตู",
+              "content_id": "Tarik kembali kunci bypass setelah PM dan catat pengujian fungsional interlock, E-stop, dan sensor pintu"
             }
           ],
-          "ppe": []
-        }
-      ],
-      "conditional": [
+          "ppe": [
+            {
+              "id": "CR-03-PPE-1",
+              "content": "안전화, 보안경, 클린룸 장갑",
+              "content_en": "Safety shoes, safety glasses, cleanroom gloves",
+              "content_vi": "Giày bảo hộ, kính bảo hộ, găng tay phòng sạch",
+              "content_th": "รองเท้าเซฟตี้, แว่นนิรภัย, ถุงมือคลีนรูม",
+              "content_id": "Sepatu safety, kacamata safety, sarung tangan cleanroom"
+            }
+          ]
+        },
         {
-          "if": "confined_space == true",
-          "add": {
-            "id": "HHW-CS01",
-            "content": "탱크 내부 화기작업 — 산소(19.5~23.5%)·가연성가스(LEL 10% 미만) 동시 측정",
-            "content_en": "Hot work inside tank — simultaneously measure oxygen (19.5–23.5%) and flammable gas (LEL < 10%)",
-            "content_vi": "Công tác sinh nhiệt bên trong bồn — đo đồng thời oxy (19,5–23,5%) và khí cháy (LEL < 10%)",
-            "content_th": "งาน Hot Work ภายในแท็งก์ — วัดออกซิเจน (19.5–23.5%) และก๊าซติดไฟ (LEL < 10%) พร้อมกัน",
-            "content_id": "Hot work di dalam tangki — ukur oksigen (19,5–23,5%) dan gas mudah terbakar (LEL < 10%) secara simultan",
-            "regulation": "산업안전보건기준규칙 §619"
-          }
+          "id": "CR-04",
+          "content": "장비 내부 잔류 화학물질·고온부품 확인 (≤45°C, 잔액 wipe)",
+          "content_en": "Verify no residual chemicals and hot parts inside equipment (≤45°C, wipe residue)",
+          "content_vi": "Kiểm tra không còn hóa chất tồn dư và bộ phận nóng bên trong (≤45°C, lau sạch)",
+          "content_th": "ตรวจสอบไม่มีสารเคมีตกค้างและชิ้นส่วนร้อนภายในเครื่อง (≤45°C, เช็ดสาร)",
+          "content_id": "Verifikasi tidak ada sisa bahan kimia dan komponen panas di dalam peralatan (≤45°C, lap residu)",
+          "regulation": "산업안전보건기준규칙 제225조(화학설비)·제560조(고열물체)",
+          "evidence_required": "photo",
+          "scenarios": [
+            {
+              "id": "CR-04-SC-1",
+              "content": "히터 잔류열(>80°C) 상태로 wiping → 화상",
+              "content_en": "Wiping while heater retains residual heat (>80°C) → burn injury",
+              "content_vi": "Lau khi bộ gia nhiệt còn nhiệt dư (>80°C) → bỏng",
+              "content_th": "เช็ดทำความสะอาดขณะฮีตเตอร์ยังมีความร้อนคงค้าง (>80°C) → ถูกไหม้",
+              "content_id": "Mengelap saat heater masih panas sisa (>80°C) → luka bakar"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "CR-04-MIT-1",
+              "content": "비접촉 IR 온도계로 ≤45°C 확인 후 작업, IPA wipe + 중성화 cloth 준비",
+              "content_en": "Verify ≤45°C with non-contact IR thermometer before work; prepare IPA wipes and neutralizing cloth",
+              "content_vi": "Xác nhận ≤45°C bằng nhiệt kế IR không tiếp xúc trước khi làm; chuẩn bị khăn IPA và khăn trung hòa",
+              "content_th": "ยืนยัน ≤45°C ด้วยเทอร์โมมิเตอร์ IR แบบไม่สัมผัสก่อนทำงาน; เตรียมผ้าเช็ด IPA และผ้าทำให้เป็นกลาง",
+              "content_id": "Verifikasi ≤45°C dengan termometer IR non-kontak sebelum bekerja; siapkan wipe IPA dan kain penetral"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "CR-04-PPE-1",
+              "content": "내열 장갑(접촉부) + 내화학 장갑(니트릴 2겹) 이중 착용",
+              "content_en": "Heat-resistant gloves (contact) over double-layer nitrile chemical gloves",
+              "content_vi": "Găng tay chống nhiệt (phần tiếp xúc) bên ngoài găng tay nitrile hai lớp chống hóa chất",
+              "content_th": "ถุงมือทนความร้อน (จุดสัมผัส) สวมทับถุงมือไนไตรล์ 2 ชั้นกันสารเคมี",
+              "content_id": "Sarung tangan tahan panas (titik kontak) di atas sarung tangan nitril dua lapis tahan kimia"
+            }
+          ]
         }
       ]
     },
-    "CONFINED_SPACE": {
-      "label_ko": "밀폐공간 작업",
-      "label_en": "Confined Space Entry",
-      "label_vi": "Công tác trong không gian hạn chế",
-      "label_th": "งานในที่อับอากาศ (Confined Space)",
-      "label_id": "Pekerjaan Ruang Terbatas (Confined Space)",
+    "PHOTO_LITHO_MAINTENANCE": {
+      "label_ko": "포토/노광 장비 유지보수",
+      "label_en": "Photo / Lithography Equipment Maintenance",
+      "label_vi": "Bảo trì thiết bị Photo / quang khắc",
+      "label_th": "งานบำรุงรักษาเครื่องโฟโต / ลิโทกราฟี",
+      "label_id": "Pemeliharaan Peralatan Photo / Litografi",
       "baseline": [
         {
-          "id": "CS-01",
-          "content": "밀폐공간 작업허가서 발급 및 위험요인(질식/화재/유해가스) 명기",
-          "content_en": "Issue confined space entry permit and explicitly list hazards (asphyxiation/fire/toxic gas)",
-          "content_vi": "Cấp giấy phép vào không gian hạn chế và ghi rõ các yếu tố nguy hiểm (ngạt thở/cháy/khí độc)",
-          "content_th": "ออกใบอนุญาตเข้าทำงานในที่อับอากาศและระบุปัจจัยอันตราย (ขาดอากาศ/ไฟไหม้/ก๊าซพิษ) อย่างชัดเจน",
-          "content_id": "Terbitkan izin masuk ruang terbatas dan cantumkan secara eksplisit bahaya (asfiksia/kebakaran/gas beracun)",
-          "regulation": "산업안전보건기준규칙 §619",
-          "evidence_required": "photo",
-          "scenarios": [
-            {
-              "id": "CS-01-SC-1",
-              "content": "허가서 위험요인 누락으로 작업자가 잠재 가스 미인지 진입",
-              "content_en": "Omitted hazards on the permit cause workers to enter unaware of latent gas hazards",
-              "content_vi": "Bỏ sót yếu tố nguy hiểm trên giấy phép khiến công nhân vào trong khi không biết về khí tiềm ẩn",
-              "content_th": "การละเว้นปัจจัยอันตรายในใบอนุญาตทำให้คนงานเข้าไปโดยไม่รู้ตัวว่ามีก๊าซแฝง",
-              "content_id": "Bahaya yang terlewat dalam izin menyebabkan pekerja masuk tanpa menyadari adanya gas laten"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "CS-01-MIT-1",
-              "content": "위험요인 3종(질식/화재/유해가스) 별도 라인 명기 후 출력 게시",
-              "content_en": "List the three hazard categories (asphyxiation/fire/toxic gas) on separate lines and post the printed permit at the entry",
-              "content_vi": "Ghi 3 loại nguy hiểm (ngạt thở/cháy/khí độc) trên các dòng riêng biệt và niêm yết bản in tại lối vào",
-              "content_th": "ระบุปัจจัยอันตราย 3 ประเภท (ขาดอากาศ/ไฟไหม้/ก๊าซพิษ) แยกบรรทัด และติดประกาศแบบพิมพ์ที่ทางเข้า",
-              "content_id": "Cantumkan 3 jenis bahaya (asfiksia/kebakaran/gas beracun) di baris terpisah dan tempel izin cetak di pintu masuk"
-            }
-          ],
-          "ppe": []
-        },
-        {
-          "id": "CS-02",
-          "content": "산소(19.5~23.5%)·가연성가스(LEL 10% 미만)·황화수소(10ppm 미만) 측정",
-          "content_en": "Measure oxygen (19.5–23.5%), flammable gas (LEL < 10%), and hydrogen sulfide (< 10 ppm)",
-          "content_vi": "Đo oxy (19,5–23,5%), khí cháy (LEL < 10%) và hydro sulfua (< 10 ppm)",
-          "content_th": "วัดออกซิเจน (19.5–23.5%), ก๊าซติดไฟ (LEL < 10%) และไฮโดรเจนซัลไฟด์ (< 10 ppm)",
-          "content_id": "Ukur oksigen (19,5–23,5%), gas mudah terbakar (LEL < 10%), dan hidrogen sulfida (< 10 ppm)",
-          "regulation": "산업안전보건기준규칙 §619",
+          "id": "LITHO-01",
+          "content": "광원(레이저/UV/excimer) 셔터 LOTO + 광경로 차단 확인",
+          "content_en": "Apply LOTO to light source (laser/UV/excimer) shutter and verify beam path is blocked",
+          "content_vi": "Áp dụng LOTO cho cửa chớp nguồn sáng (laser/UV/excimer) và xác nhận đường tia bị chặn",
+          "content_th": "ดำเนินการ LOTO กับชัตเตอร์แหล่งกำเนิดแสง (laser/UV/excimer) และยืนยันว่าเส้นทางลำแสงถูกบล็อก",
+          "content_id": "Terapkan LOTO pada shutter sumber cahaya (laser/UV/excimer) dan verifikasi jalur sinar terblokir",
+          "regulation": "산업안전보건기준규칙 제325조(레이저광선) / IEC 60825-1",
           "evidence_required": "photo|verbal",
           "scenarios": [
             {
-              "id": "CS-02-SC-1",
-              "content": "산소 결핍 미감지 진입 → 질식 의식 상실",
-              "content_en": "Entering without detecting oxygen deficiency results in asphyxiation and loss of consciousness",
-              "content_vi": "Vào mà không phát hiện thiếu oxy → ngạt thở và mất ý thức",
-              "content_th": "เข้าไปโดยไม่ตรวจพบภาวะขาดออกซิเจน → ขาดอากาศหายใจและหมดสติ",
-              "content_id": "Memasuki ruang tanpa mendeteksi defisiensi oksigen → asfiksia dan hilang kesadaran"
+              "id": "LITHO-01-SC-1",
+              "content": "셔터 미차단 상태로 광경로 점검 → 망막 손상 / UV 화상",
+              "content_en": "Inspecting beam path with shutter open → retinal injury / UV burn",
+              "content_vi": "Kiểm tra đường tia khi cửa chớp chưa đóng → tổn thương võng mạc / bỏng UV",
+              "content_th": "ตรวจสอบเส้นทางลำแสงขณะชัตเตอร์ยังเปิด → ดวงตาบาดเจ็บ / ถูก UV ลวก",
+              "content_id": "Memeriksa jalur sinar saat shutter masih terbuka → cedera retina / luka bakar UV"
             }
           ],
           "mitigations": [
             {
-              "id": "CS-02-MIT-1",
-              "content": "휴대용 4-가스 검지기로 진입 직전 + 1시간 간격 측정",
-              "content_en": "Use a portable 4-gas detector immediately before entry and re-measure every hour",
-              "content_vi": "Sử dụng máy đo 4 khí cầm tay ngay trước khi vào và đo lại mỗi 1 giờ",
-              "content_th": "ใช้เครื่องตรวจวัด 4 ก๊าซแบบพกพา ทันทีก่อนเข้าและวัดซ้ำทุก 1 ชั่วโมง",
-              "content_id": "Gunakan detektor 4-gas portabel tepat sebelum masuk dan ukur ulang setiap 1 jam"
+              "id": "LITHO-01-MIT-1",
+              "content": "셔터 LOTO + 흡수형 beam stop 설치 + 작업 전 power meter로 0 mW 확인",
+              "content_en": "Apply shutter LOTO, install absorbing beam stop, verify 0 mW with power meter before work",
+              "content_vi": "Áp dụng LOTO cho cửa chớp, lắp beam stop hấp thụ, xác nhận 0 mW bằng power meter trước khi làm",
+              "content_th": "LOTO ชัตเตอร์, ติดตั้ง beam stop แบบดูดซับ, ยืนยัน 0 mW ด้วย power meter ก่อนทำงาน",
+              "content_id": "Terapkan LOTO shutter, pasang beam stop penyerap, verifikasi 0 mW dengan power meter sebelum bekerja"
             }
           ],
           "ppe": [
             {
-              "id": "CS-02-PPE-1",
-              "content": "휴대용 4-가스 검지기 (O2/LEL/H2S/CO)",
-              "content_en": "Portable 4-gas detector (O2/LEL/H2S/CO)",
-              "content_vi": "Máy đo 4 khí cầm tay (O2/LEL/H2S/CO)",
-              "content_th": "เครื่องตรวจวัด 4 ก๊าซแบบพกพา (O2/LEL/H2S/CO)",
-              "content_id": "Detektor 4-gas portabel (O2/LEL/H2S/CO)"
+              "id": "LITHO-01-PPE-1",
+              "content": "광원 파장 등급에 맞는 레이저/UV 보호안경(OD≥6)",
+              "content_en": "Laser/UV protective eyewear rated for the source wavelength (OD ≥6)",
+              "content_vi": "Kính bảo hộ laser/UV theo bước sóng nguồn (OD ≥6)",
+              "content_th": "แว่นกันเลเซอร์/UV ตามความยาวคลื่นของแหล่งกำเนิด (OD ≥6)",
+              "content_id": "Kacamata pelindung laser/UV sesuai panjang gelombang sumber (OD ≥6)"
             }
           ]
         },
         {
-          "id": "CS-03",
-          "content": "송풍기 또는 강제환기 가동 및 작업 중 지속 환기",
-          "content_en": "Operate a blower or forced ventilation and maintain ventilation continuously during work",
-          "content_vi": "Vận hành quạt thổi hoặc thông gió cưỡng bức và duy trì thông gió liên tục trong khi làm việc",
-          "content_th": "เดินพัดลมเป่าหรือระบบระบายอากาศแบบบังคับ และระบายอากาศต่อเนื่องตลอดการทำงาน",
-          "content_id": "Operasikan blower atau ventilasi paksa dan pertahankan ventilasi terus-menerus selama pekerjaan",
-          "regulation": "산업안전보건기준규칙 §624",
-          "evidence_required": "verbal",
-          "scenarios": [
-            {
-              "id": "CS-03-SC-1",
-              "content": "환기 중단 시 잔류 가스 농축으로 산소 결핍 재발생",
-              "content_en": "Stopping ventilation allows residual gas to accumulate and oxygen deficiency to recur",
-              "content_vi": "Khi ngừng thông gió, khí dư tích tụ và tái phát thiếu oxy",
-              "content_th": "เมื่อหยุดระบายอากาศ ก๊าซตกค้างจะสะสมและภาวะขาดออกซิเจนกลับมาเกิดอีก",
-              "content_id": "Menghentikan ventilasi memungkinkan gas sisa terakumulasi dan defisiensi oksigen muncul kembali"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "CS-03-MIT-1",
-              "content": "작업 종료 시까지 강제환기 지속 + 전원 차단 시 즉시 철수",
-              "content_en": "Maintain forced ventilation until work ends and evacuate immediately if power is lost",
-              "content_vi": "Duy trì thông gió cưỡng bức cho đến khi kết thúc công việc và rút lui ngay khi mất điện",
-              "content_th": "ระบายอากาศแบบบังคับต่อเนื่องจนเสร็จงาน และอพยพทันทีเมื่อไฟฟ้าดับ",
-              "content_id": "Pertahankan ventilasi paksa hingga pekerjaan selesai dan evakuasi segera bila listrik terputus"
-            }
-          ],
-          "ppe": []
-        },
-        {
-          "id": "CS-04",
-          "content": "감시인 배치 및 통신수단(무전기) 확보",
-          "content_en": "Assign an attendant (watcher) and ensure communication means (radio)",
-          "content_vi": "Bố trí người giám sát (attendant) và đảm bảo phương tiện liên lạc (bộ đàm)",
-          "content_th": "จัดเจ้าหน้าที่เฝ้าระวัง (attendant) และจัดเตรียมอุปกรณ์สื่อสาร (วิทยุสื่อสาร)",
-          "content_id": "Tugaskan attendant (pengawas) dan pastikan sarana komunikasi (radio)",
-          "regulation": "산업안전보건기준규칙 §621",
-          "evidence_required": "verbal",
-          "scenarios": [
-            {
-              "id": "CS-04-SC-1",
-              "content": "감시인 부재 또는 통신 두절로 비상 상황 대응 지연",
-              "content_en": "Absence of attendant or loss of communication delays emergency response",
-              "content_vi": "Vắng người giám sát hoặc mất liên lạc làm chậm phản ứng khẩn cấp",
-              "content_th": "การไม่มีเจ้าหน้าที่เฝ้าระวังหรือการสื่อสารขาดหายทำให้การตอบสนองเหตุฉุกเฉินล่าช้า",
-              "content_id": "Ketiadaan attendant atau putusnya komunikasi memperlambat respons darurat"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "CS-04-MIT-1",
-              "content": "감시인 1명 상주 + 5분 간격 호출 응답 절차",
-              "content_en": "Station one attendant permanently and follow a 5-minute interval call-and-response protocol",
-              "content_vi": "Bố trí 1 người giám sát thường trực và áp dụng thủ tục gọi-đáp 5 phút/lần",
-              "content_th": "ประจำเจ้าหน้าที่เฝ้าระวัง 1 คนตลอดเวลา และปฏิบัติตามขั้นตอนเรียก-ตอบทุก 5 นาที",
-              "content_id": "Tempatkan satu attendant secara permanen dan ikuti prosedur panggilan-respons setiap 5 menit"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "CS-04-PPE-1",
-              "content": "방수 무전기 (전용 채널)",
-              "content_en": "Waterproof radio (dedicated channel)",
-              "content_vi": "Bộ đàm chống nước (kênh chuyên dụng)",
-              "content_th": "วิทยุสื่อสารกันน้ำ (ช่องเฉพาะ)",
-              "content_id": "Radio anti-air (channel khusus)"
-            }
-          ]
-        },
-        {
-          "id": "CS-05",
-          "content": "긴급구조용 SCBA(공기호흡기)·구명로프 비치",
-          "content_en": "Stage emergency rescue SCBA (self-contained breathing apparatus) and lifeline rope at entry",
-          "content_vi": "Bố trí sẵn SCBA (bình thở khí nén) và dây cứu sinh tại lối vào cho cứu hộ khẩn cấp",
-          "content_th": "จัดเตรียม SCBA (เครื่องช่วยหายใจแบบมีถังอากาศ) และเชือกช่วยชีวิตที่ทางเข้าสำหรับการกู้ภัยฉุกเฉิน",
-          "content_id": "Siapkan SCBA (self-contained breathing apparatus) dan tali penyelamat di pintu masuk untuk rescue darurat",
-          "regulation": "산업안전보건기준규칙 §622",
+          "id": "LITHO-02",
+          "content": "포토레지스트·현상액(TMAH 2.38%)·솔벤트(PGMEA) 잔류 라인 퍼지·드레인",
+          "content_en": "Purge and drain residual photoresist, developer (TMAH 2.38%), and solvent (PGMEA) lines",
+          "content_vi": "Xả và làm sạch đường photoresist tồn dư, developer (TMAH 2.38%) và dung môi (PGMEA)",
+          "content_th": "Purge และระบายสายโฟโตเรซิสต์, น้ำยาดีเวลอป (TMAH 2.38%) และตัวทำละลาย (PGMEA) ที่ค้าง",
+          "content_id": "Purging dan drain jalur photoresist sisa, developer (TMAH 2.38%), dan solvent (PGMEA)",
+          "regulation": "화학물질관리법 제13조(취급기준), 산업안전보건기준규칙 제422조(관리대상 유해물질)",
           "evidence_required": "photo",
           "scenarios": [
             {
-              "id": "CS-05-SC-1",
-              "content": "내부 작업자 의식 상실 시 구조자가 SCBA 없이 진입 → 2차 피해",
-              "content_en": "When an inside worker loses consciousness, rescuers entering without SCBA suffer secondary casualties",
-              "content_vi": "Khi công nhân bên trong mất ý thức, người cứu hộ vào không có SCBA → tổn thất thứ cấp",
-              "content_th": "เมื่อคนงานภายในหมดสติ ผู้กู้ภัยเข้าโดยไม่มี SCBA → เกิดผู้บาดเจ็บลำดับที่สอง",
-              "content_id": "Ketika pekerja di dalam kehilangan kesadaran, rescuer yang masuk tanpa SCBA mengalami korban sekunder"
+              "id": "LITHO-02-SC-1",
+              "content": "TMAH 라인 미드레인 상태에서 라인 분리 → 피부 부식·전신중독(TMAH 치사적)",
+              "content_en": "Disconnecting TMAH line without draining → skin corrosion / systemic toxicity (TMAH is potentially lethal)",
+              "content_vi": "Tháo đường TMAH khi chưa xả → ăn mòn da / ngộ độc toàn thân (TMAH có thể gây tử vong)",
+              "content_th": "ถอดสาย TMAH โดยยังไม่ระบาย → ผิวหนังถูกกัด / พิษทั่วร่างกาย (TMAH อาจถึงตาย)",
+              "content_id": "Melepas saluran TMAH tanpa drain → korosi kulit / keracunan sistemik (TMAH berpotensi mematikan)"
+            },
+            {
+              "id": "LITHO-02-SC-2",
+              "content": "PGMEA 잔류 + 정전기 스파크 → 화재",
+              "content_en": "Residual PGMEA + static spark → fire",
+              "content_vi": "PGMEA tồn dư + tia lửa tĩnh điện → cháy",
+              "content_th": "PGMEA ที่ค้าง + ประกายไฟฟ้าสถิต → ไฟไหม้",
+              "content_id": "Sisa PGMEA + percikan listrik statis → kebakaran"
             }
           ],
           "mitigations": [
             {
-              "id": "CS-05-MIT-1",
-              "content": "SCBA 1조 + 구명로프 입구 비치 + 구조자 사전 SCBA 훈련",
-              "content_en": "One SCBA set plus lifeline staged at entry and pre-trained rescuers in SCBA use",
-              "content_vi": "1 bộ SCBA + dây cứu sinh đặt sẵn tại lối vào + huấn luyện sử dụng SCBA cho người cứu hộ trước",
-              "content_th": "SCBA 1 ชุด + เชือกช่วยชีวิตวางที่ทางเข้า + ฝึกอบรมการใช้ SCBA ให้ผู้กู้ภัยล่วงหน้า",
-              "content_id": "Satu set SCBA + tali penyelamat ditempatkan di pintu masuk + pelatihan SCBA bagi rescuer sebelumnya"
+              "id": "LITHO-02-MIT-1",
+              "content": "약액 라인 N2 퍼지 + DI water flush 3회 + pH 시험지로 중성(6~8) 확인",
+              "content_en": "N2 purge chemical lines, flush with DI water 3 times, verify pH 6–8 with strip",
+              "content_vi": "Purge N2 đường hóa chất, xả DI water 3 lần, xác nhận pH 6–8 bằng giấy thử",
+              "content_th": "Purge N2 สายเคมี, ฟลัชด้วยน้ำ DI 3 ครั้ง, ยืนยัน pH 6–8 ด้วยกระดาษทดสอบ",
+              "content_id": "Purging N2 jalur kimia, flush DI water 3 kali, verifikasi pH 6–8 dengan strip"
+            },
+            {
+              "id": "LITHO-02-MIT-2",
+              "content": "용제 작업영역 접지 + 본딩 와이어 연결, 가연성 가스 측정기 LEL <10% 유지",
+              "content_en": "Ground and bond solvent area, maintain LEL < 10% with combustible gas detector",
+              "content_vi": "Tiếp địa và bonding khu vực dung môi, duy trì LEL < 10% bằng máy đo khí cháy",
+              "content_th": "ทำกราวด์และบอนด์พื้นที่ตัวทำละลาย, รักษา LEL < 10% ด้วยเครื่องวัดก๊าซติดไฟ",
+              "content_id": "Grounding dan bonding area solvent, jaga LEL < 10% dengan detektor gas mudah terbakar"
             }
           ],
           "ppe": [
             {
-              "id": "CS-05-PPE-1",
-              "content": "SCBA (공기호흡기, 충전 상태)",
-              "content_en": "SCBA (self-contained breathing apparatus, fully charged)",
-              "content_vi": "SCBA (bình thở khí nén, đã nạp đầy)",
-              "content_th": "SCBA (เครื่องช่วยหายใจ ชาร์จเต็ม)",
-              "content_id": "SCBA (self-contained breathing apparatus, terisi penuh)"
+              "id": "LITHO-02-PPE-1",
+              "content": "내화학 케미컬 슈트 + 부틸/네오프렌 장갑 2겹 + 풀페이스 방독마스크(유기증기/암모니아 카트리지)",
+              "content_en": "Chemical-resistant suit + double-layer butyl/neoprene gloves + full-face respirator (organic vapor + ammonia cartridge)",
+              "content_vi": "Bộ đồ kháng hóa chất + găng tay butyl/neoprene hai lớp + mặt nạ phòng độc toàn mặt (hộp lọc hơi hữu cơ + amoniac)",
+              "content_th": "ชุดทนสารเคมี + ถุงมือ butyl/neoprene 2 ชั้น + หน้ากากเต็มหน้า (ตลับกรองไอระเหยอินทรีย์ + แอมโมเนีย)",
+              "content_id": "Pakaian tahan kimia + sarung tangan butyl/neoprene 2 lapis + respirator full-face (kartrid uap organik + amonia)"
+            }
+          ]
+        },
+        {
+          "id": "LITHO-03",
+          "content": "스테이지·웨이퍼/마스크 핸들러 LOTO 후 잔류 진공 해제",
+          "content_en": "After LOTO, release residual vacuum on stage and wafer/mask handler",
+          "content_vi": "Sau LOTO, xả chân không dư trên stage và bộ xử lý wafer/mask",
+          "content_th": "หลัง LOTO ให้ปล่อยสุญญากาศคงค้างของ stage และตัวจับ wafer/mask",
+          "content_id": "Setelah LOTO, lepaskan vakum sisa pada stage dan handler wafer/mask",
+          "regulation": "산업안전보건기준규칙 제286조(압력용기 안전조치)",
+          "evidence_required": "verbal",
+          "scenarios": [
+            {
+              "id": "LITHO-03-SC-1",
+              "content": "잔류 진공 해제 없이 척 분해 → 마스크/웨이퍼 비산 또는 손가락 흡인 부상",
+              "content_en": "Disassembling chuck without releasing residual vacuum → mask/wafer ejection or finger suction injury",
+              "content_vi": "Tháo chuck khi chưa xả chân không dư → văng mask/wafer hoặc bị hút ngón tay",
+              "content_th": "ถอด chuck โดยไม่ปล่อยสุญญากาศคงค้าง → mask/wafer กระเด็น หรือนิ้วถูกดูด",
+              "content_id": "Membongkar chuck tanpa melepas vakum sisa → mask/wafer terlempar atau jari tersedot"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "LITHO-03-MIT-1",
+              "content": "진공 벤트 밸브 수동 개방 + 압력계 0 kPa 확인 + 마스크 손상 방지 받침대 사용",
+              "content_en": "Manually open vacuum vent, verify 0 kPa on gauge, use mask-support cradle to prevent damage",
+              "content_vi": "Mở van xả chân không bằng tay, xác nhận 0 kPa trên đồng hồ, dùng giá đỡ mask để tránh hư hỏng",
+              "content_th": "เปิดวาล์วระบายสุญญากาศด้วยมือ, ยืนยัน 0 kPa ที่เกจ, ใช้ที่รองรับ mask เพื่อป้องกันความเสียหาย",
+              "content_id": "Buka katup vent vakum manual, verifikasi 0 kPa pada gauge, gunakan dudukan penopang mask untuk mencegah kerusakan"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "LITHO-03-PPE-1",
+              "content": "클린룸 장갑 + 보안경, 마스크 핸들링 면장갑 위 PE 글러브",
+              "content_en": "Cleanroom gloves + safety glasses; PE gloves over cotton inner gloves for mask handling",
+              "content_vi": "Găng phòng sạch + kính bảo hộ; găng PE bên ngoài găng cotton để xử lý mask",
+              "content_th": "ถุงมือคลีนรูม + แว่นนิรภัย; ถุงมือ PE สวมทับถุงมือผ้าฝ้ายสำหรับจับ mask",
+              "content_id": "Sarung tangan cleanroom + kacamata safety; sarung tangan PE di atas sarung tangan katun untuk handling mask"
+            }
+          ]
+        },
+        {
+          "id": "LITHO-04",
+          "content": "노광 챔버 협소공간 진입 시 산소·LEL·VOC 측정 후 작업허가서 발급",
+          "content_en": "For confined-space entry into exposure chamber, measure O2, LEL, VOC and issue work permit",
+          "content_vi": "Khi vào không gian hạn chế của buồng phơi sáng, đo O2, LEL, VOC và phát hành giấy phép làm việc",
+          "content_th": "เมื่อเข้าที่อับอากาศของห้องเอกซ์โพส ให้วัด O2, LEL, VOC และออกใบอนุญาตทำงาน",
+          "content_id": "Untuk masuk ruang terbatas chamber exposure, ukur O2, LEL, VOC dan terbitkan izin kerja",
+          "regulation": "산업안전보건기준규칙 제619조(밀폐공간) 작업허가",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            {
+              "id": "LITHO-04-SC-1",
+              "content": "N2 퍼지 후 산소 측정 누락 → 산소 결핍(<18%) 질식",
+              "content_en": "Skipping O2 measurement after N2 purge → oxygen deficiency (<18%) and suffocation",
+              "content_vi": "Bỏ qua đo O2 sau khi purge N2 → thiếu oxy (<18%) gây ngạt",
+              "content_th": "ข้ามการวัด O2 หลัง purge N2 → ออกซิเจนต่ำ (<18%) ขาดอากาศหายใจ",
+              "content_id": "Melewatkan pengukuran O2 setelah purge N2 → kekurangan oksigen (<18%) dan sesak napas"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "LITHO-04-MIT-1",
+              "content": "진입 전·중 휴대용 4-gas 측정(O2 19.5~23.5% / LEL <10% / VOC <50 ppm), 외부 감시자 1명 배치",
+              "content_en": "Use portable 4-gas meter before/during entry (O2 19.5–23.5% / LEL <10% / VOC <50 ppm); station an external attendant",
+              "content_vi": "Dùng máy đo 4 khí cầm tay trước/trong khi vào (O2 19.5–23.5% / LEL <10% / VOC <50 ppm); bố trí người giám sát bên ngoài",
+              "content_th": "ใช้เครื่องวัดก๊าซ 4 ตัวแบบพกพาก่อน/ระหว่างเข้า (O2 19.5–23.5% / LEL <10% / VOC <50 ppm); จัดผู้เฝ้าระวังภายนอก 1 คน",
+              "content_id": "Gunakan 4-gas meter portabel sebelum/selama masuk (O2 19.5–23.5% / LEL <10% / VOC <50 ppm); tempatkan attendant di luar"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "LITHO-04-PPE-1",
+              "content": "휴대용 4-gas 검지기 + 비상시 escape SCBA(10분)",
+              "content_en": "Portable 4-gas detector + emergency escape SCBA (10 min)",
+              "content_vi": "Máy đo 4 khí cầm tay + SCBA thoát hiểm khẩn cấp (10 phút)",
+              "content_th": "เครื่องวัดก๊าซ 4 ตัวพกพา + SCBA หนีฉุกเฉิน (10 นาที)",
+              "content_id": "Detektor 4-gas portabel + SCBA escape darurat (10 menit)"
             }
           ]
         }
-      ],
-      "conditional": [
+      ]
+    },
+    "PLATING_LINE_PM": {
+      "label_ko": "도금/포토 케미컬 라인 PM",
+      "label_en": "Plating / Photo Chemical Line PM",
+      "label_vi": "PM dây chuyền mạ / hóa chất photo",
+      "label_th": "PM สายชุบโลหะ / สายเคมี photo",
+      "label_id": "PM Jalur Plating / Kimia Photo",
+      "baseline": [
         {
-          "if": "previous_incident_keywords contains 질식 OR 가스",
-          "add": {
-            "id": "CS-N01",
-            "content": "과거 질식·가스 사고 이력 — 진입 전 산소·황화수소·일산화탄소 3종 동시 측정 + 환기 30분 이상 선행",
-            "content_en": "Prior asphyxiation/gas incident history — before entry, simultaneously measure oxygen, hydrogen sulfide, and carbon monoxide, and pre-ventilate for at least 30 minutes",
-            "content_vi": "Tiền sử sự cố ngạt thở/khí — trước khi vào, đo đồng thời oxy, hydro sulfua và carbon monoxide, đồng thời thông gió trước ít nhất 30 phút",
-            "content_th": "มีประวัติเหตุการณ์ขาดอากาศ/ก๊าซในอดีต — ก่อนเข้า ให้วัดออกซิเจน ไฮโดรเจนซัลไฟด์ และคาร์บอนมอนอกไซด์พร้อมกัน และระบายอากาศล่วงหน้าอย่างน้อย 30 นาที",
-            "content_id": "Riwayat insiden asfiksia/gas sebelumnya — sebelum masuk, ukur oksigen, hidrogen sulfida, dan karbon monoksida secara simultan, serta ventilasi awal minimal 30 menit",
-            "regulation": "산업안전보건기준규칙 §619"
-          }
+          "id": "PLT-01",
+          "content": "약액조 펌프 정지·라인 격리(밸브 LOTO)·잔액 드레인 확인",
+          "content_en": "Stop chemical bath pumps, isolate lines (valve LOTO), and verify residual drain",
+          "content_vi": "Dừng bơm bể hóa chất, cô lập đường (LOTO van) và xác nhận đã xả tồn dư",
+          "content_th": "หยุดปั๊มถังเคมี, แยกสาย (LOTO วาล์ว) และยืนยันการระบายของเหลวคงค้าง",
+          "content_id": "Hentikan pompa bak kimia, isolasi jalur (LOTO valve), dan verifikasi drain residu",
+          "regulation": "산업안전보건기준규칙 제225조(화학설비)·제273조(누출방지)",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            {
+              "id": "PLT-01-SC-1",
+              "content": "황산/HF 라인 잔액 미배출 상태 플랜지 분해 → 약액 분사·전신 화학화상",
+              "content_en": "Disassembling flange with residual H2SO4/HF in line → chemical splash and full-body chemical burn",
+              "content_vi": "Tháo bích khi đường còn H2SO4/HF tồn dư → bắn hóa chất và bỏng hóa chất toàn thân",
+              "content_th": "ถอดหน้าแปลนขณะที่สายยังมี H2SO4/HF ค้าง → สารเคมีกระเด็นและถูกสารเคมีไหม้ทั่วตัว",
+              "content_id": "Membongkar flange saat saluran masih ada sisa H2SO4/HF → cipratan kimia dan luka bakar kimia seluruh tubuh"
+            },
+            {
+              "id": "PLT-01-SC-2",
+              "content": "도금액(시안화물 함유) 잔류 + 산성 약액 혼입 → 시안화수소(HCN) 발생",
+              "content_en": "Residual cyanide-bearing plating bath mixed with acid → hydrogen cyanide (HCN) release",
+              "content_vi": "Dung dịch mạ chứa cyanide tồn dư + axit trộn lẫn → giải phóng hydro cyanide (HCN)",
+              "content_th": "น้ำยาชุบที่มีไซยาไนด์ค้าง + กรดปนกัน → ปล่อยไฮโดรเจนไซยาไนด์ (HCN)",
+              "content_id": "Larutan plating mengandung sianida sisa + asam bercampur → pelepasan hidrogen sianida (HCN)"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "PLT-01-MIT-1",
+              "content": "더블 블록·블리드 밸브 LOTO + 펌프 전원 LOTO + 드레인 후 DI 플러시 3회 + pH 4~9 확인",
+              "content_en": "Double block-and-bleed valve LOTO, pump LOTO, drain + DI flush 3 times, verify pH 4–9",
+              "content_vi": "LOTO van double block-and-bleed, LOTO bơm, xả + flush DI 3 lần, xác nhận pH 4–9",
+              "content_th": "LOTO วาล์ว double block-and-bleed, LOTO ปั๊ม, ระบาย + ฟลัช DI 3 ครั้ง, ยืนยัน pH 4–9",
+              "content_id": "LOTO valve double block-and-bleed, LOTO pompa, drain + flush DI 3 kali, verifikasi pH 4–9"
+            },
+            {
+              "id": "PLT-01-MIT-2",
+              "content": "시안 라인은 별도 격리 + HCN 검지기 휴대(임계 <4.7 ppm STEL)",
+              "content_en": "Isolate cyanide line separately and carry HCN detector (STEL threshold < 4.7 ppm)",
+              "content_vi": "Cô lập đường cyanide riêng và mang theo máy đo HCN (ngưỡng STEL < 4.7 ppm)",
+              "content_th": "แยกสายไซยาไนด์ออกต่างหากและพกเครื่องตรวจ HCN (เกณฑ์ STEL < 4.7 ppm)",
+              "content_id": "Isolasi jalur sianida terpisah dan bawa detektor HCN (ambang STEL < 4.7 ppm)"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "PLT-01-PPE-1",
+              "content": "전신 케미컬 슈트(PVC/PE) + 부틸 장갑 + 풀페이스 방독마스크(산성가스+시안 카트리지)",
+              "content_en": "Full-body chemical suit (PVC/PE) + butyl gloves + full-face respirator (acid gas + cyanide cartridge)",
+              "content_vi": "Bộ đồ hóa chất toàn thân (PVC/PE) + găng butyl + mặt nạ toàn mặt (hộp lọc khí axit + cyanide)",
+              "content_th": "ชุดเคมีเต็มตัว (PVC/PE) + ถุงมือ butyl + หน้ากากเต็มหน้า (ตลับกรองก๊าซกรด + ไซยาไนด์)",
+              "content_id": "Pakaian kimia full-body (PVC/PE) + sarung tangan butyl + respirator full-face (kartrid gas asam + sianida)"
+            }
+          ]
         },
         {
-          "if": "shift == night OR special_notes contains 단독 작업",
-          "add": {
-            "id": "CS-N02",
-            "content": "야간·단독 작업 시 — 외부 감시인 2인 배치 + 무전 채널 상시 개방 + 30분 단위 안부 콜",
-            "content_en": "For night or solo work — assign two external attendants, keep the radio channel open at all times, and perform welfare check-in calls every 30 minutes",
-            "content_vi": "Với ca đêm hoặc làm việc một mình — bố trí 2 người giám sát bên ngoài, mở kênh bộ đàm thường trực và gọi kiểm tra an toàn mỗi 30 phút",
-            "content_th": "สำหรับงานกลางคืนหรือทำงานคนเดียว — จัดเจ้าหน้าที่เฝ้าระวังภายนอก 2 คน เปิดช่องวิทยุสื่อสารตลอดเวลา และโทรเช็คความปลอดภัยทุก 30 นาที",
-            "content_id": "Untuk shift malam atau pekerjaan solo — tugaskan 2 attendant eksternal, jaga channel radio tetap terbuka, dan lakukan welfare call setiap 30 menit",
-            "regulation": "산업안전보건기준규칙 §622"
-          }
+          "id": "PLT-02",
+          "content": "HF 작업 시 calcium gluconate 젤·세안설비·MSDS 비치 확인",
+          "content_en": "For HF work, verify calcium gluconate gel, eyewash station, and MSDS are on hand",
+          "content_vi": "Khi làm việc với HF, xác nhận có gel calcium gluconate, trạm rửa mắt và MSDS",
+          "content_th": "ในงาน HF ให้ยืนยันว่ามีเจล calcium gluconate, จุดล้างตา และ MSDS",
+          "content_id": "Untuk pekerjaan HF, verifikasi tersedia gel calcium gluconate, eyewash station, dan MSDS",
+          "regulation": "산업안전보건기준규칙 제451조(보호구) / KOSHA GUIDE H-180",
+          "evidence_required": "photo",
+          "scenarios": [
+            {
+              "id": "PLT-02-SC-1",
+              "content": "HF 피부 접촉 후 1차 대응 지연 → 칼슘 결핍 + 심정지(저농도라도 치명적)",
+              "content_en": "Delayed first response after HF skin contact → calcium depletion and cardiac arrest (lethal even at low concentration)",
+              "content_vi": "Phản ứng đầu chậm sau khi HF tiếp xúc da → thiếu calci và ngừng tim (gây tử vong dù nồng độ thấp)",
+              "content_th": "ตอบสนองช้าเมื่อ HF สัมผัสผิวหนัง → ขาดแคลเซียมและหัวใจหยุดเต้น (อันตรายถึงตายแม้ความเข้มข้นต่ำ)",
+              "content_id": "Respons awal lambat setelah HF kontak kulit → kekurangan kalsium dan henti jantung (mematikan meski konsentrasi rendah)"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "PLT-02-MIT-1",
+              "content": "HF 작업 반경 5m 내 calcium gluconate gel 2개 + 15초 이내 도달 eyewash + 응급실 연락처 사전 공유",
+              "content_en": "Within 5 m of HF work, station 2 calcium gluconate gel tubes + eyewash reachable within 15 s + pre-share ER contacts",
+              "content_vi": "Trong vòng 5 m khu vực HF, đặt 2 tuýp calcium gluconate gel + eyewash trong 15 s + chia sẻ trước liên hệ cấp cứu",
+              "content_th": "ภายในรัศมี 5 ม. ของงาน HF ให้วาง gel calcium gluconate 2 หลอด + eyewash เข้าถึงใน 15 วินาที + แจ้งเบอร์ฉุกเฉินล่วงหน้า",
+              "content_id": "Dalam radius 5 m area HF, sediakan 2 tube gel calcium gluconate + eyewash terjangkau dalam 15 detik + bagikan kontak IGD"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "PLT-02-PPE-1",
+              "content": "HF 전용 부틸 장갑(0.5mm 이상) + 페이스쉴드 + 앞치마형 산화학복",
+              "content_en": "HF-rated butyl gloves (≥0.5 mm) + face shield + acid-resistant apron",
+              "content_vi": "Găng butyl chuyên dụng cho HF (≥0.5 mm) + tấm che mặt + tạp dề kháng axit",
+              "content_th": "ถุงมือ butyl เกรด HF (≥0.5 มม.) + เฟซชิลด์ + ผ้ากันเปื้อนทนกรด",
+              "content_id": "Sarung tangan butyl khusus HF (≥0.5 mm) + face shield + apron tahan asam"
+            }
+          ]
+        },
+        {
+          "id": "PLT-03",
+          "content": "도금조 정류기 DC 전원 LOTO + 양극·음극 단락 방지 접지",
+          "content_en": "Apply LOTO to plating rectifier DC power and ground anode/cathode to prevent short",
+          "content_vi": "Áp dụng LOTO cho nguồn DC chỉnh lưu bể mạ và tiếp địa anode/cathode để chống ngắn mạch",
+          "content_th": "ดำเนินการ LOTO กับแหล่งจ่าย DC ของ rectifier ถังชุบและกราวด์ anode/cathode เพื่อกันลัดวงจร",
+          "content_id": "Terapkan LOTO pada catu daya DC rectifier bak plating dan grounding anoda/katoda untuk mencegah hubung singkat",
+          "regulation": "산업안전보건기준규칙 제319조(정전작업)",
+          "evidence_required": "verbal",
+          "scenarios": [
+            {
+              "id": "PLT-03-SC-1",
+              "content": "정류기 미차단 상태 양극판 교체 → 고전류(>500A) 아크 + 약액 비산",
+              "content_en": "Replacing anode plate without rectifier isolation → high-current (>500A) arc and electrolyte splash",
+              "content_vi": "Thay tấm anode khi chưa cách ly rectifier → hồ quang dòng cao (>500A) và bắn dung dịch",
+              "content_th": "เปลี่ยนแผ่น anode โดยไม่ตัด rectifier → อาร์กกระแสสูง (>500A) และน้ำยากระเด็น",
+              "content_id": "Mengganti pelat anoda tanpa isolasi rectifier → busur arus tinggi (>500A) dan cipratan elektrolit"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "PLT-03-MIT-1",
+              "content": "DC 전원 LOTO + 클램프 멀티미터로 0A 확인 + 양극/음극 임시 접지 막대 부착",
+              "content_en": "DC LOTO, verify 0 A with clamp meter, attach temporary grounding rods to anode/cathode",
+              "content_vi": "LOTO DC, xác nhận 0 A bằng ampe kìm, gắn thanh tiếp địa tạm cho anode/cathode",
+              "content_th": "LOTO DC, ยืนยัน 0 A ด้วยแคลมป์มิเตอร์, ติดแท่งกราวด์ชั่วคราวที่ anode/cathode",
+              "content_id": "LOTO DC, verifikasi 0 A dengan clamp meter, pasang batang grounding sementara di anoda/katoda"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "PLT-03-PPE-1",
+              "content": "절연 장갑(DC 1000V급) + 케미컬 페이스쉴드 + 절연 안전화",
+              "content_en": "Insulating gloves (DC 1000 V class) + chemical face shield + insulating safety shoes",
+              "content_vi": "Găng cách điện (Class DC 1000 V) + tấm che mặt chống hóa chất + giày bảo hộ cách điện",
+              "content_th": "ถุงมือฉนวน (Class DC 1000 V) + เฟซชิลด์กันสารเคมี + รองเท้าเซฟตี้ฉนวน",
+              "content_id": "Sarung tangan isolasi (kelas DC 1000 V) + face shield kimia + sepatu safety isolasi"
+            }
+          ]
+        },
+        {
+          "id": "PLT-04",
+          "content": "약액 누설 시 흡착포·중화제(중탄산나트륨/탄산칼슘) 즉시 사용 가능 상태 점검",
+          "content_en": "Verify absorbent pads and neutralizer (sodium bicarbonate / calcium carbonate) are ready for spill",
+          "content_vi": "Xác nhận khăn thấm và chất trung hòa (sodium bicarbonate / calcium carbonate) sẵn sàng cho sự cố tràn",
+          "content_th": "ยืนยันว่าแผ่นซับและสารทำให้เป็นกลาง (โซเดียมไบคาร์บอเนต / แคลเซียมคาร์บอเนต) พร้อมใช้สำหรับการรั่วไหล",
+          "content_id": "Verifikasi pad penyerap dan penetral (sodium bikarbonat / kalsium karbonat) siap untuk tumpahan",
+          "regulation": "화학물질관리법 제41조(사고대응) / 산업안전보건기준규칙 제453조",
+          "evidence_required": "photo",
+          "scenarios": [
+            {
+              "id": "PLT-04-SC-1",
+              "content": "누설 발생 시 중화제 부재 → 약액 확산 + 인근 배수구 유입 → 토양·수질 오염",
+              "content_en": "Spill occurs without neutralizer on hand → chemical spreads, enters drain, contaminates soil/water",
+              "content_vi": "Xảy ra rò rỉ nhưng không có chất trung hòa → hóa chất lan, vào cống, ô nhiễm đất/nước",
+              "content_th": "เกิดการรั่วไหลแต่ไม่มีสารทำให้เป็นกลาง → สารเคมีกระจาย ไหลเข้าท่อระบาย ปนเปื้อนดิน/น้ำ",
+              "content_id": "Tumpahan terjadi tanpa penetral tersedia → kimia menyebar, masuk drainase, mencemari tanah/air"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "PLT-04-MIT-1",
+              "content": "Spill kit 위치·재고 점검 + 배수구 임시 차단판(drain seal) 비치 + 5분 내 가동 시연 가능",
+              "content_en": "Inspect spill kit location/stock, station drain-seal blocks, ensure 5-minute deployment drill capability",
+              "content_vi": "Kiểm tra vị trí/tồn kho spill kit, bố trí chặn cống, đảm bảo có thể triển khai trong 5 phút",
+              "content_th": "ตรวจตำแหน่ง/สต็อก spill kit, วางแผ่นปิดท่อระบาย, รับรองว่าระดมพลใน 5 นาทีได้",
+              "content_id": "Periksa lokasi/stok spill kit, sediakan penutup drainase, pastikan kemampuan deployment 5 menit"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "PLT-04-PPE-1",
+              "content": "내화학 부츠(EVA) + 케미컬 슈트(앞치마형) + 방독마스크(산성가스 카트리지)",
+              "content_en": "Chemical-resistant boots (EVA) + chemical apron suit + respirator (acid gas cartridge)",
+              "content_vi": "Ủng kháng hóa chất (EVA) + tạp dề kháng hóa chất + mặt nạ phòng độc (hộp lọc khí axit)",
+              "content_th": "รองเท้าบูทกันสารเคมี (EVA) + ชุดผ้ากันเปื้อนทนเคมี + หน้ากากกันแก๊ส (ตลับกรองก๊าซกรด)",
+              "content_id": "Boots tahan kimia (EVA) + apron kimia + respirator (kartrid gas asam)"
+            }
+          ]
+        }
+      ]
+    },
+    "GAS_CABINET_INSPECTION": {
+      "label_ko": "특수가스 캐비닛 점검",
+      "label_en": "Specialty Gas Cabinet Inspection",
+      "label_vi": "Kiểm tra tủ khí đặc biệt",
+      "label_th": "การตรวจสอบตู้ก๊าซพิเศษ",
+      "label_id": "Inspeksi Gas Cabinet Khusus",
+      "baseline": [
+        {
+          "id": "GAS-01",
+          "content": "캐비닛 환기·차압(>15 Pa)·가스누출 감지기 zero calibration 확인",
+          "content_en": "Verify cabinet ventilation, pressure differential (>15 Pa), and zero-calibrate gas leak detectors",
+          "content_vi": "Xác nhận thông gió tủ, chênh áp (>15 Pa) và hiệu chỉnh zero máy dò rò khí",
+          "content_th": "ยืนยันการระบายอากาศตู้, ความต่างความดัน (>15 Pa) และ zero-calibrate เครื่องตรวจรั่วก๊าซ",
+          "content_id": "Verifikasi ventilasi cabinet, beda tekanan (>15 Pa), dan zero-calibration detektor kebocoran gas",
+          "regulation": "고압가스안전관리법 시행규칙 §47, SEMI F-15",
+          "evidence_required": "photo",
+          "scenarios": [
+            {
+              "id": "GAS-01-SC-1",
+              "content": "차압 미달(<5 Pa) + SiH4 누출 → 캐비닛 내 자연발화 + 폭발",
+              "content_en": "Insufficient differential (<5 Pa) + SiH4 leak → pyrophoric ignition inside cabinet + explosion",
+              "content_vi": "Chênh áp không đủ (<5 Pa) + rò SiH4 → tự bốc cháy trong tủ + nổ",
+              "content_th": "ความต่างความดันไม่พอ (<5 Pa) + รั่ว SiH4 → ลุกไหม้เองในตู้ + ระเบิด",
+              "content_id": "Beda tekanan kurang (<5 Pa) + bocor SiH4 → terbakar spontan dalam cabinet + ledakan"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "GAS-01-MIT-1",
+              "content": "차압 게이지 일일 점검 + 누출 감지기 6개월 calibration + 알람 set point 25% LEL",
+              "content_en": "Daily differential-gauge check, 6-month leak detector calibration, alarm setpoint at 25% LEL",
+              "content_vi": "Kiểm tra đồng hồ chênh áp hàng ngày, hiệu chỉnh máy dò rò 6 tháng/lần, đặt báo động ở 25% LEL",
+              "content_th": "ตรวจเกจความต่างความดันรายวัน, calibration เครื่องตรวจรั่ว 6 เดือน, ตั้ง alarm ที่ 25% LEL",
+              "content_id": "Pemeriksaan gauge beda tekanan harian, kalibrasi detektor kebocoran tiap 6 bulan, setpoint alarm 25% LEL"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "GAS-01-PPE-1",
+              "content": "방염 작업복 + SCBA 또는 escape mask 1인 1조",
+              "content_en": "Flame-resistant coverall + SCBA or escape mask per person",
+              "content_vi": "Áo liền quần chống cháy + SCBA hoặc mặt nạ thoát hiểm cho mỗi người",
+              "content_th": "ชุดคลุมกันไฟ + SCBA หรือหน้ากากหนีไฟ ต่อคน 1 ชุด",
+              "content_id": "Coverall tahan api + SCBA atau masker escape per orang"
+            }
+          ]
+        },
+        {
+          "id": "GAS-02",
+          "content": "실린더 교체 전 라인 N2 퍼지(3-cycle) 및 잔류농도 측정",
+          "content_en": "Before cylinder change-out, perform 3-cycle N2 purge and measure residual concentration",
+          "content_vi": "Trước khi thay bình, thực hiện purge N2 3 chu kỳ và đo nồng độ tồn dư",
+          "content_th": "ก่อนเปลี่ยนถัง ให้ purge N2 3 รอบ และวัดความเข้มข้นคงค้าง",
+          "content_id": "Sebelum penggantian cylinder, lakukan purge N2 3 siklus dan ukur konsentrasi sisa",
+          "regulation": "고압가스안전관리법 §13(용기관리), SEMI F-40",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            {
+              "id": "GAS-02-SC-1",
+              "content": "퍼지 부족 상태 실린더 분리 → AsH3/PH3 잔류가스 노출(독성, AsH3 TLV 0.005 ppm)",
+              "content_en": "Disconnecting cylinder with insufficient purge → AsH3/PH3 residual exposure (toxic; AsH3 TLV 0.005 ppm)",
+              "content_vi": "Tháo bình khi chưa purge đủ → phơi nhiễm AsH3/PH3 tồn dư (độc; AsH3 TLV 0.005 ppm)",
+              "content_th": "ถอดถังขณะ purge ไม่เพียงพอ → สัมผัส AsH3/PH3 ที่ค้าง (เป็นพิษ; AsH3 TLV 0.005 ppm)",
+              "content_id": "Melepas cylinder dengan purging kurang → paparan AsH3/PH3 sisa (toksik; AsH3 TLV 0.005 ppm)"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "GAS-02-MIT-1",
+              "content": "Cycle 퍼지 3회(진공→N2 가압→배기) + 잔류농도 1/10 TLV 미만 확인 후 분리",
+              "content_en": "3-cycle purge (vacuum → N2 pressurize → vent), verify residual < 1/10 TLV before disconnect",
+              "content_vi": "Purge 3 chu kỳ (hút chân không → tăng áp N2 → xả), xác nhận tồn dư < 1/10 TLV trước khi tháo",
+              "content_th": "Purge 3 รอบ (สุญญากาศ → อัด N2 → ระบาย), ยืนยันคงค้าง < 1/10 TLV ก่อนถอด",
+              "content_id": "Purge 3 siklus (vakum → tekan N2 → vent), verifikasi sisa < 1/10 TLV sebelum melepas"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "GAS-02-PPE-1",
+              "content": "전면형 PAPR(특수가스 카트리지) + 방염복 + 휴대용 AsH3/PH3 검지기",
+              "content_en": "Full-face PAPR (specialty-gas cartridge) + flame-resistant suit + portable AsH3/PH3 detector",
+              "content_vi": "PAPR mặt nạ toàn mặt (hộp lọc khí đặc biệt) + bộ đồ chống cháy + máy đo AsH3/PH3 cầm tay",
+              "content_th": "PAPR เต็มหน้า (ตลับสำหรับก๊าซพิเศษ) + ชุดกันไฟ + เครื่องตรวจ AsH3/PH3 พกพา",
+              "content_id": "PAPR full-face (kartrid gas khusus) + pakaian tahan api + detektor AsH3/PH3 portabel"
+            }
+          ]
+        },
+        {
+          "id": "GAS-03",
+          "content": "가스 캐비닛 외함·VMB(밸브 매니폴드) 누설 시험 — He leak detection 또는 snoop 검사",
+          "content_en": "Leak-test gas cabinet enclosure and VMB (valve manifold) — He leak detection or snoop test",
+          "content_vi": "Kiểm tra rò rỉ vỏ tủ khí và VMB (cụm van) — bằng He leak detection hoặc snoop",
+          "content_th": "ทดสอบรั่วของตู้ก๊าซและ VMB (valve manifold) — He leak detection หรือ snoop",
+          "content_id": "Uji kebocoran enclosure cabinet gas dan VMB (valve manifold) — He leak detection atau snoop",
+          "regulation": "KGS FU111 (특수가스 설비기준)",
+          "evidence_required": "photo",
+          "scenarios": [
+            {
+              "id": "GAS-03-SC-1",
+              "content": "교체 후 VMB 피팅 미체결 → 운전 중 가스 누출 + 라인 정지",
+              "content_en": "Loose VMB fitting after replacement → gas leak during operation + line stop",
+              "content_vi": "Khớp VMB chưa siết sau thay thế → rò khí khi vận hành + dừng dây chuyền",
+              "content_th": "ฟิตติ้ง VMB ไม่แน่นหลังเปลี่ยน → รั่วก๊าซระหว่างเดินเครื่อง + สายหยุด",
+              "content_id": "Fitting VMB longgar setelah penggantian → bocor gas saat operasi + jalur berhenti"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "GAS-03-MIT-1",
+              "content": "He leak rate <1×10^-6 mbar·L/s 기준 통과 + 1.5x 작업압력으로 30분 hold test",
+              "content_en": "Pass He leak rate < 1e-6 mbar·L/s and 1.5x working-pressure 30-min hold test",
+              "content_vi": "Đạt tốc độ rò He < 1e-6 mbar·L/s và giữ áp 1.5x áp làm việc trong 30 phút",
+              "content_th": "ผ่านอัตรารั่ว He < 1e-6 mbar·L/s และทดสอบกดอัด 1.5x ความดันใช้งาน 30 นาที",
+              "content_id": "Lulus laju kebocoran He < 1e-6 mbar·L/s dan hold test 1.5x tekanan kerja selama 30 menit"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "GAS-03-PPE-1",
+              "content": "보안경 + 케미컬 장갑(니트릴) + 휴대용 가스 검지기",
+              "content_en": "Safety glasses + chemical (nitrile) gloves + portable gas detector",
+              "content_vi": "Kính bảo hộ + găng kháng hóa chất (nitrile) + máy dò khí cầm tay",
+              "content_th": "แว่นนิรภัย + ถุงมือกันสารเคมี (nitrile) + เครื่องตรวจก๊าซพกพา",
+              "content_id": "Kacamata safety + sarung tangan kimia (nitril) + detektor gas portabel"
+            }
+          ]
+        }
+      ]
+    },
+    "UTILITY_FFU_FILTER_REPLACEMENT": {
+      "label_ko": "유틸리티 FFU 필터 교체·공조 점검",
+      "label_en": "Utility FFU Filter Replacement / HVAC Inspection",
+      "label_vi": "Thay lọc FFU tiện ích / kiểm tra HVAC",
+      "label_th": "การเปลี่ยนไส้กรอง FFU และตรวจระบบ HVAC",
+      "label_id": "Penggantian Filter FFU Utility / Inspeksi HVAC",
+      "baseline": [
+        {
+          "id": "FFU-01",
+          "content": "고소작업(2m 이상) — 사다리/롤링 타워 점검 + 안전벨트 부착",
+          "content_en": "Work at height (>2 m) — inspect ladder/rolling tower and attach safety harness",
+          "content_vi": "Làm việc trên cao (>2 m) — kiểm tra thang/giàn di động và đeo dây an toàn",
+          "content_th": "งานบนที่สูง (>2 ม.) — ตรวจบันได/หอนั่งร้านล้อเลื่อน และคล้องสายเซฟตี้",
+          "content_id": "Bekerja di ketinggian (>2 m) — periksa tangga/rolling tower dan kenakan harness",
+          "regulation": "산업안전보건기준규칙 제42조(추락방지)·제45조(안전대)",
+          "evidence_required": "photo",
+          "scenarios": [
+            {
+              "id": "FFU-01-SC-1",
+              "content": "천장 ULPA 필터 교체 중 발판 미끄러짐 → 추락(2~3m)",
+              "content_en": "Slipping on platform while replacing ceiling ULPA filter → fall (2–3 m)",
+              "content_vi": "Trượt trên sàn thao tác khi thay lọc ULPA trần → ngã (2–3 m)",
+              "content_th": "ลื่นบนแท่นยืนขณะเปลี่ยนไส้กรอง ULPA เพดาน → ตก (2–3 ม.)",
+              "content_id": "Tergelincir di platform saat mengganti filter ULPA langit-langit → jatuh (2–3 m)"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "FFU-01-MIT-1",
+              "content": "롤링타워 outrigger 4점 펴기 + 미끄럼방지 매트 + 안전벨트 lanyard 천장 anchor에 결속",
+              "content_en": "Extend rolling-tower outriggers at 4 points + anti-slip mat + connect harness lanyard to ceiling anchor",
+              "content_vi": "Mở 4 chân outrigger của giàn di động + thảm chống trượt + nối lanyard dây an toàn vào neo trần",
+              "content_th": "กางขา outrigger หอนั่งร้าน 4 จุด + แผ่นกันลื่น + ผูก lanyard สายเซฟตี้กับ anchor บนเพดาน",
+              "content_id": "Rentangkan outrigger rolling tower 4 titik + matras anti-slip + sambungkan lanyard harness ke anchor langit-langit"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "FFU-01-PPE-1",
+              "content": "전신 안전대 + 안전모(턱끈) + 미끄럼방지 안전화",
+              "content_en": "Full-body harness + chin-strap helmet + slip-resistant safety shoes",
+              "content_vi": "Dây an toàn toàn thân + mũ bảo hộ có quai cằm + giày bảo hộ chống trượt",
+              "content_th": "เซฟตี้ฮาร์เนสเต็มตัว + หมวกนิรภัยมีสายรัดคาง + รองเท้ากันลื่น",
+              "content_id": "Harness full-body + helm dengan chin strap + sepatu safety anti-slip"
+            }
+          ]
+        },
+        {
+          "id": "FFU-02",
+          "content": "FFU 전원(380V 3φ) LOTO + 모터 잔류전류 확인",
+          "content_en": "Apply LOTO to FFU power (380 V 3φ) and verify no residual current in motor",
+          "content_vi": "Áp dụng LOTO cho nguồn FFU (380 V 3φ) và xác nhận không còn dòng dư trong động cơ",
+          "content_th": "ดำเนินการ LOTO ไฟ FFU (380 V 3φ) และยืนยันไม่มีกระแสคงค้างในมอเตอร์",
+          "content_id": "Terapkan LOTO daya FFU (380 V 3φ) dan verifikasi tidak ada arus sisa di motor",
+          "regulation": "산업안전보건기준규칙 제319조(정전작업)",
+          "evidence_required": "verbal",
+          "scenarios": [
+            {
+              "id": "FFU-02-SC-1",
+              "content": "전원 미차단 상태 임펠러 점검 → 손가락 절단",
+              "content_en": "Inspecting impeller without power isolation → finger amputation",
+              "content_vi": "Kiểm tra cánh quạt khi chưa cắt điện → đứt ngón tay",
+              "content_th": "ตรวจใบพัดโดยไม่ตัดไฟ → นิ้วขาด",
+              "content_id": "Memeriksa impeller tanpa isolasi daya → jari teramputasi"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "FFU-02-MIT-1",
+              "content": "FFU 회로 차단기 LOTO + 검전 + 임펠러 회전 멈춤 확인(5분 대기)",
+              "content_en": "LOTO FFU breaker, perform voltage test, confirm impeller stopped (wait 5 min)",
+              "content_vi": "LOTO cầu dao FFU, đo điện, xác nhận cánh quạt dừng (chờ 5 phút)",
+              "content_th": "LOTO เบรกเกอร์ FFU, วัดแรงดัน, ยืนยันใบพัดหยุด (รอ 5 นาที)",
+              "content_id": "LOTO breaker FFU, lakukan voltage test, konfirmasi impeller berhenti (tunggu 5 menit)"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "FFU-02-PPE-1",
+              "content": "절연 장갑 + 검전기",
+              "content_en": "Insulating gloves + voltage tester",
+              "content_vi": "Găng cách điện + bút thử điện",
+              "content_th": "ถุงมือฉนวน + เครื่องวัดแรงดัน",
+              "content_id": "Sarung tangan isolasi + voltage tester"
+            }
+          ]
+        },
+        {
+          "id": "FFU-03",
+          "content": "사용 필터(ULPA/HEPA) 폐기 시 오염 방지 — 이중 비닐백 + 라벨링",
+          "content_en": "Dispose used ULPA/HEPA filters with contamination control — double-bag + label",
+          "content_vi": "Khi thải lọc ULPA/HEPA đã dùng, kiểm soát ô nhiễm — đóng túi đôi + dán nhãn",
+          "content_th": "การกำจัดไส้กรอง ULPA/HEPA ที่ใช้แล้ว ป้องกันการปนเปื้อน — ห่อถุง 2 ชั้น + ติดฉลาก",
+          "content_id": "Pembuangan filter ULPA/HEPA bekas dengan kontrol kontaminasi — double-bag + label",
+          "regulation": "폐기물관리법 제13조(지정폐기물 처리)",
+          "evidence_required": "photo",
+          "scenarios": [
+            {
+              "id": "FFU-03-SC-1",
+              "content": "사용 필터 무방비 운반 → 화학물질 흡착분진 비산 + 호흡기 노출",
+              "content_en": "Carrying used filter unwrapped → adsorbed chemical particulate disperses + respiratory exposure",
+              "content_vi": "Vận chuyển lọc đã dùng không bọc → bụi hấp phụ hóa chất phát tán + hít phải",
+              "content_th": "ขนย้ายไส้กรองที่ใช้แล้วโดยไม่ห่อ → ฝุ่นที่ดูดซับสารเคมีฟุ้ง + สูดเข้าทางเดินหายใจ",
+              "content_id": "Mengangkut filter bekas tanpa pembungkus → partikel kimia teradsorpsi tersebar + paparan pernapasan"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "FFU-03-MIT-1",
+              "content": "필터 제거 즉시 이중 PE 백 봉지 + 지정폐기물 라벨(공정·일자·작업자) + 격리 보관소 이송",
+              "content_en": "Immediately double-bag removed filter in PE, label as designated waste (process/date/worker), move to segregated storage",
+              "content_vi": "Bọc đôi lọc bằng túi PE ngay sau khi tháo, dán nhãn chất thải chỉ định (công đoạn/ngày/người), chuyển đến kho cách ly",
+              "content_th": "ห่อถุง PE 2 ชั้นทันทีหลังถอดไส้กรอง, ติดฉลากของเสียที่กำหนด (กระบวนการ/วันที่/ผู้ปฏิบัติงาน), นำส่งคลังแยก",
+              "content_id": "Segera double-bag filter yang dilepas dengan PE, beri label limbah khusus (proses/tanggal/pekerja), pindahkan ke gudang terpisah"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "FFU-03-PPE-1",
+              "content": "P3 등급 방진마스크 + 일회용 타이벡 + 니트릴 장갑 2겹",
+              "content_en": "P3 dust mask + disposable Tyvek + double-layer nitrile gloves",
+              "content_vi": "Khẩu trang chống bụi P3 + bộ Tyvek dùng một lần + găng nitrile hai lớp",
+              "content_th": "หน้ากากกันฝุ่น P3 + ชุด Tyvek แบบใช้ครั้งเดียว + ถุงมือ nitrile 2 ชั้น",
+              "content_id": "Masker debu P3 + Tyvek sekali pakai + sarung tangan nitril 2 lapis"
+            }
+          ]
+        },
+        {
+          "id": "FFU-04",
+          "content": "교체 후 풍속(0.45±0.1 m/s) 및 파티클 카운트(Class 100 기준 ≥0.5µm <100 particles/ft³) 확인",
+          "content_en": "After replacement, verify airflow (0.45±0.1 m/s) and particle count (Class 100: ≥0.5µm <100 particles/ft³)",
+          "content_vi": "Sau khi thay, xác nhận tốc độ gió (0.45±0.1 m/s) và đếm hạt (Class 100: ≥0.5µm <100 hạt/ft³)",
+          "content_th": "หลังเปลี่ยน ยืนยันความเร็วลม (0.45±0.1 m/s) และจำนวนอนุภาค (Class 100: ≥0.5µm <100 particles/ft³)",
+          "content_id": "Setelah penggantian, verifikasi kecepatan udara (0.45±0.1 m/s) dan particle count (Class 100: ≥0.5µm <100 partikel/ft³)",
+          "regulation": "ISO 14644-3 (시험방법)",
+          "evidence_required": "photo|verbal",
+          "scenarios": [
+            {
+              "id": "FFU-04-SC-1",
+              "content": "필터 시일 결함 → bypass 누설 → 청정도 등급 미달 → 양산 불량 발생",
+              "content_en": "Filter seal defect → bypass leak → cleanroom class out of spec → production defect",
+              "content_vi": "Lỗi gioăng lọc → rò bypass → cấp độ phòng sạch không đạt → lỗi sản xuất",
+              "content_th": "ซีลไส้กรองชำรุด → bypass รั่ว → คลีนรูมต่ำกว่ามาตรฐาน → ของเสียในการผลิต",
+              "content_id": "Cacat seal filter → bocor bypass → kelas cleanroom tidak memenuhi → cacat produksi"
+            }
+          ],
+          "mitigations": [
+            {
+              "id": "FFU-04-MIT-1",
+              "content": "PAO/DEHS 에어로졸로 leak test + 풍속계 9점 측정 + 파티클 카운터 30초 평균",
+              "content_en": "Leak-test with PAO/DEHS aerosol, measure airflow at 9 points, average particle counter over 30 s",
+              "content_vi": "Thử rò bằng aerosol PAO/DEHS, đo tốc độ gió tại 9 điểm, trung bình máy đếm hạt 30 s",
+              "content_th": "ทดสอบรั่วด้วย aerosol PAO/DEHS, วัดความเร็วลม 9 จุด, ค่าเฉลี่ยเครื่องนับอนุภาค 30 วินาที",
+              "content_id": "Uji kebocoran dengan aerosol PAO/DEHS, ukur kecepatan udara di 9 titik, rata-rata particle counter 30 s"
+            }
+          ],
+          "ppe": [
+            {
+              "id": "FFU-04-PPE-1",
+              "content": "클린룸 가먼팅 + 보안경 + 풍속계/파티클 카운터 휴대",
+              "content_en": "Cleanroom garment + safety glasses + portable airflow meter & particle counter",
+              "content_vi": "Trang phục phòng sạch + kính bảo hộ + máy đo tốc độ gió/đếm hạt cầm tay",
+              "content_th": "ชุดคลีนรูม + แว่นนิรภัย + เครื่องวัดความเร็วลม/นับอนุภาคแบบพกพา",
+              "content_id": "Pakaian cleanroom + kacamata safety + anemometer/particle counter portabel"
+            }
+          ]
         }
       ]
     }
