@@ -168,10 +168,10 @@ export default function HomeScreen() {
             현장의 안전을,<br />대화로 정리합니다
           </h1>
           <p className="mt-3 text-sm text-pwc-ink-soft max-w-sm">
-            TBM 리더와 Safety Vision이 음성으로 대화하며 체크리스트를 함께 작성합니다.
+            작업 전 위험요인을 빠르게 확인하고, 오늘의 TBM을 완성하세요.
           </p>
         </div>
-        <div className="absolute right-[-10px] bottom-4 opacity-95">
+        <div className="absolute right-3 bottom-4 opacity-95 pointer-events-none">
           <PwcMark size={30} variant="accent" />
         </div>
       </section>
