@@ -376,7 +376,7 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
 
   // ── progress ────────────────────────────────────────
   const { completedCount, progressPercent } = useChecklistProgress(checklist);
-  const { structuredProgressPercent } = useStructuredProgress(structured);
+  const { structuredProgressPercent } = useStructuredProgress(checklist, structured);
 
   // PR-feedback-3 (v0.2.3) — 4 슬롯 충족도 derive (영속 X).
   const slotState = useSlotProgress(priorInfo);

@@ -62,7 +62,7 @@ export function SummaryDrawer({
               지금까지 정리본
             </div>
             <div className="font-serif-display text-[22px] leading-tight mt-0.5">
-              {structuredProgressPercent}% 완성
+              {structuredProgressPercent}% 진행
             </div>
           </div>
           <button
