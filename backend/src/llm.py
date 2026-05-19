@@ -27,7 +27,7 @@ from . import prompt
 OPENAI_REALTIME_SESSIONS_URL = "https://api.openai.com/v1/realtime/sessions"
 OPENAI_TRANSCRIPTION_URL = "https://api.openai.com/v1/audio/transcriptions"
 OPENAI_CHAT_COMPLETIONS_URL = "https://api.openai.com/v1/chat/completions"
-OPENAI_REALTIME_MODEL = "gpt-4o-realtime-preview"
+OPENAI_REALTIME_MODEL = "gpt-realtime-1.5"
 OPENAI_TRANSCRIPTION_MODEL = "whisper-1"
 OPENAI_CHAT_MODEL = "gpt-4o"
 # Phase chat-PR1 — text-only fallback transport. Per chat_mode_prompt_adaptation §E,
