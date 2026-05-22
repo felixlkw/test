@@ -1,0 +1,16 @@
+{
+  "name": "safemate-marketplace",
+  "owner": {
+    "name": "felixlkw",
+    "email": "felixlkw0201@gmail.com"
+  },
+  "description": "SafeMate(SafeAssist) PoC용 자체 마켓플레이스 — 현재 safemate-harness 플러그인 배포.",
+  "plugins": [
+    {
+      "name": "safemate-harness",
+      "source": "./safemate-harness",
+      "description": "SafeMate PoC 전문가 에이전트 하네스 (10 subagents + /harness 명령)",
+      "version": "0.1.0"
+    }
+  ]
+}
