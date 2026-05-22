@@ -601,20 +601,65 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
         case "response.output_text.delta":
           recordFirstToken();
           return;
+        // 2026-05-23 — EHS 이중 채널 출력(audio + text) 도입 후 dedup 로직.
+        // 동일 response_id에 대해 audio_transcript.done과 text.done이 둘 다 emit되므로
+        // 그대로 두면 같은 답변이 말풍선 2개로 보인다. 정책:
+        //   1) text 채널이 도착하면 — markdown 렌더용. 같은 response_id의 transcript
+        //      말풍선이 이미 있으면 그걸 text 콘텐츠로 교체(markdown=true). 없으면 새로 push.
+        //   2) audio_transcript 채널이 도착하면 — 같은 response_id의 text 말풍선이
+        //      이미 있으면 skip(중복). 없으면 plain text로 push(legacy/TBM 호환).
+        // TBM 모드는 output_modalities=["audio"]라 text 이벤트가 안 와서 자연히 legacy 동작.
         case "response.audio_transcript.done":
-        case "response.output_audio_transcript.done":
-          setMessages((prev) => [
-            ...prev,
-            { role: "assistant", text: e.transcript as string },
-          ]);
+        case "response.output_audio_transcript.done": {
+          const rid = (e.response_id ?? e.item_id) as string | undefined;
+          setMessages((prev) => {
+            if (rid && prev.some((m) => m.response_id === rid && m.markdown)) {
+              // text 채널이 이미 이 응답을 처리함 — transcript 중복 emit skip.
+              return prev;
+            }
+            return [
+              ...prev,
+              {
+                role: "assistant",
+                text: e.transcript as string,
+                response_id: rid,
+              },
+            ];
+          });
           return;
+        }
         case "response.text.done":
-        case "response.output_text.done":
-          setMessages((prev) => [
-            ...prev,
-            { role: "assistant", text: e.text as string },
-          ]);
+        case "response.output_text.done": {
+          const rid = (e.response_id ?? e.item_id) as string | undefined;
+          const text = e.text as string;
+          setMessages((prev) => {
+            // 같은 response_id의 transcript 말풍선이 먼저 도착해 있으면 in-place 교체.
+            if (rid) {
+              const existingIdx = prev.findIndex(
+                (m) => m.response_id === rid && !m.markdown,
+              );
+              if (existingIdx >= 0) {
+                const next = [...prev];
+                next[existingIdx] = {
+                  ...next[existingIdx],
+                  text,
+                  markdown: true,
+                };
+                return next;
+              }
+            }
+            return [
+              ...prev,
+              {
+                role: "assistant",
+                text,
+                response_id: rid,
+                markdown: true,
+              },
+            ];
+          });
           return;
+        }
         case "response.function_call_arguments.done":
           onFunctionCall(e);
           return;

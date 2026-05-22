@@ -28,6 +28,13 @@ export interface ChatMessage {
   attachment_ids?: string[];
   /** Phase chat-PR3 — 메시지 직후 inline 으로 그려질 액션 버튼 목록. 영속화 X. */
   actions?: ChatMessageAction[];
+  /** 2026-05-23 — EHS 이중 채널 출력. true면 text가 markdown(불릿 등)이라
+   *  ChatList에서 ReactMarkdown으로 렌더. false/미설정이면 plain text(legacy/TBM).
+   *  영속화 X — 화면 표시 hint. */
+  markdown?: boolean;
+  /** 2026-05-23 — Realtime API response_id. EHS 이중 채널에서 동일 response의
+   *  audio_transcript vs text 채널 중복 emit을 dedup하는 데 사용. 영속화 X. */
+  response_id?: string;
 }
 
 // WebRTC 이벤트 형태(루즈한 객체).

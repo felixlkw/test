@@ -52,6 +52,8 @@ interface VoiceTopBarProps {
   /** Phase 0.6 Wave 7 — pause 칩 인라인 액션. VoiceShell 에서 LLM 에게 user msg push. */
   onTbmModeResume?: () => void;
   onTbmModeCancel?: () => void;
+  /** Phase 0.6 Wave 9 — TBM 모드 상시 표시 'EHS 채팅으로' 버튼. 터치 fallback. */
+  onBackToEhs?: () => void;
 }
 
 export function VoiceTopBar({
@@ -82,6 +84,7 @@ export function VoiceTopBar({
   structured,
   onTbmModeResume,
   onTbmModeCancel,
+  onBackToEhs,
 }: VoiceTopBarProps) {
   const langChipRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
@@ -149,6 +152,19 @@ export function VoiceTopBar({
         onResume={onTbmModeResume}
         onCancel={onTbmModeCancel}
       />
+      {/* Phase 0.6 Wave 9 — TBM 모드 상시 'EHS 채팅으로 돌아가기' 버튼.
+          음성으로 "TBM 종료" 말하기 어려울 때 (소음·다국어) 터치 fallback. */}
+      {currentMode === "TBM" && onBackToEhs && (
+        <button
+          type="button"
+          onClick={onBackToEhs}
+          className="hidden sm:inline-flex shrink-0 items-center gap-1 px-2 py-0.5 rounded-hoban bg-white border border-hoban-border-strong text-[10px] text-hoban-ink-soft hover:border-hoban-primary hover:text-hoban-primary transition active:scale-95"
+          aria-label="EHS 채팅으로 돌아가기 — TBM 종료"
+          title="TBM 종료하고 EHS 채팅으로 돌아갑니다"
+        >
+          ← EHS 채팅
+        </button>
+      )}
       {/* Phase 0.6 Wave 7 — 8필드 dot grid. TBM 모드 + 원본 데이터 주입 시.
           기존 "사전 N/4 · 체크 M/T" 텍스트 인디케이터를 도트 시각화로 대체. */}
       {currentMode === "TBM" && priorInfo && structured && (

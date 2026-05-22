@@ -3,6 +3,7 @@
 // PR C — 메시지의 attachment_ids에 매칭되는 MediaAttachment를 inline 썸네일로,
 // hazard_detections에 매칭되는 결과를 HazardResultCard로 inline 표시.
 import { useEffect, useMemo, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { IconClose, IconDoc } from "../../components/Icon";
 import type { ChatMessage, AppMode, CitationDisplay } from "../../features/tbm/types";
 import type {
@@ -179,7 +180,47 @@ export function ChatList({
                           : "bg-hoban-primary-wash text-hoban-ink border border-hoban-primary/20"
                     }`}
                   >
-                    {msg.text}
+                    {/* 2026-05-23 — EHS 이중 채널: assistant text가 markdown
+                        플래그를 달고 오면 ReactMarkdown으로 렌더. 불릿/볼드 등
+                        가독성 강화. 그 외(user, TBM, EHS plain transcript)는
+                        plain text 유지. */}
+                    {isAssistant && msg.markdown ? (
+                      <ReactMarkdown
+                        components={{
+                          ul: ({ children }) => (
+                            <ul className="list-disc pl-5 my-1 space-y-0.5">{children}</ul>
+                          ),
+                          ol: ({ children }) => (
+                            <ol className="list-decimal pl-5 my-1 space-y-0.5">{children}</ol>
+                          ),
+                          li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+                          p: ({ children }) => <p className="my-1 first:mt-0 last:mb-0">{children}</p>,
+                          strong: ({ children }) => (
+                            <strong className="font-semibold text-hoban-primary-deep">{children}</strong>
+                          ),
+                          h2: ({ children }) => (
+                            <h2 className="text-[13px] font-bold mt-2 mb-1 text-hoban-primary-deep">{children}</h2>
+                          ),
+                          h3: ({ children }) => (
+                            <h3 className="text-[13px] font-bold mt-2 mb-1">{children}</h3>
+                          ),
+                          a: ({ children, href }) => (
+                            <a
+                              href={href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-hoban-primary underline hover:text-hoban-primary-deep"
+                            >
+                              {children}
+                            </a>
+                          ),
+                        }}
+                      >
+                        {msg.text}
+                      </ReactMarkdown>
+                    ) : (
+                      msg.text
+                    )}
                   </div>
                   {/* Phase chat-PR3: 메시지 actions 버튼 inline. 음성 폴백
                        안내 메시지의 [다시 시도] / [채팅으로 계속] 버튼. */}

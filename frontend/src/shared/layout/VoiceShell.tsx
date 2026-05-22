@@ -1674,6 +1674,22 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
           setMessages((prev) => [...prev, { role: "user", text: "TBM 종료" }]);
           sessionRef.current?.sendTextMessage("TBM 종료", "user");
         }}
+        // Phase 0.6 Wave 9 — TBM 모드 상시 'EHS 채팅으로' 버튼 (음성 fallback).
+        // 같은 sessionId 유지하며 라우팅만 전환 — TBM 작업 기록 IndexedDB 보존.
+        onBackToEhs={
+          currentMode === "TBM" && sessionId
+            ? () => {
+                const ok = window.confirm(
+                  "TBM 을 종료하고 EHS 채팅으로 돌아갑니다. 진행 중인 TBM 기록은 IndexedDB 에 보존됩니다. 계속할까요?",
+                );
+                if (!ok) return;
+                voiceSessionRef.current?.stopSessionPreserveState();
+                setCurrentWorkTypeLabel(undefined);
+                setCurrentWorkTypeId(undefined);
+                window.setTimeout(() => navigate(`/ehs/${sessionId}`), 400);
+              }
+            : undefined
+        }
         onClickStart={() => session.startSession(null, null, { preparedSummary })}
         onClickStop={session.stopSession}
         onLeaveToHome={session.stopSessionPreserveState}
