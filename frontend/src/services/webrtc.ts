@@ -34,30 +34,58 @@ export interface WebRTCSesssionOptions {
   prepared_summary?: PreparedSummary;
 }
 
-// 2026-05-22 — 모드별 첫 그리팅 분리. 이전 단일 INITIAL_MESSAGE("Greet ... and
-// proceed with the first procedure")는 EHS 모드에서 "first procedure" 부분이
-// 무의미해 모델이 종종 입을 떼지 않는 회귀가 있었음. 이제 mode에 따라:
-//   TBM: 따뜻하게 인사 + TBM 활동 시작 선언 + 첫 사전정보 질문(작업 장소).
-//   EHS: 한 문장으로 짧게 인사 + 어떤 안전 관련 도움이 필요한지 묻기.
-// 둘 다 system role + audioResponse=true로 즉시 AI가 입을 떼게 함.
-const INITIAL_MESSAGE_TBM = `\
-Greet the user warmly in the configured response language, announce that you'll
-start today's TBM (toolbox meeting) together, and then proceed with the first
-prior-information question per the configured procedure. Keep it short — one
-short greeting sentence + one question. Display proper cues at proper times.
-`;
-
-const INITIAL_MESSAGE_EHS = `\
-Greet the user briefly in the configured response language (one short sentence)
-and ask what safety-related help they need today. Do not list capabilities or
-read a long intro — keep it to a single sentence.
-`;
-
-function defaultInitialMessageFor(mode: 'tbm' | 'ehs'): string {
-  return mode === 'ehs' ? INITIAL_MESSAGE_EHS : INITIAL_MESSAGE_TBM;
-}
-
 type EphemeralLanguage = 'english' | 'korean' | 'vietnamese' | 'thai' | 'indonesian';
+
+// 2026-05-23 — 그리팅 지시문에 언어를 명시적으로 박아 모델이 그때그때 다른 언어로
+// 인사하던 회귀("왔따갔다") 차단. 기본값은 한국어이며, 사용자가 언어 셀렉터에서
+// 바꾸면 세션이 재시작되며 새 세션의 그리팅이 해당 언어로 발화된다.
+//
+// 이전엔 "in the configured response language" 같은 모호한 표현이라 모델이 종종
+// English로 폴백하거나 첫 토큰을 영어로 시작하다 system prompt 보고 한국어로
+// 전환하는 진동이 있었음. 언어 이름을 명시하고, 한국어 인사는 예시 문구까지
+// 박아 첫 토큰부터 안정.
+const LANGUAGE_DISPLAY_NAME: Record<EphemeralLanguage, string> = {
+  korean: 'Korean (한국어)',
+  english: 'English',
+  vietnamese: 'Vietnamese (Tiếng Việt)',
+  thai: 'Thai (ภาษาไทย)',
+  indonesian: 'Indonesian (Bahasa Indonesia)',
+};
+
+const KICKOFF_HINT_TBM: Record<EphemeralLanguage, string> = {
+  korean: '예: "안녕하세요, 오늘 TBM 시작하겠습니다. 먼저 작업 장소를 알려주시겠어요?"',
+  english: 'e.g. "Hello, let\'s start today\'s TBM. Could you tell me the work location first?"',
+  vietnamese: 'Ví dụ: "Xin chào, chúng ta bắt đầu TBM hôm nay. Bạn có thể cho biết địa điểm làm việc không?"',
+  thai: 'เช่น: "สวัสดีครับ/ค่ะ เรามาเริ่ม TBM วันนี้กันครับ/ค่ะ ขอทราบสถานที่ทำงานก่อนได้ไหมครับ/คะ?"',
+  indonesian: 'Contoh: "Halo, mari kita mulai TBM hari ini. Bisakah Anda memberi tahu lokasi kerjanya?"',
+};
+
+const KICKOFF_HINT_EHS: Record<EphemeralLanguage, string> = {
+  korean: '예: "안녕하세요, 어떤 안전 관련 도움이 필요하신가요?"',
+  english: 'e.g. "Hello, what safety-related help do you need today?"',
+  vietnamese: 'Ví dụ: "Xin chào, bạn cần hỗ trợ gì về an toàn hôm nay?"',
+  thai: 'เช่น: "สวัสดีครับ/ค่ะ ต้องการความช่วยเหลือด้านความปลอดภัยเรื่องไหนครับ/คะ?"',
+  indonesian: 'Contoh: "Halo, bantuan keselamatan apa yang Anda butuhkan hari ini?"',
+};
+
+function buildInitialMessage(mode: 'tbm' | 'ehs', language: EphemeralLanguage): string {
+  const langName = LANGUAGE_DISPLAY_NAME[language];
+  if (mode === 'ehs') {
+    return [
+      `IMPORTANT — speak ONLY in ${langName} for this entire response. Do not use any other language.`,
+      `Greet the user briefly in ${langName} (one short sentence) and ask what safety-related help they need today.`,
+      `Do not list capabilities or read a long intro — keep it to a single sentence.`,
+      KICKOFF_HINT_EHS[language],
+    ].join(' ');
+  }
+  return [
+    `IMPORTANT — speak ONLY in ${langName} for this entire response. Do not use any other language.`,
+    `Greet the user warmly in ${langName}, announce that you'll start today's TBM (toolbox meeting) together,`,
+    `and then ask the first prior-information question (work location) per the configured procedure.`,
+    `Keep it short — one short greeting sentence + one question. Display proper cues at proper times.`,
+    KICKOFF_HINT_TBM[language],
+  ].join(' ');
+}
 type EphemeralDomain = 'manufacturing' | 'construction' | 'heavy_industry' | 'semiconductor';
 
 async function getEphemeralKey(
@@ -113,7 +141,7 @@ export class WebRTCSession {
   ) {
     // 2026-05-22 — initialMessage 기본값을 mode 기반으로. 호출자가 명시한 값이
     // 있으면 그대로 사용(EHS recommended-question 클릭 경로 등).
-    const resolvedInitialMessage = initialMessage ?? defaultInitialMessageFor(this.mode);
+    const resolvedInitialMessage = initialMessage ?? buildInitialMessage(this.mode, this.language);
 
     // Create RTCPeerConnection
     this.conn = new RTCPeerConnection();
