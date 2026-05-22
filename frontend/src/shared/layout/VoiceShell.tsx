@@ -73,7 +73,6 @@ import { ClosingBanner } from "../../features/tbm/ClosingBanner";
 import { Portal } from "../portal/PortalRoot";
 import { SummaryDrawer } from "../portal/SummaryDrawer";
 import { InterruptionToast } from "../portal/InterruptionToast";
-import { StagesStrip } from "../ui/StagesStrip";
 import { BroadcastCompleteCTA } from "../ui/BroadcastCompleteCTA";
 import { AttestationModal, type AttestationConfirmResult } from "../portal/AttestationModal";
 import { ReportPreviewModal } from "../portal/ReportPreviewModal";
@@ -366,7 +365,7 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     // Phase chat-PR2: voice 자동 시작 실패 시 chat 트랜스포트로 폴백.
     // PR-3 에서 워닝 메시지 push + 액션 버튼 부착이 추가된다.
     onConnectionFailed: useCallback(
-      (_kind: "auth_quota" | "network", _msg: string) => {
+      () => {
         setTransport("chat");
       },
       [],
@@ -389,28 +388,13 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
   // 영속 X (invariant #10) — useMemo 사용.
   const broadcastReadiness = useBroadcastReadiness(checklist, structured);
 
-  // ── PR B (c6 §3.VII) — TBM 단계 derive ───────────────
-  // useMemo로 매 렌더 derive, 영속 X (invariant #10).
+  // ── TBM 단계 derive ───────────────────────────────────
+  // 2026-05-23 — StagesStrip 네비는 제거됐지만 currentStage 자체는 vision
+  // narration의 stage 게이트(prior_info / checklist일 때만 narrate)에서 여전히
+  // 사용 중. handleClickStage는 stepper 클릭 핸들러였는데 stepper 제거와 함께 dead.
   const currentStage = useMemo<TbmStage>(
     () => deriveTbmStage(structured, checklist, finalSummary),
     [structured, checklist, finalSummary],
-  );
-  // 클릭 시 매핑(2026-05-22 업데이트):
-  //   prior_info / checklist → ChecklistPanel open (한 패널에 사전정보+체크리스트 동거)
-  //   mitigations / finalize → SummaryDrawer open (지금까지 정리본)
-  // 이전엔 prior_info 클릭이 패널을 닫아 "어디로 가는지 모르겠다"는 felix dx → 동거 패널로 일원화.
-  const handleClickStage = useCallback(
-    (stage: TbmStage) => {
-      if (stage === "prior_info" || stage === "checklist") {
-        setShowChecklistPanel(true);
-        setShowSummaryDrawer(false);
-        return;
-      }
-      // mitigations / finalize
-      setShowSummaryDrawer(true);
-      setShowChecklistPanel(false);
-    },
-    [],
   );
 
   // ── PR-feedback-3 (v0.2.3) — 세션 시작 시각 + finishing 진입 가드 ──
@@ -1581,14 +1565,13 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     };
   }, [checklist, slotState.missing.length]);
 
-  // PR F: CTA 노출 조건 — TBM 모드 + prepare 단계 데이터 + 후반 stage(대응방안/정리).
-  // 2026-05-22 — 이전엔 prior_info / checklist 초반에도 "참석 미확인" 카운터가
-  // 항상 떠 있어 화면 노이즈. 참석 전파는 본질적으로 마무리 액션이므로 stage가
-  // mitigations 이상으로 진입했을 때만 노출. 카운터/펄스 자체는 backend
-  // request_broadcast_attestation 신호로 그대로 동작.
+  // PR F: CTA 노출 조건 — TBM 모드 + prepare 단계 데이터가 한 가지라도 있을 때.
+  // 2026-05-23 — stage 게이트(mitigations|finalize) 제거. StagesStrip 네비를
+  // 없애면서 CTA가 SummaryDrawer 진입 단일 버튼이 됐으므로 항상 노출. inactive
+  // 상태(누락 항목 카운터)는 그대로 "지금 뭐가 부족한지" 가시화 — 시각 노이즈가
+  // 아니라 본질적인 진행 indicator 역할로 격상.
   const showBroadcastCta =
     currentMode === "TBM" &&
-    (currentStage === "mitigations" || currentStage === "finalize") &&
     ((currentPreparedBaseline?.length ?? 0) > 0 ||
       (currentPreparedScenarios?.length ?? 0) > 0 ||
       (currentPreparedMitigations?.length ?? 0) > 0 ||
@@ -1754,33 +1737,26 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
         }
       />
 
-      {/* PR B (c6 §3.VII) — TBM 단계 stepper. EHS 모드는 미렌더 — ProgressStack과
-           동일 가드. 클릭 시 ChecklistPanel/SummaryDrawer 토글 매핑. */}
-      {currentMode === "TBM" && (
-        <StagesStrip
-          currentStage={currentStage}
-          onClickStage={handleClickStage}
-        />
-      )}
+      {/* 2026-05-23 — StagesStrip 4-stage 네비 제거. 사용자 요구: 상단 네비
+           자체가 중복이고, "전파 완료" CTA가 동일 SummaryDrawer를 여는 단일
+           진입점이 되도록 일원화. ChecklistPanel은 ProgressStack 클릭으로
+           여전히 접근 가능. */}
 
-      {/* Phase 2.x PR-4/PR-5 — BroadcastCompleteCTA + AttestationModal.
-           PR-4: readiness 게이트 + 펄스 CTA.
-           PR-5: 클릭 시 풀스크린 AttestationModal open (이전엔 즉시 confirm + /finish).
-           - 비활성: 누락 항목 카운터 ("체크리스트 N개 · 대응/예방 · 참석 미확인")
+      {/* 2026-05-23 — BroadcastCompleteCTA가 단일 진입점.
+           - 비활성(준비 중): 누락 항목 카운터 — "체크리스트 N개 · 대응/예방 · 참석 미확인"
            - 활성: PwC orange + "📢 작업자 N명에게 전파 완료"
-           - 펄스: LLM이 request_broadcast_attestation 호출 시 30초간 ring + animate-pulse
-           prepare 데이터가 하나라도 있을 때만 노출. EHS / legacy 세션 누출 0. */}
+           - 펄스: LLM이 request_broadcast_attestation 호출 시 30초간 ring
+           클릭 → SummaryDrawer open(사전정보·체크리스트·진행률·정리본 + 전파/서명 진입).
+           기존엔 active일 때만 enable + click → 즉시 AttestationModal. 이제는 항상
+           clickable → drawer가 정보 종합 hub 역할 + drawer 내부 "전파 완료(서명)"
+           버튼이 readiness.isReady일 때만 AttestationModal 진입. */}
       {showBroadcastCta && (
         <BroadcastCompleteCTA
           readiness={broadcastReadiness}
           pulsing={broadcastPulsing}
           workerCount={currentPreparedContext?.worker_count}
-          onClick={() => {
-            // 비활성 상태에선 disabled button이라 onClick 자체가 호출 안 됨.
-            // 방어적으로 readiness 재검사 후 진입.
-            if (!broadcastReadiness.isReady) return;
-            setAttestationModalOpen(true);
-          }}
+          onClick={() => setShowSummaryDrawer(true)}
+          alwaysClickable
         />
       )}
 
@@ -1909,6 +1885,26 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
           onClearHazardSuggestions={() => setHazardSuggestions([])}
           checklist={checklist}
           preparedHazards={currentPreparedHazards}
+          /* 2026-05-23 — drawer 내부 "📢 전파 완료" 진입 (기존 CTA 직결 → drawer 경유로 이전). */
+          onBroadcast={
+            showBroadcastCta
+              ? () => {
+                  if (!broadcastReadiness.isReady) return;
+                  setShowSummaryDrawer(false);
+                  setAttestationModalOpen(true);
+                }
+              : undefined
+          }
+          broadcastReady={broadcastReadiness.isReady}
+          broadcastMissingLabel={[
+            broadcastReadiness.missingChecklistCount > 0
+              ? `체크리스트 ${broadcastReadiness.missingChecklistCount}개`
+              : null,
+            ...broadcastReadiness.missingStructuredFields,
+            broadcastReadiness.missingAttendance ? "참석 미확인" : null,
+          ]
+            .filter((s): s is string => !!s)
+            .join(" · ") || "준비 중"}
         />
       </Portal>
 

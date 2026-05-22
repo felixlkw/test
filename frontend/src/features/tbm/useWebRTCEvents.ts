@@ -482,17 +482,26 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
         }
         // PR B (c6 §3.III) — first response delta(audio or text). recordFirstToken은
         // pending이 없으면 no-op이라 같은 응답 내 두 번째 delta는 무시된다.
+        // 2026-05-23 — Realtime GA가 response.* 이벤트에 `output_` 접두사를 추가.
+        //   response.audio_transcript.* → response.output_audio_transcript.*
+        //   response.text.*             → response.output_text.*
+        // Beta 이름은 호환을 위해 case 그대로 유지(다른 snapshot/모델 폴백).
+        // 이전엔 GA 이름을 듣지 않아 말풍선이 안 떴음(felix dx 2026-05-23).
         case "response.audio_transcript.delta":
         case "response.text.delta":
+        case "response.output_audio_transcript.delta":
+        case "response.output_text.delta":
           recordFirstToken();
           return;
         case "response.audio_transcript.done":
+        case "response.output_audio_transcript.done":
           setMessages((prev) => [
             ...prev,
             { role: "assistant", text: e.transcript as string },
           ]);
           return;
         case "response.text.done":
+        case "response.output_text.done":
           setMessages((prev) => [
             ...prev,
             { role: "assistant", text: e.text as string },

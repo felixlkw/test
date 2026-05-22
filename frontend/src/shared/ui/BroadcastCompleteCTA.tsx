@@ -21,6 +21,10 @@ export interface BroadcastCompleteCTAProps {
   /** prepared_context.worker_count — "작업자 N명" 표기에 사용. 없으면 라벨 생략. */
   workerCount?: number;
   onClick: () => void;
+  /** 2026-05-23 — true면 inactive 상태에서도 click 가능 (SummaryDrawer 진입용).
+   *  cursor-not-allowed 시각만 유지하고 onClick은 호출. 시각 회색은 readiness 미충족
+   *  indicator로 그대로. */
+  alwaysClickable?: boolean;
 }
 
 /** 비활성 시 누락 항목을 1줄 짧은 한글 문자열로 결합. */
@@ -40,7 +44,7 @@ function buildMissingLabel(readiness: BroadcastReadinessState): string {
 }
 
 function BroadcastCompleteCTAImpl(props: BroadcastCompleteCTAProps) {
-  const { readiness, pulsing, workerCount, onClick } = props;
+  const { readiness, pulsing, workerCount, onClick, alwaysClickable } = props;
   const isReady = readiness.isReady;
 
   const activeLabel =
@@ -53,9 +57,12 @@ function BroadcastCompleteCTAImpl(props: BroadcastCompleteCTAProps) {
     "w-full flex items-center justify-center gap-2 bg-pwc-orange hover:bg-pwc-orange-deep text-white font-bold text-[14px] px-4 py-3 rounded-pwc-lg shadow-pwc transition focus:outline-none focus:ring-2 focus:ring-pwc-orange-deep focus:ring-offset-1";
   // 펄스 추가 — animate-pulse + ring.
   const pulseClass = " animate-pulse ring-2 ring-pwc-orange-deep ring-offset-2";
-  // 비활성 base — 회색 + cursor-not-allowed.
-  const inactiveClass =
-    "w-full flex items-center justify-center gap-2 bg-pwc-bg-soft text-pwc-ink-soft font-bold text-[13px] px-4 py-3 rounded-pwc-lg border border-pwc-border-strong cursor-not-allowed transition";
+  // 비활성 base — 회색.
+  // alwaysClickable=false: cursor-not-allowed + disabled (구 동작).
+  // alwaysClickable=true: clickable로 두고 hover만 살림 (SummaryDrawer 진입용).
+  const inactiveClass = alwaysClickable
+    ? "w-full flex items-center justify-center gap-2 bg-pwc-bg-soft text-pwc-ink-soft font-bold text-[13px] px-4 py-3 rounded-pwc-lg border border-pwc-border-strong hover:bg-pwc-bg-card transition"
+    : "w-full flex items-center justify-center gap-2 bg-pwc-bg-soft text-pwc-ink-soft font-bold text-[13px] px-4 py-3 rounded-pwc-lg border border-pwc-border-strong cursor-not-allowed transition";
 
   if (!isReady) {
     const missingLabel = buildMissingLabel(readiness);
@@ -64,10 +71,18 @@ function BroadcastCompleteCTAImpl(props: BroadcastCompleteCTAProps) {
         <button
           type="button"
           onClick={onClick}
-          disabled
-          aria-disabled="true"
-          aria-label={`전파 완료 비활성 — 미충족: ${missingLabel}`}
-          title={`전파 완료를 활성화하려면 다음을 채우세요: ${missingLabel}`}
+          disabled={!alwaysClickable}
+          aria-disabled={alwaysClickable ? undefined : "true"}
+          aria-label={
+            alwaysClickable
+              ? `정리본 보기 — 미충족: ${missingLabel}`
+              : `전파 완료 비활성 — 미충족: ${missingLabel}`
+          }
+          title={
+            alwaysClickable
+              ? `클릭 시 지금까지 정리본을 봅니다. 전파 완료 활성화 조건: ${missingLabel}`
+              : `전파 완료를 활성화하려면 다음을 채우세요: ${missingLabel}`
+          }
           className={inactiveClass}
         >
           <span aria-hidden="true">⏳</span>

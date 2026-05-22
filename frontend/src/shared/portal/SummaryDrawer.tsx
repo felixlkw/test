@@ -1,5 +1,7 @@
 // SummaryDrawer — App.tsx L1037-1115 이전. Portal로 이동.
 // Cycle 2 이슈 4: checklist_items[] 섹션 추가 (체크리스트 진행).
+// 2026-05-23 — drawer가 단일 정보 hub. 헤더에 "📢 전파 완료(서명)" 진입 버튼 추가
+// — 기존 BroadcastCompleteCTA → AttestationModal 직결 흐름을 drawer 내부로 이전.
 import SummaryRow from "../../components/SummaryRow";
 import { IconClose, IconLock } from "../../components/Icon";
 import type { StructuredChecklist } from "../../services/sessionModel";
@@ -17,6 +19,12 @@ interface SummaryDrawerProps {
   checklist: ChecklistItem[];
   /** PR A 보강: PrepareScreen에서 확정한 baseline 위험. 빈 배열이면 섹션 미렌더. */
   preparedHazards?: string[];
+  /** 2026-05-23 — broadcast 진입 핸들러. 미주입이면 버튼 미렌더(EHS / legacy). */
+  onBroadcast?: () => void;
+  /** broadcast 활성화 가능 여부 (체크리스트·structured·참석 조건 충족). */
+  broadcastReady?: boolean;
+  /** broadcast 미준비 시 hover/title 메시지 — 미충족 항목 한 줄 요약. */
+  broadcastMissingLabel?: string;
 }
 
 function formatCheckedAt(iso: string | undefined): string {
@@ -42,6 +50,9 @@ export function SummaryDrawer({
   onClearHazardSuggestions,
   checklist,
   preparedHazards,
+  onBroadcast,
+  broadcastReady,
+  broadcastMissingLabel,
 }: SummaryDrawerProps) {
   if (!open) return null;
   const completedCount = checklist.filter((c) => c.completed).length;
@@ -56,8 +67,8 @@ export function SummaryDrawer({
         className="w-full max-w-md h-full bg-pwc-bg text-pwc-ink border-l border-pwc-border overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-pwc-bg border-b border-pwc-border px-5 py-4 flex items-center justify-between">
-          <div>
+        <div className="sticky top-0 bg-pwc-bg border-b border-pwc-border px-5 py-4 flex items-center justify-between gap-3">
+          <div className="min-w-0">
             <div className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold">
               지금까지 정리본
             </div>
@@ -65,13 +76,36 @@ export function SummaryDrawer({
               {structuredProgressPercent}% 진행
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="w-9 h-9 flex items-center justify-center text-pwc-ink-soft hover:text-pwc-orange"
-            aria-label="close"
-          >
-            <IconClose size={20} />
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            {onBroadcast && (
+              <button
+                type="button"
+                onClick={onBroadcast}
+                disabled={!broadcastReady}
+                aria-disabled={broadcastReady ? undefined : "true"}
+                title={
+                  broadcastReady
+                    ? "작업자에게 baseline 위험을 전파했음을 1탭으로 기록 + 리더 서명"
+                    : `전파 완료 활성화 조건: ${broadcastMissingLabel ?? "준비 중"}`
+                }
+                className={
+                  broadcastReady
+                    ? "flex items-center gap-1 bg-pwc-orange hover:bg-pwc-orange-deep text-white font-bold text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-pwc transition whitespace-nowrap"
+                    : "flex items-center gap-1 bg-pwc-bg-soft text-pwc-ink-soft font-bold text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-pwc border border-pwc-border-strong cursor-not-allowed whitespace-nowrap"
+                }
+              >
+                <span aria-hidden="true">📢</span>
+                <span>전파 완료</span>
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="w-9 h-9 flex items-center justify-center text-pwc-ink-soft hover:text-pwc-orange"
+              aria-label="close"
+            >
+              <IconClose size={20} />
+            </button>
+          </div>
         </div>
 
         <div className="p-5">
