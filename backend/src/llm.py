@@ -1176,9 +1176,12 @@ async def generate_webrtc_key(
         # Beta endpoint /v1/realtime/sessions was disabled with error
         # `beta_api_shape_disabled`. GA nests config under `session` with
         # `audio.input` / `audio.output` instead of the old flat fields.
-        # EHS는 음성+텍스트 이중 채널 — 음성은 자연 회화, 텍스트는 markdown 불릿
-        # 으로 분기해 화면 가독성을 높인다(felix 2026-05-23). TBM은 audio 단일 유지.
-        output_modalities = ["audio", "text"] if mode == "ehs" else ["audio"]
+        # 2026-05-23 — Realtime GA 가 ["audio", "text"] 콤보를 거부 ("Supported
+        # combinations are: ['text'] and ['audio']"). 음성 채널 단일로 통일.
+        # EHS chat 의 텍스트 렌더링은 audio transcript 를 이용해 화면 표시 (이미
+        # response.output_audio_transcript.delta 이벤트가 제공). 별도 'text'
+        # modality 불필요. 회귀 발견 2026-05-23 (felix HITL: 음성 연결 안 됨).
+        output_modalities = ["audio"]
         session_config: dict = {
             "type": "realtime",
             "model": OPENAI_REALTIME_MODEL,

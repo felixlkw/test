@@ -397,6 +397,30 @@ async def transcribe_audio(file: UploadFile = File(...)):
     data = await llm.transcribe_audio(file.filename, file_bytes, file.content_type)
     return data
 
+
+# 2026-05-23 — 호반 PoC 데모용 mockup PDF 서빙.
+# guideline-summary-hoban.json 의 24개 문서에 대응하는 PDF를 backend/data/mockup_pdfs/
+# 에서 읽어 반환. EHS Q&A citation 카드의 다운로드 링크가 이 엔드포인트로 연결.
+# 안전 가드: doc_id 에 path traversal 차단(영문 대문자·숫자·하이픈만 허용).
+import re as _re
+_MOCKUP_PDF_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "mockup_pdfs")
+_MOCKUP_ID_RE = _re.compile(r"^[A-Z0-9\-]{1,32}$")
+
+
+@app.get("/api/mockup-pdf/{doc_id}")
+async def mockup_pdf(doc_id: str):
+    if not _MOCKUP_ID_RE.match(doc_id):
+        raise HTTPException(status_code=400, detail="invalid doc id")
+    pdf_path = os.path.join(_MOCKUP_PDF_DIR, f"{doc_id}.pdf")
+    if not os.path.isfile(pdf_path):
+        raise HTTPException(status_code=404, detail=f"mockup pdf not found: {doc_id}")
+    return FileResponse(
+        pdf_path,
+        media_type="application/pdf",
+        filename=f"{doc_id}.pdf",
+    )
+
+
 @app.post("/api/retrieve", response_model=RetrieveResponse)
 async def retrieve_documents(request: RetrieveRequest):
     """

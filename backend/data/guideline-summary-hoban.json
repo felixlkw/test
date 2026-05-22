@@ -2,7 +2,7 @@
   {
     "id": "HOBAN-EHS-001",
     "title": "호반써밋 RC골조 갱폼 인양 강풍 풍속기준 및 신호수 배치 지침",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-001",
+    "url": "/api/mockup-pdf/HOBAN-EHS-001",
     "date": "2024-09-12",
     "keywords": [
       "호반써밋",
@@ -35,7 +35,7 @@
   {
     "id": "HOBAN-EHS-002",
     "title": "지하주차장 흙막이 공사 인접 구조물 침하 모니터링 기준과 대응",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-002",
+    "url": "/api/mockup-pdf/HOBAN-EHS-002",
     "date": "2024-10-03",
     "keywords": [
       "지하주차장",
@@ -68,7 +68,7 @@
   {
     "id": "HOBAN-EHS-003",
     "title": "베르디움 마감공정 외국인 도장팀 유기용제 노출 저감 환기계획",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-003",
+    "url": "/api/mockup-pdf/HOBAN-EHS-003",
     "date": "2024-08-19",
     "keywords": [
       "베르디움",
@@ -101,7 +101,7 @@
   {
     "id": "HOBAN-EHS-004",
     "title": "타워크레인 2대 동시 운용 인접 반경 충돌방지 절차와 신호 체계",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-004",
+    "url": "/api/mockup-pdf/HOBAN-EHS-004",
     "date": "2024-07-22",
     "keywords": [
       "타워크레인",
@@ -133,7 +133,7 @@
   {
     "id": "HOBAN-EHS-005",
     "title": "지하 정화조·집수정 진입 전 산소농도 황화수소 측정 기준",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-005",
+    "url": "/api/mockup-pdf/HOBAN-EHS-005",
     "date": "2024-06-14",
     "keywords": [
       "지하정화조",
@@ -165,7 +165,7 @@
   {
     "id": "HOBAN-EHS-006",
     "title": "리솜리조트 증축 현장 운영 객실동선과 공사동선 분리 기준",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-006",
+    "url": "/api/mockup-pdf/HOBAN-EHS-006",
     "date": "2024-09-30",
     "keywords": [
       "리솜리조트",
@@ -197,7 +197,7 @@
   {
     "id": "HOBAN-EHS-007",
     "title": "민자 도로 터널 굴착 막장 붕괴 징후 모니터링",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-007",
+    "url": "/api/mockup-pdf/HOBAN-EHS-007",
     "date": "2024-05-08",
     "keywords": [
       "민자도로",
@@ -228,7 +228,7 @@
   {
     "id": "HOBAN-EHS-008",
     "title": "콘크리트 타설 중 동바리 좌굴 징후 작업자 인지·신고 절차",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-008",
+    "url": "/api/mockup-pdf/HOBAN-EHS-008",
     "date": "2024-08-02",
     "keywords": [
       "콘크리트타설",
@@ -259,7 +259,7 @@
   {
     "id": "HOBAN-EHS-009",
     "title": "베트남 태국 우즈벡 신규작업자 입소교육 픽토그램 모국어 자료",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-009",
+    "url": "/api/mockup-pdf/HOBAN-EHS-009",
     "date": "2024-11-05",
     "keywords": [
       "베트남",
@@ -292,7 +292,7 @@
   {
     "id": "HOBAN-EHS-010",
     "title": "대한전선 지중케이블 풀링 맨홀 밀폐공간 가스측정 환기절차",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-010",
+    "url": "/api/mockup-pdf/HOBAN-EHS-010",
     "date": "2024-10-21",
     "keywords": [
       "대한전선",
@@ -325,7 +325,7 @@
   {
     "id": "HOBAN-EHS-011",
     "title": "변전소 시공 인접 활선 이격거리 LOTO 검전 단락접지 절차",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-011",
+    "url": "/api/mockup-pdf/HOBAN-EHS-011",
     "date": "2024-09-04",
     "keywords": [
       "변전소시공",
@@ -358,7 +358,7 @@
   {
     "id": "HOBAN-EHS-012",
     "title": "해저케이블 선상포설 강풍 파고 게이트 잠수 인터페이스 안전",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-012",
+    "url": "/api/mockup-pdf/HOBAN-EHS-012",
     "date": "2024-11-18",
     "keywords": [
       "해저케이블",
@@ -391,7 +391,7 @@
   {
     "id": "HOBAN-EHS-013",
     "title": "동조괴 연속주조 1100도 용탕 비산 차폐벽 PPE 비상정지",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-013",
+    "url": "/api/mockup-pdf/HOBAN-EHS-013",
     "date": "2024-07-08",
     "keywords": [
       "동조괴",
@@ -422,7 +422,7 @@
   {
     "id": "HOBAN-EHS-014",
     "title": "도체 연신공정 권취 협착 예방 인터록 비상정지 점검주기",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-014",
+    "url": "/api/mockup-pdf/HOBAN-EHS-014",
     "date": "2024-06-26",
     "keywords": [
       "도체연신",
@@ -453,7 +453,7 @@
   {
     "id": "HOBAN-EHS-015",
     "title": "XLPE 압출 가교가스 쿠멘 하이드로퍼옥사이드 누설 환기 LEL 모니터링",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-015",
+    "url": "/api/mockup-pdf/HOBAN-EHS-015",
     "date": "2024-08-11",
     "keywords": [
       "xlpe",
@@ -484,7 +484,7 @@
   {
     "id": "HOBAN-EHS-016",
     "title": "납 시즈 압출 납 흄 TLV 0.05 환기 국소배기 점검",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-016",
+    "url": "/api/mockup-pdf/HOBAN-EHS-016",
     "date": "2024-09-17",
     "keywords": [
       "납시즈",
@@ -515,7 +515,7 @@
   {
     "id": "HOBAN-EHS-017",
     "title": "차폐 편조 권취 협착 방지 인터록 신규작업자 교육 운영",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-017",
+    "url": "/api/mockup-pdf/HOBAN-EHS-017",
     "date": "2024-10-09",
     "keywords": [
       "차폐편조",
@@ -546,7 +546,7 @@
   {
     "id": "HOBAN-EHS-018",
     "title": "50톤 케이블 드럼 권취 이송 전도방지 표준결박 양중절차",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-018",
+    "url": "/api/mockup-pdf/HOBAN-EHS-018",
     "date": "2024-07-30",
     "keywords": [
       "50톤",
@@ -577,7 +577,7 @@
   {
     "id": "HOBAN-EHS-019",
     "title": "HV 시험장 250kV 잔류전하 방전 시정수 시정수곱5 검전절차",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-019",
+    "url": "/api/mockup-pdf/HOBAN-EHS-019",
     "date": "2024-11-26",
     "keywords": [
       "hv시험장",
@@ -609,7 +609,7 @@
   {
     "id": "HOBAN-EHS-020",
     "title": "부분방전 PD 시험장 출입 인터록 비상정지 검증주기",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-020",
+    "url": "/api/mockup-pdf/HOBAN-EHS-020",
     "date": "2024-08-26",
     "keywords": [
       "부분방전",
@@ -640,7 +640,7 @@
   {
     "id": "HOBAN-EHS-021",
     "title": "당진 해저케이블 수직 압출장 회전드럼 협착 낙하방지 절차",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-021",
+    "url": "/api/mockup-pdf/HOBAN-EHS-021",
     "date": "2024-10-15",
     "keywords": [
       "당진",
@@ -671,7 +671,7 @@
   {
     "id": "HOBAN-EHS-022",
     "title": "베트남 공장 현지작업자 LOTO 검전 단락접지 표준손짓 정착",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-022",
+    "url": "/api/mockup-pdf/HOBAN-EHS-022",
     "date": "2024-11-09",
     "keywords": [
       "베트남공장",
@@ -703,7 +703,7 @@
   {
     "id": "HOBAN-EHS-023",
     "title": "케이블 드럼창고 협소공간 점검 O2 18 23.5 단독작업 금지",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-023",
+    "url": "/api/mockup-pdf/HOBAN-EHS-023",
     "date": "2024-09-23",
     "keywords": [
       "케이블드럼창고",
@@ -734,7 +734,7 @@
   {
     "id": "HOBAN-EHS-024",
     "title": "광케이블 클린룸 정전기 화재 먼지통제 ESD 접지 기준",
-    "url": "https://safemate.internal/mockup/HOBAN-EHS-024",
+    "url": "/api/mockup-pdf/HOBAN-EHS-024",
     "date": "2024-10-30",
     "keywords": [
       "광케이블",
