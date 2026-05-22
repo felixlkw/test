@@ -6,6 +6,8 @@ import type { WebRTCSession } from "../../services/webrtc";
 import type { ChecklistItem } from "../../services/checklist";
 import { recordToolCall } from "./toolTelemetry";
 import { setTbmMode } from "./useTbmModeChip";
+import { getTbmTransitionStrings } from "../../shared/i18n/tbmTransitionMessages";
+import type { SessionLanguage } from "../../services/sessionModel";
 import type {
   StructuredChecklist,
   PermitRecord,
@@ -52,6 +54,8 @@ export interface UseWebRTCEventsArgs {
   // TBM 도구를 LLM 이 호출 가능). VoiceShell 이 stopSession → switchMode →
   // startSession 시퀀스를 처리하도록 콜백 위임. 미주입 시 setCurrentMode 폴백.
   onLLMRequestedModeSwitch?: (newMode: AppMode, ctx: { workTitle?: string; reason?: string }) => void;
+  // Phase 0.6 Wave 7 — 도구 호출 시 toast 문자열을 사용자 언어로 노출.
+  currentLanguage?: SessionLanguage;
   // Phase 2.x PR-4 — LLM이 종료 게이트를 인지했음을 알리는 신호. VoiceShell에서
   // setBroadcastPulsing(true)로 펄스 트리거. 옵셔널 — 미전달 시 no-op.
   // 사용자 통제권 보존 (felix Q5=A) — 자동 모달은 호출하지 않음.
@@ -95,6 +99,7 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
     showInterruptionMessage,
     setCurrentMode,
     onLLMRequestedModeSwitch,
+    currentLanguage,
     onBroadcastReady,
     onFinalizeRequested,
   } = args;
@@ -455,7 +460,10 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
           const domain = (args.domain as string) || "unspecified";
           const workTypeId = (args.work_type_id as string) || "";
           console.log("[tbm-mode] enter_tbm_mode:", { workTitle, domain, workTypeId });
-          showInterruptionMessage(`TBM 모드 진입: ${workTitle} — 세션 전환 중`);
+          {
+            const s = getTbmTransitionStrings(currentLanguage ?? "korean");
+            showInterruptionMessage(s.toast.enter(workTitle));
+          }
           recordToolCall({ name: "enter_tbm_mode", status: "success" });
           setTbmMode({ mode: "tbm_running", workTitle });
           // Wave 6 — LLM tool set 은 세션 시작 시점 고정이므로, EHS → TBM 전환
@@ -478,9 +486,10 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
           const reason = (args.reason as string) || "other";
           const checkpoint = (args.checkpoint_note as string) || "";
           console.log("[tbm-mode] pause_tbm:", { reason, checkpoint });
-          showInterruptionMessage(
-            `TBM 일시중지 (${reason})${checkpoint ? ` — ${checkpoint}` : ""}`,
-          );
+          {
+            const s = getTbmTransitionStrings(currentLanguage ?? "korean");
+            showInterruptionMessage(s.toast.pause(reason, checkpoint || undefined));
+          }
           recordToolCall({ name: "pause_tbm", status: "success" });
           setTbmMode({ mode: "tbm_paused", pauseReason: reason, checkpointNote: checkpoint });
           sessionRef.current?.sendToolResult(callId, {
@@ -492,7 +501,10 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
 
         case "resume_tbm": {
           console.log("[tbm-mode] resume_tbm");
-          showInterruptionMessage("TBM 재개");
+          {
+            const s = getTbmTransitionStrings(currentLanguage ?? "korean");
+            showInterruptionMessage(s.toast.resume);
+          }
           recordToolCall({ name: "resume_tbm", status: "success" });
           setTbmMode({ mode: "tbm_running", pauseReason: undefined });
           sessionRef.current?.sendToolResult(callId, {
@@ -505,7 +517,10 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
         case "cancel_tbm": {
           const reason = (args.reason as string) || "";
           console.log("[tbm-mode] cancel_tbm:", { reason });
-          showInterruptionMessage(`TBM 취소${reason ? ` — ${reason}` : ""} — 세션 전환 중`);
+          {
+            const s = getTbmTransitionStrings(currentLanguage ?? "korean");
+            showInterruptionMessage(s.toast.cancel(reason || undefined));
+          }
           recordToolCall({ name: "cancel_tbm", status: "success" });
           setTbmMode({ mode: "ehs_chat", workTitle: undefined, checkpointNote: undefined, pauseReason: undefined });
           // Wave 6 — 세션 재발급(EHS tool set 으로)으로 채팅 친화 톤 + 도구 축소.
@@ -541,6 +556,7 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
       showInterruptionMessage,
       setCurrentMode,
       onLLMRequestedModeSwitch,
+      currentLanguage,
       onBroadcastReady,
       onFinalizeRequested,
     ],

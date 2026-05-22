@@ -16,6 +16,9 @@ import { Portal } from "../portal/PortalRoot";
 import { IconHome } from "../../components/Icon";
 import { getChatModeChip } from "../i18n/cueMessages";
 import { TbmModeChip } from "../../features/tbm/useTbmModeChip";
+import type { PriorInformation } from "../../features/tbm/types";
+import type { StructuredChecklist } from "../../services/sessionModel";
+import { TbmProgressDots } from "../../features/tbm/TbmProgressDots";
 
 interface VoiceTopBarProps {
   sessionActive: boolean;
@@ -43,6 +46,12 @@ interface VoiceTopBarProps {
   priorTotal?: number;
   checklistCompleted?: number;
   checklistTotal?: number;
+  /** Phase 0.6 Wave 7 — 8필드 dot grid 용 raw 데이터. priorInfo + structured. */
+  priorInfo?: PriorInformation;
+  structured?: StructuredChecklist;
+  /** Phase 0.6 Wave 7 — pause 칩 인라인 액션. VoiceShell 에서 LLM 에게 user msg push. */
+  onTbmModeResume?: () => void;
+  onTbmModeCancel?: () => void;
 }
 
 export function VoiceTopBar({
@@ -60,10 +69,19 @@ export function VoiceTopBar({
   rightSlot,
   onLeaveToHome,
   transport = "voice",
-  priorFilled,
-  priorTotal,
-  checklistCompleted,
-  checklistTotal,
+  // Legacy props — Wave 7에서 8필드 dot grid 로 대체됐지만 외부 호출자 호환을 위해 유지.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  priorFilled: _priorFilled,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  priorTotal: _priorTotal,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  checklistCompleted: _checklistCompleted,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  checklistTotal: _checklistTotal,
+  priorInfo,
+  structured,
+  onTbmModeResume,
+  onTbmModeCancel,
 }: VoiceTopBarProps) {
   const langChipRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
@@ -124,30 +142,23 @@ export function VoiceTopBar({
         />
       </div>
       <div className="flex-1 min-w-0"></div>
-      {/* Phase 0.6 Wave 4 — conversational TBM mode chip. Self-hides when in
-          ehs_chat (default). Persistent across re-renders via module-level state. */}
-      <TbmModeChip />
-      {/* PR-feedback-3 — TBM 모드 + slot/체크 카운트 주입 시 컴팩트 인디케이터.
-          모바일에서는 좁아 숨김(sm 이상에서 노출). 본 칩은 read-only. */}
-      {currentMode === "TBM" &&
-        priorTotal !== undefined &&
-        checklistTotal !== undefined && (
-          <span
-            className="hidden sm:inline-flex shrink-0 items-center gap-1 px-2 py-0.5 rounded-hoban text-[10px] sm:text-[11px] bg-hoban-bg-card text-hoban-ink-soft border border-hoban-border whitespace-nowrap"
-            title="사전정보 슬롯 · 체크리스트 진행"
-            aria-label={`사전정보 ${priorFilled ?? 0} / ${priorTotal} 채움, 체크리스트 ${checklistCompleted ?? 0} / ${checklistTotal} 완료`}
-          >
-            <span className="text-hoban-ink-mute">사전</span>
-            <span className="font-semibold text-hoban-ink">
-              {priorFilled ?? 0}/{priorTotal}
-            </span>
-            <span aria-hidden="true" className="text-hoban-border-strong">·</span>
-            <span className="text-hoban-ink-mute">체크</span>
-            <span className="font-semibold text-hoban-ink">
-              {checklistCompleted ?? 0}/{checklistTotal}
-            </span>
-          </span>
-        )}
+      {/* Phase 0.6 Wave 4+7 — conversational TBM mode chip + 인라인 [재개]/[종료]
+          액션 칩 (pause 상태일 때만). Self-hides when in ehs_chat. */}
+      <TbmModeChip
+        language={currentLanguage}
+        onResume={onTbmModeResume}
+        onCancel={onTbmModeCancel}
+      />
+      {/* Phase 0.6 Wave 7 — 8필드 dot grid. TBM 모드 + 원본 데이터 주입 시.
+          기존 "사전 N/4 · 체크 M/T" 텍스트 인디케이터를 도트 시각화로 대체. */}
+      {currentMode === "TBM" && priorInfo && structured && (
+        <span
+          className="hidden sm:inline-flex shrink-0 items-center px-2 py-0.5 rounded-hoban bg-hoban-bg-card border border-hoban-border whitespace-nowrap"
+          title="사전정보 4 + 8필드 진행도"
+        >
+          <TbmProgressDots priorInfo={priorInfo} structured={structured} />
+        </span>
+      )}
       {transport === "chat" && (
         <span
           className="shrink-0 px-2 py-0.5 rounded-hoban text-[10px] sm:text-xs bg-hoban-bg-card text-hoban-ink-mute border border-hoban-border"

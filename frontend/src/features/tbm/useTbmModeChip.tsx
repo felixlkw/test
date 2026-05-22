@@ -1,17 +1,22 @@
-// Phase 0.6 Wave 4 — persistent TBM mode chip + state tracker.
+// Phase 0.6 Wave 4+7 — persistent TBM mode chip + state tracker.
 //
 // Listens to the same tool-call stream as useWebRTCEvents (via a small
 // pub-sub) and exposes the current conversational mode for the top bar.
 // Distinct from the transient "interruption message" toast — this chip
 // stays until cleared.
+//
+// Wave 7 — i18n via getTbmTransitionStrings + inline [Resume]/[End] action
+// chips when in tbm_paused state.
 
 import { useEffect, useState } from "react";
+import type { SessionLanguage } from "../../services/sessionModel";
+import { getTbmTransitionStrings } from "../../shared/i18n/tbmTransitionMessages";
 
 export type ConversationalTbmMode =
   | "ehs_chat"      // open EHS chat (default)
   | "tbm_entering"  // enter_tbm_mode received, awaiting prior_info collection
   | "tbm_running"   // active TBM
-  | "tbm_paused"   // pause_tbm received, awaiting resume or cancel
+  | "tbm_paused"    // pause_tbm received, awaiting resume or cancel
   | "tbm_finished"; // finalize_tbm complete
 
 export interface TbmModeState {
@@ -46,14 +51,6 @@ export function useTbmMode(): TbmModeState {
   return state;
 }
 
-const MODE_LABEL: Record<ConversationalTbmMode, { label: string; tone: "default" | "primary" | "warning" | "success" }> = {
-  ehs_chat: { label: "EHS 채팅", tone: "default" },
-  tbm_entering: { label: "TBM 준비", tone: "primary" },
-  tbm_running: { label: "TBM 진행 중", tone: "primary" },
-  tbm_paused: { label: "TBM 일시중지", tone: "warning" },
-  tbm_finished: { label: "TBM 완료", tone: "success" },
-};
-
 const TONE_CLASS: Record<"default" | "primary" | "warning" | "success", string> = {
   default: "bg-hoban-bg-card text-hoban-ink-soft border-hoban-border",
   primary: "bg-hoban-primary-soft text-hoban-primary-deep border-hoban-primary/30",
@@ -61,23 +58,77 @@ const TONE_CLASS: Record<"default" | "primary" | "warning" | "success", string> 
   success: "bg-hoban-accent-soft text-hoban-accent-deep border-hoban-accent/30",
 };
 
-export function TbmModeChip(): JSX.Element | null {
+const MODE_TONE: Record<ConversationalTbmMode, "default" | "primary" | "warning" | "success"> = {
+  ehs_chat: "default",
+  tbm_entering: "primary",
+  tbm_running: "primary",
+  tbm_paused: "warning",
+  tbm_finished: "success",
+};
+
+interface TbmModeChipProps {
+  language?: SessionLanguage;
+  /** Wave 7 — pause 상태일 때 인라인 액션 칩의 콜백. 미주입 시 액션 숨김. */
+  onResume?: () => void;
+  onCancel?: () => void;
+}
+
+export function TbmModeChip({
+  language = "korean",
+  onResume,
+  onCancel,
+}: TbmModeChipProps): JSX.Element | null {
   const state = useTbmMode();
   if (state.mode === "ehs_chat") return null; // hide in default chat
-  const cfg = MODE_LABEL[state.mode];
-  const cls = TONE_CLASS[cfg.tone];
+  const strings = getTbmTransitionStrings(language);
+  const label = strings.modeChip[state.mode];
+  const tone = MODE_TONE[state.mode];
+  const cls = TONE_CLASS[tone];
+  const isPaused = state.mode === "tbm_paused";
   return (
-    <div
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-hoban border text-[11px] font-semibold ${cls}`}
-      role="status"
-      aria-live="polite"
-    >
-      <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" aria-hidden="true" />
-      {cfg.label}
-      {state.workTitle && state.mode !== "tbm_paused" && (
-        <span className="opacity-70 font-normal max-w-[120px] truncate" title={state.workTitle}>
-          · {state.workTitle}
-        </span>
+    <div className="inline-flex items-center gap-2">
+      <div
+        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-hoban border text-[11px] font-semibold ${cls}`}
+        role="status"
+        aria-live="polite"
+      >
+        <span
+          className={`w-1.5 h-1.5 rounded-full bg-current opacity-80 ${
+            isPaused ? "" : "animate-pulse"
+          }`}
+          aria-hidden="true"
+        />
+        {label}
+        {state.workTitle && !isPaused && (
+          <span className="opacity-70 font-normal max-w-[120px] truncate" title={state.workTitle}>
+            · {state.workTitle}
+          </span>
+        )}
+      </div>
+      {/* Wave 7 — pause 상태에서 인라인 [재개]/[종료] 액션 칩 (터치 56dp 보장). */}
+      {isPaused && (onResume || onCancel) && (
+        <div className="inline-flex items-center gap-1">
+          {onResume && (
+            <button
+              type="button"
+              onClick={onResume}
+              className="px-2.5 py-1 text-[11px] font-semibold rounded-hoban bg-hoban-primary text-white hover:bg-hoban-primary-deep transition active:scale-95"
+              aria-label={strings.action.resume}
+            >
+              ▶ {strings.action.resume}
+            </button>
+          )}
+          {onCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="px-2.5 py-1 text-[11px] font-semibold rounded-hoban bg-white border border-hoban-border-strong text-hoban-ink-soft hover:border-hoban-accent-deep hover:text-hoban-accent-deep transition active:scale-95"
+              aria-label={strings.action.cancel}
+            >
+              ✕ {strings.action.cancel}
+            </button>
+          )}
+        </div>
       )}
     </div>
   );

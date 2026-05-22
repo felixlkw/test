@@ -37,6 +37,7 @@ import {
   buildBroadcastReportFilename,
 } from "../../services/pdfGenerate";
 import { triggerDownload } from "../../services/sessionDownload";
+import { recordToolCall } from "../../features/tbm/toolTelemetry";
 import { generateThumbnail, resizeImage } from "../../services/imageProcessing";
 import { analyzeImage, VisionAnalyzeError } from "../../services/visionAnalyze";
 import type {
@@ -326,6 +327,8 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     setPermits,
     setCitations,
     showInterruptionMessage: interruption.showInterruptionMessage,
+    // Phase 0.6 Wave 7 — i18n toast.
+    currentLanguage,
     // Phase 0.6 Wave 5 — LLM 의 enter_tbm_mode / cancel_tbm 시 AppMode 동기화.
     setCurrentMode,
     // Phase 0.6 Wave 6 — LLM 의 모드 전환 도구 호출 시 webrtc 세션 재발급.
@@ -372,10 +375,16 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
         (it) => !it.completed && !it.skipped,
       ).length;
       const missingSlots = ss.missing.length;
-      // 모두 완료 → 기존 흐름으로(intercept=false). 일부 미완 → confirm 모달.
+      // Wave 7 — finalize gate telemetry (KPI K5: gate 통과율 ≥95%).
       if (incompleteCount === 0 && missingSlots === 0) {
+        recordToolCall({ name: "finalize_tbm:gate_passed", status: "success" });
         return false;
       }
+      recordToolCall({
+        name: "finalize_tbm:gate_blocked",
+        status: "error",
+        errorMessage: `missing=${missingSlots}, incomplete_items=${incompleteCount}`,
+      });
       pendingFinalSummaryRef.current = summary;
       setFinalizeConfirmOpen(true);
       return true; // intercepted
@@ -1649,6 +1658,21 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
         priorTotal={slotState.total}
         checklistCompleted={completedCount}
         checklistTotal={checklist.length}
+        // Phase 0.6 Wave 7 — 8필드 dot grid 원본.
+        priorInfo={priorInfo}
+        structured={structured}
+        // Phase 0.6 Wave 7 — pause 모드 인라인 [재개]/[종료] 액션. 사용자 입력으로
+        // LLM 에게 push 해서 다음 발화가 resume_tbm / cancel_tbm 호출하도록 유도.
+        onTbmModeResume={() => {
+          setMessages((prev) => [...prev, { role: "user", text: "재개" }]);
+          sessionRef.current?.sendTextMessage("재개", "user");
+          // 모드 칩은 LLM 의 resume_tbm 도구 호출이 와야 toggling — 그때까지는
+          // pause 상태 유지. UI 응답성 위해 즉시 running 으로 토글하지 않음.
+        }}
+        onTbmModeCancel={() => {
+          setMessages((prev) => [...prev, { role: "user", text: "TBM 종료" }]);
+          sessionRef.current?.sendTextMessage("TBM 종료", "user");
+        }}
         onClickStart={() => session.startSession(null, null, { preparedSummary })}
         onClickStop={session.stopSession}
         onLeaveToHome={session.stopSessionPreserveState}

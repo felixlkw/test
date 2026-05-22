@@ -233,6 +233,15 @@ export default function HomeScreen() {
           <CTAButton onClick={() => void startNewEhs()} variant="outline" block>
             EHS 안전 질문하기
           </CTAButton>
+          {/* Phase 0.6 Wave 7 — EHS 채팅이 conversational TBM 진입점임을 명시.
+              사용자에게 새 워크플로우 (대화로 TBM 시작) 노출. */}
+          <p className="text-[11px] text-hoban-ink-mute leading-relaxed text-center mt-1">
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-hoban bg-hoban-primary-soft text-hoban-primary-deep font-semibold text-[10px] uppercase tracking-wider">
+              새 기능
+            </span>{" "}
+            EHS 채팅에서 <span className="text-hoban-ink">"TBM 시작"</span>이라고 말하면
+            대화로 바로 TBM 진행이 가능합니다.
+          </p>
         </div>
       </section>
 
