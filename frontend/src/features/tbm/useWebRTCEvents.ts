@@ -46,6 +46,12 @@ export interface UseWebRTCEventsArgs {
   // 호출하면 VoiceShell 의 AppMode 도 함께 토글되어야 한다. 옵셔널이라 미주입
   // 시 mode chip 만 업데이트 (legacy 동작 호환).
   setCurrentMode?: Dispatch<SetStateAction<AppMode>>;
+  // Phase 0.6 Wave 6 — LLM 이 enter_tbm_mode / cancel_tbm 을 호출하면 단순한
+  // setCurrentMode 가 아니라 세션 재시작이 필요하다 (LLM tool set 은 시작 시점
+  // 고정이므로 새 tool set 으로 webrtc 재발급해야 collect_prior_information 등
+  // TBM 도구를 LLM 이 호출 가능). VoiceShell 이 stopSession → switchMode →
+  // startSession 시퀀스를 처리하도록 콜백 위임. 미주입 시 setCurrentMode 폴백.
+  onLLMRequestedModeSwitch?: (newMode: AppMode, ctx: { workTitle?: string; reason?: string }) => void;
   // Phase 2.x PR-4 — LLM이 종료 게이트를 인지했음을 알리는 신호. VoiceShell에서
   // setBroadcastPulsing(true)로 펄스 트리거. 옵셔널 — 미전달 시 no-op.
   // 사용자 통제권 보존 (felix Q5=A) — 자동 모달은 호출하지 않음.
@@ -88,6 +94,7 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
     setCitations,
     showInterruptionMessage,
     setCurrentMode,
+    onLLMRequestedModeSwitch,
     onBroadcastReady,
     onFinalizeRequested,
   } = args;
@@ -448,12 +455,18 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
           const domain = (args.domain as string) || "unspecified";
           const workTypeId = (args.work_type_id as string) || "";
           console.log("[tbm-mode] enter_tbm_mode:", { workTitle, domain, workTypeId });
-          showInterruptionMessage(`TBM 모드 진입: ${workTitle}`);
+          showInterruptionMessage(`TBM 모드 진입: ${workTitle} — 세션 전환 중`);
           recordToolCall({ name: "enter_tbm_mode", status: "success" });
           setTbmMode({ mode: "tbm_running", workTitle });
-          // Wave 5 — AppMode 도 EHS → TBM 으로 동기화. VoiceShell 의 모든 TBM
-          // UI (체크리스트, prior_info 패널, 8필드 패널) 가 즉시 활성화된다.
-          setCurrentMode?.("TBM");
+          // Wave 6 — LLM tool set 은 세션 시작 시점 고정이므로, EHS → TBM 전환
+          // 시 webrtc 세션을 재발급해야 collect_prior_information / create_dynamic_checklist
+          // / update_session_field / finalize_tbm 등 TBM 도구가 LLM 에 노출된다.
+          // VoiceShell 콜백이 stopSession → switchMode → startSession 시퀀스 처리.
+          if (onLLMRequestedModeSwitch) {
+            onLLMRequestedModeSwitch("TBM", { workTitle });
+          } else {
+            setCurrentMode?.("TBM");
+          }
           sessionRef.current?.sendToolResult(callId, {
             result: "success",
             note: "Frontend received mode entry signal. Continue collecting prior_info.",
@@ -492,11 +505,15 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
         case "cancel_tbm": {
           const reason = (args.reason as string) || "";
           console.log("[tbm-mode] cancel_tbm:", { reason });
-          showInterruptionMessage(`TBM 취소${reason ? ` — ${reason}` : ""}`);
+          showInterruptionMessage(`TBM 취소${reason ? ` — ${reason}` : ""} — 세션 전환 중`);
           recordToolCall({ name: "cancel_tbm", status: "success" });
           setTbmMode({ mode: "ehs_chat", workTitle: undefined, checkpointNote: undefined, pauseReason: undefined });
-          // Wave 5 — TBM cancel 시 AppMode 도 EHS 로 복귀해서 채팅 친화 톤으로 전환.
-          setCurrentMode?.("EHS");
+          // Wave 6 — 세션 재발급(EHS tool set 으로)으로 채팅 친화 톤 + 도구 축소.
+          if (onLLMRequestedModeSwitch) {
+            onLLMRequestedModeSwitch("EHS", { reason });
+          } else {
+            setCurrentMode?.("EHS");
+          }
           sessionRef.current?.sendToolResult(callId, {
             result: "success",
             note: "TBM cancelled. Switch back to open EHS chat tone.",
@@ -523,6 +540,7 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
       setCitations,
       showInterruptionMessage,
       setCurrentMode,
+      onLLMRequestedModeSwitch,
       onBroadcastReady,
       onFinalizeRequested,
     ],

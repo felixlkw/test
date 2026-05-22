@@ -1530,14 +1530,22 @@ _documents: List[Dict[str, Any]] | None = None
 def _get_documents() -> List[Dict[str, Any]]:
     global _documents
     if _documents is None:
-        data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'guideline-summary.json')
+        data_dir = os.path.join(os.path.dirname(__file__), '..', 'data')
+        data_path = os.path.join(data_dir, 'guideline-summary.json')
         logger.info(f"Loading guideline data from {data_path}...")
         with open(data_path, 'r', encoding='utf-8') as f:
             _documents = json.load(f)
-            for doc in _documents:
-                keywords = doc.get('keywords', [])
-                keywords = [kw.lower().replace(' ', '').strip() for kw in keywords]
-                doc['keywords'] = keywords
+        # Tenant-specific supplement: 호반/대한전선 PoC 추천 질의 1:1 대응 문서.
+        # 기존 KOSHA 풀이 커버 못 하는 호반써밋·동조괴·HV시험 등 특화 토픽을 보완.
+        hoban_path = os.path.join(data_dir, 'guideline-summary-hoban.json')
+        if os.path.exists(hoban_path):
+            with open(hoban_path, 'r', encoding='utf-8') as f:
+                _documents.extend(json.load(f))
+            logger.info(f"Loaded tenant supplement: {hoban_path}")
+        for doc in _documents:
+            keywords = doc.get('keywords', [])
+            keywords = [kw.lower().replace(' ', '').strip() for kw in keywords]
+            doc['keywords'] = keywords
         logger.info(f"Loaded {len(_documents)} guideline documents.")
     return _documents
 

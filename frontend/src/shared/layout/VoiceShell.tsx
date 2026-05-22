@@ -298,6 +298,19 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     checklistRef.current = checklist;
   }, [checklist]);
 
+  // Phase 0.6 Wave 6 — useWebRTCEvents 의 onLLMRequestedModeSwitch 콜백이
+  // voiceSession.stopSessionPreserveState / switchMode / startSession 을 호출
+  // 해야 하는데, voiceSession 선언은 events 뒤에 있어 클로저 순환 문제 발생.
+  // ref 로 우회: 매 렌더 후 voiceSessionRef.current 에 최신 voiceSession 할당.
+  const voiceSessionRef = useRef<{
+    stopSessionPreserveState: () => void;
+    switchMode: (newMode: AppMode) => void;
+    startSession: (
+      initialMessage: string | null,
+      initialMessageRole: "user" | "assistant" | "system" | null,
+    ) => Promise<void>;
+  } | null>(null);
+
   const events = useWebRTCEvents({
     sessionRef,
     currentMode,
@@ -315,6 +328,37 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     showInterruptionMessage: interruption.showInterruptionMessage,
     // Phase 0.6 Wave 5 — LLM 의 enter_tbm_mode / cancel_tbm 시 AppMode 동기화.
     setCurrentMode,
+    // Phase 0.6 Wave 6 — LLM 의 모드 전환 도구 호출 시 webrtc 세션 재발급.
+    // stopSessionPreserveState → switchMode (state reset) → startSession (new tool set).
+    // 짧은 audio 끊김 (~1-2s) 발생하지만 LLM 이 TBM 도구 (collect_prior_information,
+    // create_dynamic_checklist, update_session_field, finalize_tbm 등) 전체를
+    // 보유하게 되어 진짜 TBM 워크플로우가 작동한다.
+    onLLMRequestedModeSwitch: useCallback(
+      (newMode: AppMode, ctx: { workTitle?: string; reason?: string }) => {
+        console.log("[mode-switch] LLM requested →", newMode, ctx);
+        // 1) 현재 세션 정지 (state 보존 — 새 mode 에 hydrate 됨)
+        voiceSessionRef.current?.stopSessionPreserveState();
+        // 2) switchMode — currentMode 변경 + 누적 상태 리셋 (messages, checklist 등).
+        //    이미 EHS 의 채팅 컨텍스트는 LLM 메모리에서만 의미가 있고, TBM 진행에는
+        //    오히려 깔끔하게 시작하는 것이 8필드 채우기에 유리하다.
+        voiceSessionRef.current?.switchMode(newMode);
+        // 3) work_title 을 work_type_label 에 mirror (TBM 첫 발화 시 LLM 이 인지).
+        if (newMode === "TBM" && ctx.workTitle) {
+          setCurrentWorkTypeLabel(ctx.workTitle);
+        }
+        if (newMode === "EHS") {
+          // cancel_tbm 시 work label 도 지움 — 다음 세션은 일반 EHS 채팅.
+          setCurrentWorkTypeLabel(undefined);
+          setCurrentWorkTypeId(undefined);
+        }
+        // 4) 짧은 지연 후 자동 재시작. 사용자가 직접 시작 버튼 다시 누르는 대신
+        //    자연스러운 흐름 유지. 600ms 지연은 audio 디바이스 release 보장.
+        window.setTimeout(() => {
+          voiceSessionRef.current?.startSession(null, null);
+        }, 600);
+      },
+      [],
+    ),
     onBroadcastReady: useCallback(() => {
       setBroadcastPulsing(true);
       // 30초 후 자동 해제 — 사용자 통제권 보존(felix Q5=A).
@@ -373,6 +417,10 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
       [],
     ),
   });
+
+  // Phase 0.6 Wave 6 — voiceSession 을 ref 에 매 렌더 동기화. useWebRTCEvents 의
+  // onLLMRequestedModeSwitch 콜백이 클로저로 voiceSessionRef.current 를 읽는다.
+  voiceSessionRef.current = voiceSession;
 
   // ── progress ────────────────────────────────────────
   const { completedCount, progressPercent } = useChecklistProgress(checklist);
