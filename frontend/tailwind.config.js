@@ -1,9 +1,11 @@
 /** @type {import('tailwindcss').Config} */
-// Hoban Group SafeMate — design tokens
-// Primary: Hoban Verdium Deep Forest (#00635B) — WCAG AAA ~6.8:1 on white,
-// safe from KOSHA warning-color collision.
-// Secondary: Hoban Orange (#EE7500) — brand signature, used as accent only.
-// Tertiary: Hoban Dark Gray (#575553) — body text emphasis.
+// Hoban Group SafeMate — design tokens (hybrid)
+// Primary brand surface: Hoban Orange (#EE7500) — official group CI accent
+// (headers, badges, hovers, focus, branded highlights).
+// Action buttons use ink (`hoban-ink` #1A1A1A) for AAA readability; brand
+// orange would clash with KOSHA warning color when used on large action
+// surfaces.
+// Verdium Deep Forest is retained as `hoban-success` semantic only.
 module.exports = {
   content: [
     './index.html',
@@ -13,16 +15,18 @@ module.exports = {
     extend: {
       colors: {
         hoban: {
-          // Brand core
-          primary: '#00635B',
-          'primary-deep': '#00463F',
-          'primary-soft': '#E3F0EE',
-          'primary-wash': '#F4FAF9',
-          accent: '#EE7500',
-          'accent-deep': '#C95F00',
-          'accent-soft': '#FEEFE0',
+          // Brand surface (group CI orange)
+          primary: '#EE7500',
+          'primary-deep': '#C95F00',
+          'primary-soft': '#FEEFE0',
+          'primary-wash': '#FFF8F0',
 
-          // Text
+          // Verdium green retained as success/eco accent
+          accent: '#00635B',
+          'accent-deep': '#00463F',
+          'accent-soft': '#E3F0EE',
+
+          // Text — primary action buttons use these (AAA on white)
           ink: '#1A1A1A',
           'ink-soft': '#575553',
           'ink-mute': '#89898A',
@@ -30,11 +34,11 @@ module.exports = {
           // Surfaces
           bg: '#FFFFFF',
           'bg-soft': '#FAFAFA',
-          'bg-card': '#F5F7F6',
+          'bg-card': '#F5F5F5',
 
           // Borders
-          border: '#E2E5E4',
-          'border-strong': '#C2C7C5',
+          border: '#E5E5E5',
+          'border-strong': '#C8C8C8',
 
           // Semantic (KOSHA-aligned, AAA on white)
           success: '#1B7F3A',
@@ -52,10 +56,10 @@ module.exports = {
         'hoban-lg': '12px',
       },
       backgroundImage: {
-        'hoban-hero': 'linear-gradient(180deg, #FFFFFF 0%, #F4FAF9 100%)',
+        'hoban-hero': 'linear-gradient(180deg, #FFFFFF 0%, #FFF8F0 100%)',
       },
       boxShadow: {
-        'hoban-card': '0 1px 2px rgba(0,99,91,0.06), 0 1px 1px rgba(0,99,91,0.04)',
+        'hoban-card': '0 1px 2px rgba(26,26,26,0.06), 0 1px 1px rgba(26,26,26,0.04)',
       },
     },
   },

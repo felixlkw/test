@@ -39,9 +39,9 @@ import { pickContent } from "./catalogI18n";
 import { tenant as tenantConfig } from "../shared/tenant/config";
 
 // PwC 토큰 (tailwind.config.js 1:1 매핑).
-// Hoban brand palette in pdf-lib rgb. Constant names retained for back-compat
-// with downstream callers; values map to Hoban Verdium Deep Forest + dark grays.
-const PWC_ORANGE = rgb(0x00 / 255, 0x63 / 255, 0x5b / 255); // Hoban primary
+// Hoban brand palette in pdf-lib rgb (hybrid). Constant names retained for
+// back-compat with downstream callers; values map to Hoban Orange + dark grays.
+const PWC_ORANGE = rgb(0xee / 255, 0x75 / 255, 0x00 / 255); // Hoban Orange (CI)
 const PWC_INK = rgb(0x1a / 255, 0x1a / 255, 0x1a / 255);
 const PWC_INK_SOFT = rgb(0x57 / 255, 0x55 / 255, 0x53 / 255); // Hoban Dark Gray
 const PWC_INK_MUTE = rgb(0x89 / 255, 0x89 / 255, 0x8a / 255); // Hoban Gray

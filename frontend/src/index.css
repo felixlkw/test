@@ -32,7 +32,7 @@ button {
 
 button:focus,
 button:focus-visible {
-  outline: 2px solid #00635B;
+  outline: 2px solid #EE7500;
   outline-offset: 2px;
 }
 
@@ -44,9 +44,9 @@ button:focus-visible {
 
 /* Slot 추가 시 0.5s primary 펄스 애니메이션 — ChecklistPanel의 PriorRow filled=true 전환 직후 1회. */
 @keyframes safemate-slot-pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(0, 99, 91, 0.45); }
-  60%  { box-shadow: 0 0 0 8px rgba(0, 99, 91, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(0, 99, 91, 0); }
+  0%   { box-shadow: 0 0 0 0 rgba(238, 117, 0, 0.45); }
+  60%  { box-shadow: 0 0 0 8px rgba(238, 117, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(238, 117, 0, 0); }
 }
 .animate-slot-pulse {
   animation: safemate-slot-pulse 0.5s ease-out 1;
