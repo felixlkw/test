@@ -42,6 +42,10 @@ export interface UseWebRTCEventsArgs {
   setPermits: Dispatch<SetStateAction<PermitRecord[]>>;
   setCitations: Dispatch<SetStateAction<CitationDisplay[]>>;
   showInterruptionMessage: (message: string) => void;
+  // Phase 0.6 Wave 5 — 통합 ChatShell. LLM이 enter_tbm_mode / cancel_tbm 을
+  // 호출하면 VoiceShell 의 AppMode 도 함께 토글되어야 한다. 옵셔널이라 미주입
+  // 시 mode chip 만 업데이트 (legacy 동작 호환).
+  setCurrentMode?: Dispatch<SetStateAction<AppMode>>;
   // Phase 2.x PR-4 — LLM이 종료 게이트를 인지했음을 알리는 신호. VoiceShell에서
   // setBroadcastPulsing(true)로 펄스 트리거. 옵셔널 — 미전달 시 no-op.
   // 사용자 통제권 보존 (felix Q5=A) — 자동 모달은 호출하지 않음.
@@ -83,6 +87,7 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
     setPermits,
     setCitations,
     showInterruptionMessage,
+    setCurrentMode,
     onBroadcastReady,
     onFinalizeRequested,
   } = args;
@@ -445,7 +450,10 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
           console.log("[tbm-mode] enter_tbm_mode:", { workTitle, domain, workTypeId });
           showInterruptionMessage(`TBM 모드 진입: ${workTitle}`);
           recordToolCall({ name: "enter_tbm_mode", status: "success" });
-          setTbmMode({ mode: "tbm_entering", workTitle });
+          setTbmMode({ mode: "tbm_running", workTitle });
+          // Wave 5 — AppMode 도 EHS → TBM 으로 동기화. VoiceShell 의 모든 TBM
+          // UI (체크리스트, prior_info 패널, 8필드 패널) 가 즉시 활성화된다.
+          setCurrentMode?.("TBM");
           sessionRef.current?.sendToolResult(callId, {
             result: "success",
             note: "Frontend received mode entry signal. Continue collecting prior_info.",
@@ -487,6 +495,8 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
           showInterruptionMessage(`TBM 취소${reason ? ` — ${reason}` : ""}`);
           recordToolCall({ name: "cancel_tbm", status: "success" });
           setTbmMode({ mode: "ehs_chat", workTitle: undefined, checkpointNote: undefined, pauseReason: undefined });
+          // Wave 5 — TBM cancel 시 AppMode 도 EHS 로 복귀해서 채팅 친화 톤으로 전환.
+          setCurrentMode?.("EHS");
           sessionRef.current?.sendToolResult(callId, {
             result: "success",
             note: "TBM cancelled. Switch back to open EHS chat tone.",
@@ -512,6 +522,7 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
       setPermits,
       setCitations,
       showInterruptionMessage,
+      setCurrentMode,
       onBroadcastReady,
       onFinalizeRequested,
     ],

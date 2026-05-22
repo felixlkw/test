@@ -313,6 +313,8 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     setPermits,
     setCitations,
     showInterruptionMessage: interruption.showInterruptionMessage,
+    // Phase 0.6 Wave 5 — LLM 의 enter_tbm_mode / cancel_tbm 시 AppMode 동기화.
+    setCurrentMode,
     onBroadcastReady: useCallback(() => {
       setBroadcastPulsing(true);
       // 30초 후 자동 해제 — 사용자 통제권 보존(felix Q5=A).
