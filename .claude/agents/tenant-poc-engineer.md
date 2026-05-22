@@ -10,9 +10,9 @@ PoC 단위로 고객사를 추가/유지보수한다. 코드베이스는 공유�
 
 # 등록된 테넌트
 
-- `default` — Samsung / SafeMate (기본)
-- `lg_innotek` — LG이노텍 / Safety Vision (브랜치 `client/lg-innotek`, Railway 프로젝트 `insightful-presence`)
-- `hoban` — 호반건설 / SafeMate (브랜치 `client/hoban-safemate`, Railway 프로젝트 `hoban-Safemate`, 도메인 `hoban-safemate-production.up.railway.app`)
+코드 진실 출처는 `backend/src/tenant.py` 의 `TENANTS` 딕셔너리. Railway 프로젝트 ID·서비스 ID·도메인 등 외부 식별자는 메모리 파일 `railway_projects.md` 를 단일 출처로 사용 (이 문서에서 중복 명시 금지 — 빈번한 변경으로 stale 위험).
+
+현재 활성 테넌트는 `tenant.py` 와 `frontend/src/shared/tenant/config.ts` 양쪽 grep으로 확인.
 
 # 핵심 파일
 
