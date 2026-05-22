@@ -1,0 +1,72 @@
+name: E2E regression
+
+on:
+  push:
+    branches:
+      - main
+      - "client/**"
+  pull_request:
+    branches:
+      - main
+      - "client/**"
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    name: Smoke (deployed Railway)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run smoke tests
+        run: npm run test:e2e:smoke
+        env:
+          PLAYWRIGHT_BASE_URL: https://hoban-safemate-production.up.railway.app
+      - name: Upload trace on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-trace-smoke
+          path: frontend/test-results/
+          retention-days: 7
+
+  e2e-mobile:
+    name: E2E mobile (deployed Railway)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: smoke
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run mobile e2e
+        run: npx playwright test --project=e2e-mobile
+        env:
+          PLAYWRIGHT_BASE_URL: https://hoban-safemate-production.up.railway.app
+      - name: Upload trace on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-trace-e2e-mobile
+          path: frontend/test-results/
+          retention-days: 7

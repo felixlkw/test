@@ -163,11 +163,11 @@ export default function HomeScreen() {
 
       {/* Hero */}
       <section className="bg-hoban-hero px-6 pt-10 pb-12 relative overflow-hidden">
-        <div className="max-w-xl">
+        <div className="max-w-xl mx-auto text-center break-keep [text-wrap:balance]">
           <h1 className="font-serif-display text-[34px] leading-[1.08] text-hoban-ink">
             현장의 안전을,<br />대화로 정리합니다
           </h1>
-          <p className="mt-3 text-sm text-hoban-ink-soft max-w-sm">
+          <p className="mt-3 text-sm text-hoban-ink-soft">
             작업 전 위험요인을 빠르게 확인하고, 오늘의 TBM을 완성하세요.
           </p>
         </div>

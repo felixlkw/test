@@ -37,6 +37,11 @@ __MACOSX/
 # --- Railway ---
 .railway/
 
+# --- Playwright (E2E) ---
+frontend/test-results/
+frontend/playwright-report/
+frontend/playwright/.cache/
+
 # --- Build-time generated catalog (v0.2.4 PR-feedback-2) ---
 # scripts/sync-catalog.mjs copies backend/data/checklist_catalog/*.json into
 # frontend/src/generated/catalog/ at predev/prebuild time. Backend JSON is the
