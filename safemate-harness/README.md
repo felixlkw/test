@@ -18,10 +18,25 @@ SafeMate(SafeAssist) 멀티-PoC 프로젝트용 전문가 에이전트 하네스
 | Agent (analyst) | `hoban-construction-analyst` | 호반그룹 사업유형 분석 (읽기 전용) |
 | Agent (analyst) | `daehan-cable-analyst` | 대한전선 공장·EPC 분석 (읽기 전용) |
 | Agent (orchestrator) | `safety-mockup-generator` | 분석가+안전전문가 출력을 카탈로그 JSON으로 합성 |
+| Agent (process) | `project-manager` | 다단계 이니셔티브 WBS·시퀀싱·데드라인·리스크 (PM, 위임만) |
+| Agent (process) | `critic` | 산출물 사실관계·다국어·스키마·교차참조·stale 검수 |
 | Skill | `harness` | 요청 유형별 에이전트 라우팅 가이드 |
+| Skill | `realtime-event-debug` | OpenAI Realtime 회귀 디버깅 절차 |
+| Skill | `railway-ops` | Railway CLI 일상 운영 명령 모음 |
+| Skill | `tenant-add` | 새 PoC 테넌트 등록 6단계 체크리스트 |
+| Skill | `i18n-5lang` | ko→en/vi/th/id 번역 절차 + 글자수 가이드 |
+| Skill | `glossary-stt-entry` | STT 부스팅 어휘 작성 가이드 |
+| Skill | `kosha-citation` | 한국 안전법령·KOSHA 인용 표준 형식 |
+| Skill | `risk-assessment-5step` | 산안법 §36 위험성평가 5단계 프레임워크 |
+| Skill | `business-verify` | 외부 기업·자회사 web search 검증 절차 |
+| Skill | `wcag-industrial` | 산업현장 WCAG AAA 접근성 감사 |
+| Skill | `tenant-brand-tokens` | Tailwind 토큰 테넌트별 분리 (런타임 CSS 변수) |
+| Skill | `mockup-schema` | 목업 카탈로그 JSON 스키마·검증·승격 |
+| Skill | `poc-readiness` | PoC 데모 8영역 게이트 점검 |
+| Skill | `factcheck-entities` | 외부 entity 인용 L0~L3 등급 검증 |
 | Command | `/harness` | 하네스 진입점 슬래시 명령 |
 
-총 12 subagent + 1 skill + 1 slash command.
+총 14 subagent + 14 skill(harness 포함) + 1 slash command.
 
 ## 설치 (이 repo의 self-marketplace 사용)
 
@@ -76,4 +91,6 @@ Agent(subagent_type="safety-mockup-generator", prompt="...")
 
 ## 버전
 
-0.1.0 — 초기 릴리즈 (호반·LG이노텍 PoC 대상).
+- **0.3.0** — Critic + Project Manager 에이전트 추가, 13개 절차 skill 세분화 (realtime-event-debug, railway-ops, tenant-add, i18n-5lang, glossary-stt-entry, kosha-citation, risk-assessment-5step, business-verify, wcag-industrial, tenant-brand-tokens, mockup-schema, poc-readiness, factcheck-entities). 호출 원칙 #5·#6 추가 (PM 위임, Critic 검수 권장).
+- 0.2.0 — UI/UX Designer + Web Designer 에이전트 추가.
+- 0.1.0 — 초기 릴리즈 (호반·LG이노텍 PoC 대상, 10 subagent).

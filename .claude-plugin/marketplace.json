@@ -9,8 +9,8 @@
     {
       "name": "safemate-harness",
       "source": "./safemate-harness",
-      "description": "SafeMate PoC 전문가 에이전트 하네스 (12 subagents + /harness 명령)",
-      "version": "0.2.0"
+      "description": "SafeMate PoC 전문가 에이전트 하네스 (14 subagents + 13 절차 skill + /harness 명령)",
+      "version": "0.3.0"
     }
   ]
 }

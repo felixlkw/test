@@ -27,6 +27,8 @@ SafeMate(SafeAssist) PoC 작업용 전문가 에이전트 하네스 진입점.
 - `/harness TBM 화면 사용성 검토해줘` → uiux-designer
 - `/harness 호반 테넌트 색·로고 적용` → web-designer
 - `/harness 새 설정 화면 디자인` → uiux-designer + web-designer 병렬
+- `/harness 호반 데모 D-7 점검` → project-manager
+- `/harness 방금 만든 카탈로그 검수해줘` → critic
 - `/harness` (인자 없음) → 직전 사용자 메시지 컨텍스트로 라우팅 판단, 모호하면 짧게 확인
 
 ## 참고
