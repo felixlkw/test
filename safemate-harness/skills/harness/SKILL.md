@@ -1,6 +1,6 @@
 ---
 name: harness
-description: SafeMate(SafeAssist) 멀티-PoC 프로젝트의 전문가 subagent 하네스를 오케스트레이션. 호반그룹/LG이노텍 등 고객사 PoC 작업 시 음성·TBM·테넌트·다국어 dev 전문가 4명, 안전공학 전문가 3명(일반/건설/전기), 호반그룹 분석가 2명(호반건설/대한전선), 목업 데이터 합성기 1명 총 10개 에이전트를 상황에 맞게 단일/병렬 호출. 사용자가 /harness 또는 "전문가 하네스 써줘" 라고 할 때.
+description: SafeMate(SafeAssist) 멀티-PoC 프로젝트의 전문가 subagent 하네스를 오케스트레이션. 호반그룹/LG이노텍 등 고객사 PoC 작업 시 dev 4명(음성·TBM·테넌트·다국어), 디자인 2명(UI/UX·웹디자인), 안전공학 3명(일반·건설·전기), 호반그룹 분석가 2명(호반건설·대한전선), 목업 합성기 1명 총 12 에이전트를 상황에 맞게 단일/병렬 호출. 사용자가 /harness 또는 "전문가 하네스 써줘" 라고 할 때.
 ---
 
 # Harness — SafeMate 전문가 오케스트레이션
@@ -14,6 +14,10 @@ description: SafeMate(SafeAssist) 멀티-PoC 프로젝트의 전문가 subagent 
 - **tbm-flow-engineer** — TBM 세션 플로우, 체크리스트, IndexedDB
 - **tenant-poc-engineer** — 멀티 테넌트, Railway, 고객사 분리
 - **i18n-content-engineer** — 5개 언어 콘텐츠·glossary
+
+### Design — 디자인 전문가
+- **uiux-designer** — 음성 우선 인터랙션, 산업현장 접근성(장갑·소음·옥외), 정보 구조
+- **web-designer** — Tailwind 토큰·테넌트 브랜드 시스템·로고·반응형·다크 모드
 
 ### Safety — 안전 전문가
 - **industrial-safety-expert** — 산안기준규칙·KOSHA 일반
@@ -35,6 +39,10 @@ description: SafeMate(SafeAssist) 멀티-PoC 프로젝트의 전문가 subagent 
 | "TBM 흐름 / 체크리스트 추가" | tbm-flow-engineer 단독; 카탈로그 변경 시 i18n-content-engineer 병렬 |
 | "새 고객사 PoC 추가" | tenant-poc-engineer 단독 |
 | "다국어 누락 / glossary 보강" | i18n-content-engineer 단독 |
+| "화면 흐름 / 사용성 / 접근성 검토" | uiux-designer 단독 |
+| "디자인 시스템 / 색·타이포·로고 / 테넌트 브랜드" | web-designer 단독 |
+| "새 화면 디자인 (인터랙션 + 비주얼)" | uiux-designer + web-designer 병렬 → 구현은 dev 엔지니어 |
+| "기존 화면 비주얼만 개선" | web-designer 단독 |
 | "건설 안전 베스트프랙티스 질문" | construction-safety-expert + industrial-safety-expert 병렬 |
 | "케이블 제조 안전 질문" | electrical-safety-expert + industrial-safety-expert 병렬 |
 | "해저/지중 케이블 포설 안전" | construction-safety-expert + electrical-safety-expert 병렬 (구조/양중 + 전기 측면 둘 다 필요) |

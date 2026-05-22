@@ -10,6 +10,8 @@ SafeMate(SafeAssist) 멀티-PoC 프로젝트용 전문가 에이전트 하네스
 | Agent (dev) | `tbm-flow-engineer` | TBM 세션 플로우·체크리스트·IndexedDB |
 | Agent (dev) | `tenant-poc-engineer` | 멀티 테넌트·Railway·고객사 분리 |
 | Agent (dev) | `i18n-content-engineer` | 5개 언어 콘텐츠·glossary STT 부스팅 |
+| Agent (design) | `uiux-designer` | 음성 우선 인터랙션·산업현장 접근성·IA (읽기 전용) |
+| Agent (design) | `web-designer` | Tailwind 토큰·테넌트 브랜드·로고·반응형 (편집 가능) |
 | Agent (safety) | `industrial-safety-expert` | 산안기준규칙·KOSHA 일반 (읽기 전용) |
 | Agent (safety) | `construction-safety-expert` | 건설 공종별 안전공학 (읽기 전용) |
 | Agent (safety) | `electrical-safety-expert` | 케이블·HV·아크플래시 (읽기 전용) |
@@ -19,7 +21,7 @@ SafeMate(SafeAssist) 멀티-PoC 프로젝트용 전문가 에이전트 하네스
 | Skill | `harness` | 요청 유형별 에이전트 라우팅 가이드 |
 | Command | `/harness` | 하네스 진입점 슬래시 명령 |
 
-총 10 subagent + 1 skill + 1 slash command.
+총 12 subagent + 1 skill + 1 slash command.
 
 ## 설치 (이 repo의 self-marketplace 사용)
 

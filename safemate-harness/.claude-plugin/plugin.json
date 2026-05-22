@@ -1,7 +1,7 @@
 {
   "name": "safemate-harness",
-  "version": "0.1.0",
-  "description": "SafeMate(SafeAssist) 멀티-PoC 프로젝트용 전문가 에이전트 하네스. 음성·TBM·테넌트·다국어 dev 4명, 산업안전·건설·전기 안전공학 3명, 호반그룹/대한전선 사업유형 분석가 2명, 안전 케이스 목업 데이터 합성기 1명 (총 10 subagents) + /harness 라우팅 슬래시 명령.",
+  "version": "0.2.0",
+  "description": "SafeMate(SafeAssist) 멀티-PoC 프로젝트용 전문가 에이전트 하네스. dev 4명(음성·TBM·테넌트·다국어), 디자인 2명(UI/UX·웹디자인), 안전공학 3명(일반·건설·전기), 호반그룹/대한전선 사업유형 분석가 2명, 안전 케이스 목업 데이터 합성기 1명 (총 12 subagents) + /harness 라우팅 슬래시 명령.",
   "author": {
     "name": "felixlkw",
     "email": "felixlkw0201@gmail.com"

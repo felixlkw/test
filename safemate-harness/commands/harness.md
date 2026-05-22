@@ -24,6 +24,9 @@ SafeMate(SafeAssist) PoC 작업용 전문가 에이전트 하네스 진입점.
 - `/harness 대한전선 동조괴 공정에 어떤 위험이 있어?` → electrical-safety-expert + daehan-cable-analyst 병렬
 - `/harness 새 테넌트 추가하고 싶어` → tenant-poc-engineer
 - `/harness 그리팅이 영어로 안 나와` → realtime-voice-engineer
+- `/harness TBM 화면 사용성 검토해줘` → uiux-designer
+- `/harness 호반 테넌트 색·로고 적용` → web-designer
+- `/harness 새 설정 화면 디자인` → uiux-designer + web-designer 병렬
 - `/harness` (인자 없음) → 직전 사용자 메시지 컨텍스트로 라우팅 판단, 모호하면 짧게 확인
 
 ## 참고
