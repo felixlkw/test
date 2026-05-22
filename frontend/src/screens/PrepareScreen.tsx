@@ -51,6 +51,17 @@ import { IconRefresh } from "../components/Icon";
 import { getPrepareNonKoFallbackMicrocopy } from "../shared/i18n/cueMessages";
 import { pickLabel } from "../services/catalogI18n";
 import { isCatalogForced } from "../shared/tenant/config";
+import { getConfirmStrings } from "../shared/i18n/confirmMessages";
+
+function ManufacturingForcedNotice({ language }: { language: SessionLanguage }) {
+  const s = getConfirmStrings(language).manufacturingForced;
+  return (
+    <div className="mt-4 pt-4 border-t border-hoban-border">
+      <p className="text-[11px] text-hoban-ink-soft font-semibold mb-1">{s.title}</p>
+      <p className="text-[11px] text-hoban-ink-mute italic leading-relaxed">{s.body}</p>
+    </div>
+  );
+}
 
 // 자동 재추천은 도메인/작업유형 변경 시에만 트리거. 컨텍스트 폼 변경은
 // 자동 fetch에서 분리(2026-05-04) — felix lock c8 §12-#8(5/60s rate limit)이
@@ -702,12 +713,7 @@ export default function PrepareScreen() {
               )}
             </div>
           ) : (
-            <div className="mt-4 pt-4 border-t border-hoban-border">
-              <p className="text-[11px] text-hoban-ink-mute italic">
-                이 도메인은 정형 SOP 의존성이 높아 카탈로그 선택만 허용됩니다.
-                카탈로그에 없는 작업이 필요하면 안전관리팀에 work_type 추가를 요청하세요.
-              </p>
-            </div>
+            <ManufacturingForcedNotice language={language} />
           )}
         </section>
 

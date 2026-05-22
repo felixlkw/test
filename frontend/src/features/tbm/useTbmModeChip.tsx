@@ -66,6 +66,16 @@ const MODE_TONE: Record<ConversationalTbmMode, "default" | "primary" | "warning"
   tbm_finished: "success",
 };
 
+// Wave 10 — entering 과 running 시각 차별화 (Critic P2). entering 은 약간 반투명
+// 처리해서 "준비 중" 임을 직관 노출. running 은 풀톤.
+const MODE_OPACITY: Record<ConversationalTbmMode, string> = {
+  ehs_chat: "",
+  tbm_entering: "opacity-75",
+  tbm_running: "",
+  tbm_paused: "",
+  tbm_finished: "",
+};
+
 interface TbmModeChipProps {
   language?: SessionLanguage;
   /** Wave 7 — pause 상태일 때 인라인 액션 칩의 콜백. 미주입 시 액션 숨김. */
@@ -85,10 +95,11 @@ export function TbmModeChip({
   const tone = MODE_TONE[state.mode];
   const cls = TONE_CLASS[tone];
   const isPaused = state.mode === "tbm_paused";
+  const dim = MODE_OPACITY[state.mode];
   return (
     <div className="inline-flex items-center gap-2">
       <div
-        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-hoban border text-[11px] font-semibold ${cls}`}
+        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-hoban border text-[11px] font-semibold ${cls} ${dim}`}
         role="status"
         aria-live="polite"
       >
@@ -99,8 +110,12 @@ export function TbmModeChip({
           aria-hidden="true"
         />
         {label}
+        {/* Wave 10 — workTitle truncate 폭 확대 (UIUX P1). 모바일 80px, sm+ 200px. */}
         {state.workTitle && !isPaused && (
-          <span className="opacity-70 font-normal max-w-[120px] truncate" title={state.workTitle}>
+          <span
+            className="opacity-70 font-normal max-w-[80px] sm:max-w-[200px] truncate"
+            title={state.workTitle}
+          >
             · {state.workTitle}
           </span>
         )}

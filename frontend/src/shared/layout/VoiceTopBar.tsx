@@ -152,24 +152,24 @@ export function VoiceTopBar({
         onResume={onTbmModeResume}
         onCancel={onTbmModeCancel}
       />
-      {/* Phase 0.6 Wave 9 — TBM 모드 상시 'EHS 채팅으로 돌아가기' 버튼.
-          음성으로 "TBM 종료" 말하기 어려울 때 (소음·다국어) 터치 fallback. */}
+      {/* Phase 0.6 Wave 9+10 — TBM 모드 상시 'EHS 채팅으로 돌아가기' 버튼.
+          Wave 10: 모바일에서도 노출 (UIUX P0). 모바일은 아이콘만, sm+에서 텍스트도. */}
       {currentMode === "TBM" && onBackToEhs && (
         <button
           type="button"
           onClick={onBackToEhs}
-          className="hidden sm:inline-flex shrink-0 items-center gap-1 px-2 py-0.5 rounded-hoban bg-white border border-hoban-border-strong text-[10px] text-hoban-ink-soft hover:border-hoban-primary hover:text-hoban-primary transition active:scale-95"
+          className="inline-flex shrink-0 items-center gap-1 px-2 py-1 rounded-hoban bg-white border border-hoban-border-strong text-[11px] text-hoban-ink-soft hover:border-hoban-primary hover:text-hoban-primary transition active:scale-95"
           aria-label="EHS 채팅으로 돌아가기 — TBM 종료"
           title="TBM 종료하고 EHS 채팅으로 돌아갑니다"
         >
-          ← EHS 채팅
+          <span aria-hidden="true">←</span>
+          <span className="hidden sm:inline">EHS 채팅</span>
         </button>
       )}
-      {/* Phase 0.6 Wave 7 — 8필드 dot grid. TBM 모드 + 원본 데이터 주입 시.
-          기존 "사전 N/4 · 체크 M/T" 텍스트 인디케이터를 도트 시각화로 대체. */}
+      {/* Phase 0.6 Wave 7+10 — 8필드 dot grid. Wave 10: 모바일에서도 노출 (UIUX P0). */}
       {currentMode === "TBM" && priorInfo && structured && (
         <span
-          className="hidden sm:inline-flex shrink-0 items-center px-2 py-0.5 rounded-hoban bg-hoban-bg-card border border-hoban-border whitespace-nowrap"
+          className="inline-flex shrink-0 items-center px-2 py-0.5 rounded-hoban bg-hoban-bg-card border border-hoban-border whitespace-nowrap"
           title="사전정보 4 + 8필드 진행도"
         >
           <TbmProgressDots priorInfo={priorInfo} structured={structured} />

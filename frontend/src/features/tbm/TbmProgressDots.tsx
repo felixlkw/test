@@ -68,7 +68,9 @@ export function TbmProgressDots({
       role="status"
       aria-label={`사전정보 ${priorCount}/4, 8필드 ${structuredCount}/8`}
     >
-      <span className="font-medium">사전</span>
+      {/* Wave 10 — 모바일은 라벨 숨기고 도트만, sm+ 에서 라벨 노출 */}
+      <span className="hidden sm:inline font-medium">사전</span>
+      <span className="sm:hidden font-bold" aria-hidden="true">{priorCount}</span>
       <div className={`flex items-center ${gap}`}>
         {priorFilled.map((on, i) => (
           <span
@@ -81,7 +83,8 @@ export function TbmProgressDots({
         ))}
       </div>
       <span className="text-hoban-border-strong px-0.5" aria-hidden="true">·</span>
-      <span className="font-medium">기록</span>
+      <span className="hidden sm:inline font-medium">기록</span>
+      <span className="sm:hidden font-bold" aria-hidden="true">{structuredCount}</span>
       <div className={`flex items-center ${gap}`}>
         {structuredFilled.map((on, i) => (
           <span

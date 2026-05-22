@@ -38,6 +38,10 @@ import {
 } from "../../services/pdfGenerate";
 import { triggerDownload } from "../../services/sessionDownload";
 import { recordToolCall } from "../../features/tbm/toolTelemetry";
+import { ConfirmModal } from "../portal/ConfirmModal";
+import { TransitionOverlay } from "../portal/TransitionOverlay";
+import { getConfirmStrings } from "../i18n/confirmMessages";
+import { getTbmTransitionStrings } from "../i18n/tbmTransitionMessages";
 import { generateThumbnail, resizeImage } from "../../services/imageProcessing";
 import { analyzeImage, VisionAnalyzeError } from "../../services/visionAnalyze";
 import type {
@@ -212,6 +216,11 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     }
   }, []);
 
+  // Phase 0.6 Wave 10 — Confirm modal + transition overlay state.
+  // window.confirm 대체 + 모드 전환 시 transition feedback + race 차단.
+  const [backToEhsConfirm, setBackToEhsConfirm] = useState(false);
+  const [transitionMessage, setTransitionMessage] = useState<string | null>(null);
+
   // ── refs ──────────────────────────────────────────────
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const sessionRef = useRef<WebRTCSession | null>(null);
@@ -331,23 +340,19 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     currentLanguage,
     // Phase 0.6 Wave 5 — LLM 의 enter_tbm_mode / cancel_tbm 시 AppMode 동기화.
     setCurrentMode,
-    // Phase 0.6 Wave 8 — LLM 의 모드 전환 도구 호출 시 진짜 TBM 화면으로 자동
-    // 라우팅. URL /ehs/:id → /tbm/:id/run 으로 navigate 하면 VoiceShell 이 re-mount
-    // 되면서 TBM 레이아웃 (체크리스트 패널·8필드 패널 등) 으로 전환된다. 새 mount
-    // 의 useSessionPersistence 가 IndexedDB hydrate → 같은 세션 ID 로 작업 이어짐.
-    // 이전 wave 의 stopSession → switchMode → startSession 시퀀스는 route mount
-    // 가 자동으로 처리하므로 명시 호출 불필요.
+    // Phase 0.6 Wave 8+10 — LLM 의 모드 전환 도구 호출 시 진짜 TBM 화면으로 자동
+    // 라우팅 + Wave 10: transition overlay (race 차단 + 시각 신호).
     onLLMRequestedModeSwitch: useCallback(
       (newMode: AppMode, ctx: { workTitle?: string; reason?: string }) => {
         console.log("[mode-switch] LLM requested →", newMode, ctx);
         if (!sessionId) {
-          // sessionId 없는 fallback — 그냥 mode 만 토글.
           setCurrentMode(newMode);
           return;
         }
-        // 현재 세션 정지 (state 보존). route mount 가 새 세션 시작.
+        // Wave 10 — 라우팅 동안 입력 차단 + 시각 피드백 (Critic P0 race 해소).
+        const s = getTbmTransitionStrings(currentLanguage);
+        setTransitionMessage(s.toast.sessionSwitching);
         voiceSessionRef.current?.stopSessionPreserveState();
-        // work_title → work_type_label mirror.
         if (newMode === "TBM" && ctx.workTitle) {
           setCurrentWorkTypeLabel(ctx.workTitle);
         }
@@ -355,13 +360,14 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
           setCurrentWorkTypeLabel(undefined);
           setCurrentWorkTypeId(undefined);
         }
-        // 라우팅 — TBM 전환 시 /tbm/:id/run (체크리스트 패널 등장),
-        // EHS 전환 시 /ehs/:id (open chat 레이아웃).
         const target = newMode === "TBM" ? `/tbm/${sessionId}/run` : `/ehs/${sessionId}`;
-        // setTimeout 으로 stop 이 비동기 정리 완료된 뒤 navigate — race 회피.
-        window.setTimeout(() => navigate(target), 400);
+        window.setTimeout(() => {
+          navigate(target);
+          // overlay 는 새 route mount 후 자동 cleanup (state reset).
+          window.setTimeout(() => setTransitionMessage(null), 200);
+        }, 400);
       },
-      [sessionId, navigate, setCurrentMode],
+      [sessionId, navigate, setCurrentMode, currentLanguage],
     ),
     onBroadcastReady: useCallback(() => {
       setBroadcastPulsing(true);
@@ -1674,20 +1680,11 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
           setMessages((prev) => [...prev, { role: "user", text: "TBM 종료" }]);
           sessionRef.current?.sendTextMessage("TBM 종료", "user");
         }}
-        // Phase 0.6 Wave 9 — TBM 모드 상시 'EHS 채팅으로' 버튼 (음성 fallback).
-        // 같은 sessionId 유지하며 라우팅만 전환 — TBM 작업 기록 IndexedDB 보존.
+        // Phase 0.6 Wave 9+10 — TBM 모드 상시 'EHS 채팅으로' 버튼 (음성 fallback).
+        // Wave 10: window.confirm → ConfirmModal (다국어·다크모드 호환·KOSHA 톤).
         onBackToEhs={
           currentMode === "TBM" && sessionId
-            ? () => {
-                const ok = window.confirm(
-                  "TBM 을 종료하고 EHS 채팅으로 돌아갑니다. 진행 중인 TBM 기록은 IndexedDB 에 보존됩니다. 계속할까요?",
-                );
-                if (!ok) return;
-                voiceSessionRef.current?.stopSessionPreserveState();
-                setCurrentWorkTypeLabel(undefined);
-                setCurrentWorkTypeId(undefined);
-                window.setTimeout(() => navigate(`/ehs/${sessionId}`), 400);
-              }
+            ? () => setBackToEhsConfirm(true)
             : undefined
         }
         onClickStart={() => session.startSession(null, null, { preparedSummary })}
@@ -2083,6 +2080,33 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
           </div>
         </Portal>
       )}
+
+      {/* Phase 0.6 Wave 10 — ConfirmModal (window.confirm 대체) + Transition overlay. */}
+      <ConfirmModal
+        open={backToEhsConfirm}
+        title={getConfirmStrings(currentLanguage).backToEhs.title}
+        body={getConfirmStrings(currentLanguage).backToEhs.body}
+        confirmLabel={getConfirmStrings(currentLanguage).backToEhs.confirm}
+        cancelLabel={getConfirmStrings(currentLanguage).backToEhs.cancel}
+        onCancel={() => setBackToEhsConfirm(false)}
+        onConfirm={() => {
+          setBackToEhsConfirm(false);
+          if (!sessionId) return;
+          const s = getTbmTransitionStrings(currentLanguage);
+          setTransitionMessage(s.toast.sessionSwitching);
+          voiceSessionRef.current?.stopSessionPreserveState();
+          setCurrentWorkTypeLabel(undefined);
+          setCurrentWorkTypeId(undefined);
+          window.setTimeout(() => {
+            navigate(`/ehs/${sessionId}`);
+            window.setTimeout(() => setTransitionMessage(null), 200);
+          }, 400);
+        }}
+      />
+      <TransitionOverlay
+        open={transitionMessage !== null}
+        message={transitionMessage ?? ""}
+      />
     </div>
   );
 }
