@@ -13,4 +13,5 @@ dependencies = [
     "dotenv>=0.9.9",
     "python-multipart>=0.0.20",
     "loguru>=0.7.3",
+    "reportlab>=4.2.0",
 ]

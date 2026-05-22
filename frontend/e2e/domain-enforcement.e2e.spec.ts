@@ -13,10 +13,10 @@ test.describe("domain enforcement (mobile)", () => {
     // Should land on PrepareScreen
     await expect(page.getByText(/작업 선택/)).toBeVisible({ timeout: 15_000 });
     // 직접 입력 input should NOT be present; explanation message instead.
+    // Wave 10 — 메시지 wording 이 i18n catalog 로 전환됨. 핵심 시그널어로 매칭.
     await expect(page.getByPlaceholder(/호반써밋/)).toHaveCount(0);
-    await expect(
-      page.getByText(/정형 SOP 의존성이 높아 카탈로그 선택만 허용/),
-    ).toBeVisible();
+    await expect(page.getByText(/카탈로그/)).toBeVisible();
+    await expect(page.getByText(/표준 절차|standard procedures|quy trình chuẩn/i)).toBeVisible();
   });
 
   test("construction domain: PrepareScreen still allows free-form 직접 입력", async ({ page }) => {

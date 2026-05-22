@@ -5,3 +5,4 @@ uvicorn[standard]>=0.34.3
 python-dotenv>=1.0.0
 python-multipart>=0.0.20
 loguru>=0.7.3
+reportlab>=4.2.0
