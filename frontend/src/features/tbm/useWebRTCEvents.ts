@@ -4,6 +4,8 @@ import { useCallback } from "react";
 import type { Dispatch, SetStateAction, MutableRefObject } from "react";
 import type { WebRTCSession } from "../../services/webrtc";
 import type { ChecklistItem } from "../../services/checklist";
+import { recordToolCall } from "./toolTelemetry";
+import { setTbmMode } from "./useTbmModeChip";
 import type {
   StructuredChecklist,
   PermitRecord,
@@ -442,6 +444,8 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
           const workTypeId = (args.work_type_id as string) || "";
           console.log("[tbm-mode] enter_tbm_mode:", { workTitle, domain, workTypeId });
           showInterruptionMessage(`TBM 모드 진입: ${workTitle}`);
+          recordToolCall({ name: "enter_tbm_mode", status: "success" });
+          setTbmMode({ mode: "tbm_entering", workTitle });
           sessionRef.current?.sendToolResult(callId, {
             result: "success",
             note: "Frontend received mode entry signal. Continue collecting prior_info.",
@@ -456,6 +460,8 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
           showInterruptionMessage(
             `TBM 일시중지 (${reason})${checkpoint ? ` — ${checkpoint}` : ""}`,
           );
+          recordToolCall({ name: "pause_tbm", status: "success" });
+          setTbmMode({ mode: "tbm_paused", pauseReason: reason, checkpointNote: checkpoint });
           sessionRef.current?.sendToolResult(callId, {
             result: "success",
             note: "TBM paused. Answer the user's digression briefly then ask if they want to resume.",
@@ -466,6 +472,8 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
         case "resume_tbm": {
           console.log("[tbm-mode] resume_tbm");
           showInterruptionMessage("TBM 재개");
+          recordToolCall({ name: "resume_tbm", status: "success" });
+          setTbmMode({ mode: "tbm_running", pauseReason: undefined });
           sessionRef.current?.sendToolResult(callId, {
             result: "success",
             note: "TBM resumed. Restate one sentence of the checkpoint and continue with the next field.",
@@ -477,6 +485,8 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
           const reason = (args.reason as string) || "";
           console.log("[tbm-mode] cancel_tbm:", { reason });
           showInterruptionMessage(`TBM 취소${reason ? ` — ${reason}` : ""}`);
+          recordToolCall({ name: "cancel_tbm", status: "success" });
+          setTbmMode({ mode: "ehs_chat", workTitle: undefined, checkpointNote: undefined, pauseReason: undefined });
           sessionRef.current?.sendToolResult(callId, {
             result: "success",
             note: "TBM cancelled. Switch back to open EHS chat tone.",

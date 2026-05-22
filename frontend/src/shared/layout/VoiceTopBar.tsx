@@ -15,6 +15,7 @@ import { LangDropdown } from "../portal/LangDropdown";
 import { Portal } from "../portal/PortalRoot";
 import { IconHome } from "../../components/Icon";
 import { getChatModeChip } from "../i18n/cueMessages";
+import { TbmModeChip } from "../../features/tbm/useTbmModeChip";
 
 interface VoiceTopBarProps {
   sessionActive: boolean;
@@ -123,6 +124,9 @@ export function VoiceTopBar({
         />
       </div>
       <div className="flex-1 min-w-0"></div>
+      {/* Phase 0.6 Wave 4 — conversational TBM mode chip. Self-hides when in
+          ehs_chat (default). Persistent across re-renders via module-level state. */}
+      <TbmModeChip />
       {/* PR-feedback-3 — TBM 모드 + slot/체크 카운트 주입 시 컴팩트 인디케이터.
           모바일에서는 좁아 숨김(sm 이상에서 노출). 본 칩은 read-only. */}
       {currentMode === "TBM" &&

@@ -19,6 +19,10 @@ export interface TenantConfig {
   domainLabels: Record<SessionDomain, string>;
   hiddenDomains: ReadonlySet<SessionDomain>;
   ehsRecommendedQuestions: Partial<Record<SessionDomain, string[]>>;
+  // Phase 0.6 Wave 4 — domains where catalog selection is mandatory and the
+  // PrepareScreen "직접 입력" path is blocked. Mirrors backend
+  // tenant.catalog_forced_domains. See docs/KPI.md K5 rationale.
+  catalogForcedDomains: ReadonlySet<SessionDomain>;
 }
 
 const DEFAULT: TenantConfig = {
@@ -33,6 +37,7 @@ const DEFAULT: TenantConfig = {
   },
   hiddenDomains: new Set<SessionDomain>(),
   ehsRecommendedQuestions: {},
+  catalogForcedDomains: new Set<SessionDomain>(),
 };
 
 const HOBAN: TenantConfig = {
@@ -47,6 +52,8 @@ const HOBAN: TenantConfig = {
     semiconductor: "반도체",
   },
   hiddenDomains: new Set<SessionDomain>(["heavy_industry", "semiconductor"]),
+  // 대한전선 케이블 제조: 정형 SOP 의존성 높음 → 카탈로그 강제.
+  catalogForcedDomains: new Set<SessionDomain>(["manufacturing"]),
   ehsRecommendedQuestions: {
     // 건설 — 호반건설 시공 + 대한전선 EPC
     construction: [
@@ -97,4 +104,11 @@ export function isDomainVisible(domain: SessionDomain): boolean {
 
 export function domainLabel(domain: SessionDomain): string {
   return tenant.domainLabels[domain] ?? domain;
+}
+
+// Phase 0.6 Wave 4 — catalog-forced check (manufacturing/cable factory etc.).
+// PrepareScreen + future ChatShell consult this to gate free-form input.
+export function isCatalogForced(domain: SessionDomain | undefined): boolean {
+  if (!domain) return false;
+  return tenant.catalogForcedDomains.has(domain);
 }

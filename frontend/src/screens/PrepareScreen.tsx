@@ -50,6 +50,7 @@ import type { PrepareContextFormValue } from "../components/PrepareContextForm";
 import { IconRefresh } from "../components/Icon";
 import { getPrepareNonKoFallbackMicrocopy } from "../shared/i18n/cueMessages";
 import { pickLabel } from "../services/catalogI18n";
+import { isCatalogForced } from "../shared/tenant/config";
 
 // 자동 재추천은 도메인/작업유형 변경 시에만 트리거. 컨텍스트 폼 변경은
 // 자동 fetch에서 분리(2026-05-04) — felix lock c8 §12-#8(5/60s rate limit)이
@@ -670,33 +671,44 @@ export default function PrepareScreen() {
             language={language}
           />
 
-          {/* 직접 입력 경로 — 카탈로그에 없는 작업도 자유 시작. */}
-          <div className="mt-4 pt-4 border-t border-hoban-border">
-            <label htmlFor="prep-custom-work" className="block">
-              <span className="text-[12px] uppercase tracking-wider font-bold text-hoban-ink-soft">
-                또는 직접 입력
-              </span>
-              <p className="text-[11px] text-hoban-ink-mute mt-0.5">
-                카탈로그에 없는 작업이면 작업명을 직접 적어 바로 TBM을 시작하세요.
-                AI 위험 추천은 비활성화되지만 TBM 진행 중에 위험·완화책을 함께 정리할 수 있습니다.
+          {/* 직접 입력 경로 — 카탈로그에 없는 작업도 자유 시작.
+              Phase 0.6 Wave 4 — manufacturing(케이블 제조)처럼 SOP 정형 의존이
+              높은 도메인은 catalogForcedDomains 에 등록되어 직접 입력 비활성. */}
+          {!isCatalogForced(domain) ? (
+            <div className="mt-4 pt-4 border-t border-hoban-border">
+              <label htmlFor="prep-custom-work" className="block">
+                <span className="text-[12px] uppercase tracking-wider font-bold text-hoban-ink-soft">
+                  또는 직접 입력
+                </span>
+                <p className="text-[11px] text-hoban-ink-mute mt-0.5">
+                  카탈로그에 없는 작업이면 작업명을 직접 적어 바로 TBM을 시작하세요.
+                  AI 위험 추천은 비활성화되지만 TBM 진행 중에 위험·완화책을 함께 정리할 수 있습니다.
+                </p>
+              </label>
+              <input
+                id="prep-custom-work"
+                type="text"
+                value={customWorkTitle}
+                onChange={(e) => handleCustomTitleChange(e.target.value)}
+                placeholder="예: 호반써밋 OO 현장 12동 갱폼 인양"
+                maxLength={120}
+                className="mt-2 w-full px-3 py-2.5 text-sm bg-white border border-hoban-border-strong rounded-hoban focus:outline-none focus:border-hoban-primary focus:ring-1 focus:ring-hoban-primary placeholder:text-hoban-ink-mute"
+                autoComplete="off"
+              />
+              {customWorkActive && (
+                <p className="mt-1.5 text-[11px] text-hoban-primary">
+                  직접 입력 모드 — 카탈로그 선택은 비활성화됩니다.
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="mt-4 pt-4 border-t border-hoban-border">
+              <p className="text-[11px] text-hoban-ink-mute italic">
+                이 도메인은 정형 SOP 의존성이 높아 카탈로그 선택만 허용됩니다.
+                카탈로그에 없는 작업이 필요하면 안전관리팀에 work_type 추가를 요청하세요.
               </p>
-            </label>
-            <input
-              id="prep-custom-work"
-              type="text"
-              value={customWorkTitle}
-              onChange={(e) => handleCustomTitleChange(e.target.value)}
-              placeholder="예: 호반써밋 OO 현장 12동 갱폼 인양"
-              maxLength={120}
-              className="mt-2 w-full px-3 py-2.5 text-sm bg-white border border-hoban-border-strong rounded-hoban focus:outline-none focus:border-hoban-primary focus:ring-1 focus:ring-hoban-primary placeholder:text-hoban-ink-mute"
-              autoComplete="off"
-            />
-            {customWorkActive && (
-              <p className="mt-1.5 text-[11px] text-hoban-primary">
-                직접 입력 모드 — 카탈로그 선택은 비활성화됩니다.
-              </p>
-            )}
-          </div>
+            </div>
+          )}
         </section>
 
         {/* PR A_v2-3 — 컨텍스트 입력 (옵셔널). 작업 선택 또는 직접 입력 후 노출. */}

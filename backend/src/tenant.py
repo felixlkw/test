@@ -39,6 +39,10 @@ class TenantConfig:
     domain_context_overlay: dict[str, str] = field(default_factory=dict)
     # per-domain EHS recommended question seeds (frontend consumes via mirror).
     ehs_recommended_questions: dict[str, list[str]] = field(default_factory=dict)
+    # Phase 0.6 Wave 4 — domains where free-form (custom_work) entry is BLOCKED;
+    # only catalog selection is permitted. Used for plants where SOP rigidity
+    # matters more than conversational flow (대한전선 케이블 제조 인터록 우회 위험).
+    catalog_forced_domains: frozenset[str] = field(default_factory=frozenset)
 
 
 DEFAULT = TenantConfig(
@@ -69,6 +73,9 @@ HOBAN = TenantConfig(
         "semiconductor": "반도체",
     },
     hidden_domains=frozenset({"heavy_industry", "semiconductor"}),
+    # 대한전선 케이블 제조는 정형 SOP 의존성 높음 (인터록 우회 사고 비중 큼) —
+    # 자유 발화로 "인터록 건너뛰고 진행" 의 위험을 차단하기 위해 카탈로그 강제.
+    catalog_forced_domains=frozenset({"manufacturing"}),
     domain_context_overlay={
         "construction": (
             "Domain: Hoban Group construction — combines 호반건설 (high-rise "
