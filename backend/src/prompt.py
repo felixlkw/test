@@ -1763,6 +1763,41 @@ AI Message: "오늘 TBM 요약을 정리했습니다. 내용을 확인하고 확
 {closing_reminder_block}
 ''')
 
+# ---------------------------------------------------------------------------
+# Phase 0.6 — Conversational TBM transitions notice.
+# Appended to the system prompt for BOTH ehs and tbm modes (by llm.py) so the
+# LLM knows about enter/pause/resume/cancel_tbm tools. Kept short to limit
+# prompt token impact. Description leans on the tool's own JSON description
+# for keyword lists.
+# ---------------------------------------------------------------------------
+CONVERSATIONAL_TBM_TRANSITIONS_NOTICE = """
+[Conversational TBM Mode Transitions]
+You can move smoothly between open EHS Chat and a structured TBM session using
+four transition tools. Call them at the right moment — do not narrate them.
+
+- enter_tbm_mode(work_title, domain?, work_type_id?) — Available in EHS Chat.
+  Call when the user clearly intends to start a TBM (e.g. "TBM 시작", "let's do
+  TBM", "오늘 갱폼 작업 점검 시작"). Do not call for casual mentions of TBM theory.
+
+- pause_tbm(reason, checkpoint_note?) — Available in TBM. Call IMMEDIATELY on
+  digression signals (KO 잠깐/잠시만/다른 질문, EN wait/hold on/by the way,
+  VI khoan đã/đợi đã, TH เดี๋ยวก่อน/รอแป๊บ, ID tunggu/sebentar) or when topic
+  clearly shifts. After answering the off-topic question, briefly say where
+  TBM left off and ask if they want to resume.
+
+- resume_tbm() — Call when user says (KO 재개/계속, EN back to TBM, VI tiếp tục,
+  TH ต่อ TBM, ID lanjut) or when the digression has been answered and the user
+  does not redirect again. On resume, restate one sentence about where TBM is.
+
+- cancel_tbm(reason?) — Call ONLY on explicit abandon (KO TBM 취소/그만, EN
+  cancel TBM, VI huỷ TBM, TH ยกเลิก TBM, ID batal TBM). For temporary digressions
+  use pause_tbm — never cancel.
+
+When you call any of these, the frontend updates the UI mode chip and the 8-
+field panel. Continue speaking naturally — do not announce "tool called".
+"""
+
+
 # Legacy prompts for backwards compatibility
 EHS_SYSTEM = get_system_prompt("ehs", "korean")
 SYSTEM = get_system_prompt("tbm", "korean")
@@ -2082,6 +2117,111 @@ TOOLS_SCHEMA = [
                 }
             },
             "required": ["final_summary"]
+        }
+    },
+    # ──────────────────────────────────────────────────────────────────────
+    # Phase 0.6 — Conversational TBM mode transitions.
+    # These four tools let the LLM enter/pause/resume/cancel TBM mode from
+    # within EHS Chat without a page navigation. The frontend listens on the
+    # function_call_arguments stream and updates state + UI shell.
+    # Tool descriptions are English-only (LLM understands best); arguments
+    # may be filled in any user-facing language.
+    # ──────────────────────────────────────────────────────────────────────
+    {
+        "type": "function",
+        "name": "enter_tbm_mode",
+        "description": (
+            "Switch the assistant from open EHS chat into TBM (Tool-Box Meeting) mode. "
+            "Call when the user clearly signals they want to start TBM for a specific work "
+            "(e.g., '오늘 ~ TBM 시작', 'TBM 진행', 'TBM 하자', 'let's do TBM', 'mulai TBM', "
+            "'bắt đầu TBM', 'เริ่ม TBM'). After calling, prompt the user for prior info (location, "
+            "crew, equipment) and then call collect_prior_information as the user supplies them. "
+            "Do NOT call this for casual mentions of TBM (e.g., asking about TBM theory)."
+        ),
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "work_title": {
+                    "type": "string",
+                    "description": "Short free-form description the user gave (e.g. '호반써밋 12동 갱폼 인양'). Required."
+                },
+                "domain": {
+                    "type": "string",
+                    "enum": ["manufacturing", "construction", "heavy_industry", "semiconductor"],
+                    "description": "Best-guess domain from the user's utterance. Frontend may override."
+                },
+                "work_type_id": {
+                    "type": "string",
+                    "description": "Catalog work_type id if the user explicitly named a cataloged work type, otherwise omit."
+                }
+            },
+            "required": ["work_title"]
+        }
+    },
+    {
+        "type": "function",
+        "name": "pause_tbm",
+        "description": (
+            "Temporarily pause the in-flight TBM so you can answer an unrelated question, then return. "
+            "Call IMMEDIATELY when the user utters a digression signal mid-TBM. "
+            "Recognized signals across languages: "
+            "Korean ('잠깐', '잠시만', '다른 질문', '그건 그렇고'), "
+            "English ('wait', 'hold on', 'one sec', 'unrelated question', 'by the way'), "
+            "Vietnamese ('khoan đã', 'đợi đã', 'câu hỏi khác', 'tiện đây'), "
+            "Thai ('เดี๋ยวก่อน', 'รอแป๊บ', 'อีกเรื่องนึง'), "
+            "Indonesian ('tunggu', 'sebentar', 'pertanyaan lain', 'ngomong-ngomong'). "
+            "Also call when topic clearly shifts even without explicit signal. After answering the user's "
+            "off-topic question, briefly remind them where TBM left off and ask if they want to resume."
+        ),
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "reason": {
+                    "type": "string",
+                    "enum": ["user_explicit", "topic_shift", "safety_concern", "other"],
+                    "description": "Why we are pausing. Use safety_concern if the user raised a safety-critical issue that needs separate handling."
+                },
+                "checkpoint_note": {
+                    "type": "string",
+                    "description": "One sentence describing where TBM is right now (e.g. 'collecting hazards, just finished crew info'). Used when resuming."
+                }
+            },
+            "required": ["reason"]
+        }
+    },
+    {
+        "type": "function",
+        "name": "resume_tbm",
+        "description": (
+            "Return to TBM mode after a paused digression. Call when the user says they want to go back "
+            "('재개', 'TBM 계속', 'back to TBM', 'tiếp tục TBM', 'ต่อ TBM', 'lanjut TBM') OR when you have "
+            "finished answering the digression and the user does not redirect again. On resume, briefly "
+            "restate the checkpoint note so the user re-orients, then continue collecting the next field."
+        ),
+        "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": []
+        }
+    },
+    {
+        "type": "function",
+        "name": "cancel_tbm",
+        "description": (
+            "Abandon the current TBM session without finalizing. Call when the user explicitly says they "
+            "want to stop ('TBM 그만', 'cancel TBM', 'TBM 취소', 'huỷ TBM', 'ยกเลิก TBM', 'batal TBM') "
+            "or when context makes it clear the TBM should be discarded. After calling, revert to open "
+            "EHS chat tone. Do NOT call this for digressions — use pause_tbm instead."
+        ),
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "reason": {
+                    "type": "string",
+                    "description": "Short reason in the user's language (kept in session metadata)."
+                }
+            },
+            "required": []
         }
     }
 ]

@@ -1142,6 +1142,10 @@ async def generate_webrtc_key(
         if baseline_block:
             instructions = instructions + "\n\n" + baseline_block
 
+    # Phase 0.6 — Conversational TBM transitions: appended to BOTH modes so the
+    # LLM knows about enter/pause/resume/cancel_tbm. Token cost ~250 tokens.
+    instructions = instructions + "\n\n" + prompt.CONVERSATIONAL_TBM_TRANSITIONS_NOTICE
+
     # v0.2.0 — Domain STT preset (noise reduction + VAD threshold).
     stt_preset = DOMAIN_STT_PRESET.get(domain, DOMAIN_STT_PRESET[None])
 
@@ -1151,7 +1155,10 @@ async def generate_webrtc_key(
     transcription_lang_code = LANG_TO_CODE.get(language, "ko")
     transcription_prompt = _build_transcription_prompt(domain, language)
 
-    EHS_TOOLS_NAMES = ["retrieve_documents", "display_document_citations"]
+    # Phase 0.6 — Conversational TBM: `enter_tbm_mode` is exposed in EHS chat so
+    # the LLM can transition into TBM mid-conversation. pause/resume/cancel_tbm
+    # stay in TBM-mode tool set (they only make sense while TBM is active).
+    EHS_TOOLS_NAMES = ["retrieve_documents", "display_document_citations", "enter_tbm_mode"]
 
     if mode == "ehs":
         tools = [tool for tool in prompt.TOOLS_SCHEMA if tool["name"] in EHS_TOOLS_NAMES]
