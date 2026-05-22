@@ -1,6 +1,7 @@
 # Stage 1: Build frontend
 FROM node:22-slim AS frontend-build
-ENV VITE_TENANT_ID=lg_innotek
+ARG VITE_TENANT_ID=hoban
+ENV VITE_TENANT_ID=${VITE_TENANT_ID}
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci

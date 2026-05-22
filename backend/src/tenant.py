@@ -117,9 +117,24 @@ LG_INNOTEK = TenantConfig(
 )
 
 
+HOBAN = TenantConfig(
+    id="hoban",
+    company_name="호반건설",
+    app_name="SafeMate",
+    domain_labels={
+        "manufacturing": "제조",
+        "construction": "건설",
+        "heavy_industry": "중공업",
+        "semiconductor": "반도체",
+    },
+    hidden_domains=frozenset(),
+)
+
+
 TENANTS: dict[str, TenantConfig] = {
     DEFAULT.id: DEFAULT,
     LG_INNOTEK.id: LG_INNOTEK,
+    HOBAN.id: HOBAN,
 }
 
 

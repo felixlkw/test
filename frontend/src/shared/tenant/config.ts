@@ -102,9 +102,24 @@ const LG_INNOTEK: TenantConfig = {
   },
 };
 
+const HOBAN: TenantConfig = {
+  id: "hoban",
+  companyName: "호반건설",
+  appName: "SafeMate",
+  domainLabels: {
+    manufacturing: "제조",
+    construction: "건설",
+    heavy_industry: "중공업",
+    semiconductor: "반도체",
+  },
+  hiddenDomains: new Set<SessionDomain>(),
+  ehsRecommendedQuestions: {},
+};
+
 const TENANTS: Record<string, TenantConfig> = {
   [DEFAULT.id]: DEFAULT,
   [LG_INNOTEK.id]: LG_INNOTEK,
+  [HOBAN.id]: HOBAN,
 };
 
 const ACTIVE_ID =
