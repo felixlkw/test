@@ -34,10 +34,28 @@ export interface WebRTCSesssionOptions {
   prepared_summary?: PreparedSummary;
 }
 
-const INITIAL_MESSAGE = `\
-Greet the user and proceed with the first procedure.
-Make sure to display proper cues at proper times.
+// 2026-05-22 — 모드별 첫 그리팅 분리. 이전 단일 INITIAL_MESSAGE("Greet ... and
+// proceed with the first procedure")는 EHS 모드에서 "first procedure" 부분이
+// 무의미해 모델이 종종 입을 떼지 않는 회귀가 있었음. 이제 mode에 따라:
+//   TBM: 따뜻하게 인사 + TBM 활동 시작 선언 + 첫 사전정보 질문(작업 장소).
+//   EHS: 한 문장으로 짧게 인사 + 어떤 안전 관련 도움이 필요한지 묻기.
+// 둘 다 system role + audioResponse=true로 즉시 AI가 입을 떼게 함.
+const INITIAL_MESSAGE_TBM = `\
+Greet the user warmly in the configured response language, announce that you'll
+start today's TBM (toolbox meeting) together, and then proceed with the first
+prior-information question per the configured procedure. Keep it short — one
+short greeting sentence + one question. Display proper cues at proper times.
 `;
+
+const INITIAL_MESSAGE_EHS = `\
+Greet the user briefly in the configured response language (one short sentence)
+and ask what safety-related help they need today. Do not list capabilities or
+read a long intro — keep it to a single sentence.
+`;
+
+function defaultInitialMessageFor(mode: 'tbm' | 'ehs'): string {
+  return mode === 'ehs' ? INITIAL_MESSAGE_EHS : INITIAL_MESSAGE_TBM;
+}
 
 type EphemeralLanguage = 'english' | 'korean' | 'vietnamese' | 'thai' | 'indonesian';
 type EphemeralDomain = 'manufacturing' | 'construction' | 'heavy_industry' | 'semiconductor';
@@ -88,11 +106,15 @@ export class WebRTCSession {
   }
 
   async start(
-    audioElement: HTMLAudioElement, 
-    outgoingStream?: MediaStream, 
-    initialMessage: string = INITIAL_MESSAGE,
+    audioElement: HTMLAudioElement,
+    outgoingStream?: MediaStream,
+    initialMessage?: string,
     initialMessageRole: 'user' | 'assistant' | 'system' = 'system'
   ) {
+    // 2026-05-22 — initialMessage 기본값을 mode 기반으로. 호출자가 명시한 값이
+    // 있으면 그대로 사용(EHS recommended-question 클릭 경로 등).
+    const resolvedInitialMessage = initialMessage ?? defaultInitialMessageFor(this.mode);
+
     // Create RTCPeerConnection
     this.conn = new RTCPeerConnection();
 
@@ -120,7 +142,7 @@ export class WebRTCSession {
       }
     };
     this.dataChannel.onopen = () => {
-      this.sendTextMessage(initialMessage, initialMessageRole, true); // Audio response for initial greeting
+      this.sendTextMessage(resolvedInitialMessage, initialMessageRole, true); // Audio response for initial greeting
     };
 
     // Create SDP offer

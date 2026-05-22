@@ -39,7 +39,6 @@ import {
 import { triggerDownload } from "../../services/sessionDownload";
 import { generateThumbnail, resizeImage } from "../../services/imageProcessing";
 import { analyzeImage, VisionAnalyzeError } from "../../services/visionAnalyze";
-import { IconDoc } from "../../components/Icon";
 import type {
   AppMode,
   AppProps,
@@ -396,25 +395,20 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     () => deriveTbmStage(structured, checklist, finalSummary),
     [structured, checklist, finalSummary],
   );
-  // 클릭 시 매핑(c6 결정 16=B):
-  //   prior_info → SummaryDrawer/Panel 닫기 + chat 상단으로(현재는 닫기만)
-  //   checklist  → ChecklistPanel 토글 open
-  //   mitigations / finalize → SummaryDrawer open
+  // 클릭 시 매핑(2026-05-22 업데이트):
+  //   prior_info / checklist → ChecklistPanel open (한 패널에 사전정보+체크리스트 동거)
+  //   mitigations / finalize → SummaryDrawer open (지금까지 정리본)
+  // 이전엔 prior_info 클릭이 패널을 닫아 "어디로 가는지 모르겠다"는 felix dx → 동거 패널로 일원화.
   const handleClickStage = useCallback(
     (stage: TbmStage) => {
-      if (stage === "checklist") {
+      if (stage === "prior_info" || stage === "checklist") {
         setShowChecklistPanel(true);
         setShowSummaryDrawer(false);
         return;
       }
-      if (stage === "mitigations" || stage === "finalize") {
-        setShowSummaryDrawer(true);
-        setShowChecklistPanel(false);
-        return;
-      }
-      // prior_info: 패널/드로어 닫고 chat 상단으로 — chat은 native scroll이라 별도 ref 불필요.
+      // mitigations / finalize
+      setShowSummaryDrawer(true);
       setShowChecklistPanel(false);
-      setShowSummaryDrawer(false);
     },
     [],
   );
@@ -1587,9 +1581,14 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     };
   }, [checklist, slotState.missing.length]);
 
-  // PR F: CTA 노출 조건 — TBM 모드 + prepare 단계 데이터가 한 가지라도 있을 때.
+  // PR F: CTA 노출 조건 — TBM 모드 + prepare 단계 데이터 + 후반 stage(대응방안/정리).
+  // 2026-05-22 — 이전엔 prior_info / checklist 초반에도 "참석 미확인" 카운터가
+  // 항상 떠 있어 화면 노이즈. 참석 전파는 본질적으로 마무리 액션이므로 stage가
+  // mitigations 이상으로 진입했을 때만 노출. 카운터/펄스 자체는 backend
+  // request_broadcast_attestation 신호로 그대로 동작.
   const showBroadcastCta =
     currentMode === "TBM" &&
+    (currentStage === "mitigations" || currentStage === "finalize") &&
     ((currentPreparedBaseline?.length ?? 0) > 0 ||
       (currentPreparedScenarios?.length ?? 0) > 0 ||
       (currentPreparedMitigations?.length ?? 0) > 0 ||
@@ -1706,21 +1705,12 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
           setShowLanguageSelector(false);
         }}
         rightSlot={
-          // 2026-05-06 mobile fix — 모바일은 "정리본" 텍스트 숨김(아이콘+%만), 종료 버튼은 텍스트 유지(중요 액션).
-          // 2026-05-07 felix HITL — EHS는 정리본/FinishScreen 흐름이 없으므로 정리본 버튼 미렌더 + 종료는 홈으로 navigate.
-          //   TBM 종료(→ /tbm/:id/finish, 참석자·서명·PDF)와 EHS 종료(→ /, Q&A 모드 종료)는 의미가 달라 분기 필요.
-          //   FinishScreen은 TBM 흐름 전용이라 EHS 세션이 진입하면 데이터 모델 불일치 + UX 혼란.
+          // 2026-05-22 — 상단 "정리본 X%" 버튼 제거. StagesStrip의 "정리"/"대응방안"
+          // 클릭이 동일 SummaryDrawer를 여는 중복 진입점이라 사용자 혼동의 원인.
+          // (이전 UX: 같은 drawer를 여는 진입점이 상단·stepper·"종료" 직전 등 3곳
+          // 산재. 4-stage stepper 하나로 일원화.)
           currentMode === "TBM" ? (
             <div className="flex items-center gap-1 sm:gap-2">
-              <button
-                onClick={() => setShowSummaryDrawer(true)}
-                className="flex items-center gap-1 sm:gap-2 bg-white text-pwc-ink px-2 sm:px-3 py-1.5 rounded-pwc text-[11px] font-bold uppercase tracking-wider border border-pwc-border-strong hover:border-pwc-orange hover:text-pwc-orange transition whitespace-nowrap"
-                aria-label={`정리본 보기 (${structuredProgressPercent}%)`}
-              >
-                <IconDoc size={14} />
-                <span className="hidden sm:inline">정리본</span>
-                <span className="text-pwc-orange">{structuredProgressPercent}%</span>
-              </button>
               {/* PR D — TBM 종료 → FinishScreen. 진행 중 세션은 stopSessionPreserveState로 정리. */}
               {sessionId && (
                 <button
