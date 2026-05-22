@@ -266,12 +266,20 @@ else:
     logger.warning(f"Frontend dist not found at {frontend_dist}")
 
 
+# 2026-05-22 — index.html은 매번 검증(no-cache)하도록 강제.
+# Vite는 콘텐츠 해시 번들(/assets/index-<hash>.js)을 emit하므로 자산 자체는
+# 무한 캐시해도 안전하지만, index.html은 항상 *최신* 해시를 참조해야 한다.
+# 이전에는 캐시 헤더 미지정 → 브라우저 휴리스틱으로 옛 번들 해시가 박혀
+# Realtime GA 이전 직후 일반 창에서 옛 SDP 엔드포인트가 계속 호출됐다.
+_INDEX_HTML_HEADERS = {"Cache-Control": "no-cache, must-revalidate"}
+
+
 @app.get("/")
 async def serve_index():
     """Serve the SPA index.html at root."""
     index_path = os.path.join(frontend_dist, "index.html")
     if os.path.exists(index_path):
-        return FileResponse(index_path, media_type="text/html")
+        return FileResponse(index_path, media_type="text/html", headers=_INDEX_HTML_HEADERS)
     raise HTTPException(status_code=404, detail="index.html not found.")
 
 
@@ -627,5 +635,5 @@ async def serve_spa(request: Request, full_path: str):
     # SPA fallback: serve index.html for client-side routes
     index_path = os.path.join(frontend_dist, "index.html")
     if os.path.exists(index_path):
-        return FileResponse(index_path, media_type="text/html")
+        return FileResponse(index_path, media_type="text/html", headers=_INDEX_HTML_HEADERS)
     raise HTTPException(status_code=404, detail="Not found.")
