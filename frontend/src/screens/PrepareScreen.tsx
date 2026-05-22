@@ -76,6 +76,21 @@ export default function PrepareScreen() {
     undefined,
   );
 
+  // 직접 입력 경로 — 카탈로그에 없는 작업을 자유롭게 시작.
+  // selectedWorkTypeId 와 상호 배타: 한쪽 활성 시 다른 쪽 비움.
+  const [customWorkTitle, setCustomWorkTitle] = useState<string>("");
+  const customWorkActive = customWorkTitle.trim().length > 0;
+
+  // 핸들러: 카탈로그 선택 시 custom 입력 비움, 그 반대도 동일.
+  const handleSelectWorkType = useCallback((id: string | undefined) => {
+    setSelectedWorkTypeId(id);
+    if (id) setCustomWorkTitle("");
+  }, []);
+  const handleCustomTitleChange = useCallback((value: string) => {
+    setCustomWorkTitle(value);
+    if (value.trim()) setSelectedWorkTypeId(undefined);
+  }, []);
+
   // 추천 위험 결과
   const [recommend, setRecommend] = useState<RecommendHazardsResponse | null>(null);
   const [recommendLoading, setRecommendLoading] = useState(false);
@@ -457,17 +472,18 @@ export default function PrepareScreen() {
 
   // ── 6. start TBM handler ─────────────────────────────────
   const startTbm = async () => {
-    if (!session || !selectedWorkTypeId) return;
+    // 진입 조건: 카탈로그 선택 또는 직접 입력 둘 중 하나는 있어야 함.
+    if (!session || (!selectedWorkTypeId && !customWorkActive)) return;
     setSaving(true);
     try {
       // 최신 세션을 다시 읽어서 race 회피(VoiceShell의 useSessionPersistence가
       // 다른 화면에서 동시에 쓰는 일은 없지만 방어적).
       const latest = (await getSession(session.session_id)) ?? session;
 
-      // PR A 보강 — baseline을 RunScreen 진입 즉시 ChecklistPanel에 표시.
-      // 기존 dynamic 항목(is_baseline 미설정)은 보존, baseline만 prepend.
-      // 일반 신규 세션은 latest.checklist_items가 빈 배열이라 baseline만 들어감.
-      const baselineItems = createBaselineChecklistItems(recommend?.baseline ?? []);
+      // 직접 입력 모드는 카탈로그 baseline 없음 — 빈 baseline + 기존 dynamic 보존.
+      const baselineItems = selectedWorkTypeId
+        ? createBaselineChecklistItems(recommend?.baseline ?? [])
+        : [];
       const existingDynamic = (latest.checklist_items ?? []).filter(
         (it) => !it.is_baseline,
       );
@@ -479,13 +495,15 @@ export default function PrepareScreen() {
         })),
       ];
 
-      // PR B+ NEW-H5: 영문 ID 외에 사용자 친화 라벨도 같이 저장.
-      // v0.2.6 PR-5: 다국어 분기 적용 — pickLabel(workType, language)로 현재
-      // 세션 언어에 맞는 라벨을 저장(label_<lang> 우선, 없으면 ko 폴백).
-      const selectedWorkType = workTypes.find((w) => w.id === selectedWorkTypeId);
+      // 라벨 선택: 카탈로그 선택 시 다국어 label, 직접 입력 시 사용자 입력값.
+      const selectedWorkType = selectedWorkTypeId
+        ? workTypes.find((w) => w.id === selectedWorkTypeId)
+        : undefined;
       const selectedWorkTypeLabel = selectedWorkType
         ? pickLabel(selectedWorkType, language)
-        : undefined;
+        : customWorkActive
+          ? customWorkTitle.trim()
+          : undefined;
 
       // PR-feedback-5 v0.2.9 → v0.3.0 — prior_info 4 슬롯 hydration mirror.
       // 우선순위(높음 → 낮음, 슬롯별):
@@ -646,16 +664,43 @@ export default function PrepareScreen() {
           <WorkTypeCatalog
             workTypes={workTypes}
             selectedId={selectedWorkTypeId}
-            onSelect={setSelectedWorkTypeId}
+            onSelect={handleSelectWorkType}
             loading={workTypesLoading}
             error={workTypesError}
             language={language}
           />
+
+          {/* 직접 입력 경로 — 카탈로그에 없는 작업도 자유 시작. */}
+          <div className="mt-4 pt-4 border-t border-hoban-border">
+            <label htmlFor="prep-custom-work" className="block">
+              <span className="text-[12px] uppercase tracking-wider font-bold text-hoban-ink-soft">
+                또는 직접 입력
+              </span>
+              <p className="text-[11px] text-hoban-ink-mute mt-0.5">
+                카탈로그에 없는 작업이면 작업명을 직접 적어 바로 TBM을 시작하세요.
+                AI 위험 추천은 비활성화되지만 TBM 진행 중에 위험·완화책을 함께 정리할 수 있습니다.
+              </p>
+            </label>
+            <input
+              id="prep-custom-work"
+              type="text"
+              value={customWorkTitle}
+              onChange={(e) => handleCustomTitleChange(e.target.value)}
+              placeholder="예: 호반써밋 OO 현장 12동 갱폼 인양"
+              maxLength={120}
+              className="mt-2 w-full px-3 py-2.5 text-sm bg-white border border-hoban-border-strong rounded-hoban focus:outline-none focus:border-hoban-primary focus:ring-1 focus:ring-hoban-primary placeholder:text-hoban-ink-mute"
+              autoComplete="off"
+            />
+            {customWorkActive && (
+              <p className="mt-1.5 text-[11px] text-hoban-primary">
+                직접 입력 모드 — 카탈로그 선택은 비활성화됩니다.
+              </p>
+            )}
+          </div>
         </section>
 
-        {/* PR A_v2-3 — 컨텍스트 입력 (옵셔널). 작업 선택 후 노출.
-            PR B+ NEW-H1: 폼 펼침 default + onboarding hint. */}
-        {selectedWorkTypeId && (
+        {/* PR A_v2-3 — 컨텍스트 입력 (옵셔널). 작업 선택 또는 직접 입력 후 노출. */}
+        {(selectedWorkTypeId || customWorkActive) && (
           <section aria-labelledby="prep-context">
             <h2 id="prep-context" className="sr-only">
               현장 컨텍스트
@@ -682,8 +727,8 @@ export default function PrepareScreen() {
           </section>
         )}
 
-        {/* hazard recommendation */}
-        {selectedWorkTypeId && (
+        {/* hazard recommendation — 카탈로그 선택 시에만. 직접 입력은 추천 스킵. */}
+        {selectedWorkTypeId && !customWorkActive && (
           <section aria-labelledby="prep-hazards">
             <div className="flex items-center justify-between gap-2">
               <h2 id="prep-hazards" className="font-serif-display text-[20px] text-hoban-ink">
@@ -794,14 +839,18 @@ export default function PrepareScreen() {
         <section className="pt-2 pb-10">
           <CTAButton
             block
-            disabled={!selectedWorkTypeId || saving || recommendLoading}
+            disabled={
+              (!selectedWorkTypeId && !customWorkActive) ||
+              saving ||
+              (recommendLoading && !customWorkActive)
+            }
             onClick={() => void startTbm()}
           >
             {saving ? "저장 중…" : "TBM 시작"}
           </CTAButton>
-          {!selectedWorkTypeId && (
+          {!selectedWorkTypeId && !customWorkActive && (
             <p className="text-[11px] text-hoban-ink-mute mt-2">
-              작업유형을 선택하면 TBM을 시작할 수 있습니다.
+              작업유형을 선택하거나 작업명을 직접 입력하면 TBM을 시작할 수 있습니다.
             </p>
           )}
         </section>
