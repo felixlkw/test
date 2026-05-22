@@ -24,7 +24,7 @@ from . import prompt
 # Lazy initialization: do NOT crash at import time so /api/health works even
 # when OPENAI_API_KEY is missing or not yet injected by Railway.
 # ---------------------------------------------------------------------------
-OPENAI_REALTIME_SESSIONS_URL = "https://api.openai.com/v1/realtime/sessions"
+OPENAI_REALTIME_CLIENT_SECRETS_URL = "https://api.openai.com/v1/realtime/client_secrets"
 OPENAI_TRANSCRIPTION_URL = "https://api.openai.com/v1/audio/transcriptions"
 OPENAI_CHAT_COMPLETIONS_URL = "https://api.openai.com/v1/chat/completions"
 OPENAI_REALTIME_MODEL = "gpt-realtime-1.5"
@@ -1165,42 +1165,56 @@ async def generate_webrtc_key(
     headers = _get_headers()
 
     async with httpx.AsyncClient() as client:
-        session_config = {
+        # 2026-05-22 — Migrated to Realtime GA shape (POST /v1/realtime/client_secrets).
+        # Beta endpoint /v1/realtime/sessions was disabled with error
+        # `beta_api_shape_disabled`. GA nests config under `session` with
+        # `audio.input` / `audio.output` instead of the old flat fields.
+        session_config: dict = {
+            "type": "realtime",
             "model": OPENAI_REALTIME_MODEL,
-            "voice": OPENAI_REALTIME_VOICE,
-            "input_audio_noise_reduction": {
-                "type": stt_preset["noise_reduction"],
-            },
-            "input_audio_transcription": {
-                "model": OPENAI_TRANSCRIPTION_MODEL,
-                "language": transcription_lang_code,
-                **({"prompt": transcription_prompt} if transcription_prompt else {}),
-            },
-            "modalities": ["audio", "text"],
             "instructions": instructions,
-            "speed": OPENAI_REALTIME_SPEED,
-            "turn_detection": {
-                "type": "server_vad",
-                "threshold": stt_preset["vad_threshold"],
+            "output_modalities": ["audio"],
+            "audio": {
+                "input": {
+                    "noise_reduction": {
+                        "type": stt_preset["noise_reduction"],
+                    },
+                    "transcription": {
+                        "model": OPENAI_TRANSCRIPTION_MODEL,
+                        "language": transcription_lang_code,
+                        **({"prompt": transcription_prompt} if transcription_prompt else {}),
+                    },
+                    "turn_detection": {
+                        "type": "server_vad",
+                        "threshold": stt_preset["vad_threshold"],
+                    },
+                },
+                "output": {
+                    "voice": OPENAI_REALTIME_VOICE,
+                    "speed": OPENAI_REALTIME_SPEED,
+                },
             },
         }
-        
+
         # Only add tools if any are available
         if tools:
             session_config["tool_choice"] = "auto"
             session_config["tools"] = tools
-        
+
         resp = await client.post(
-            OPENAI_REALTIME_SESSIONS_URL,
+            OPENAI_REALTIME_CLIENT_SECRETS_URL,
             headers=headers,
-            json=session_config,
+            json={"session": session_config},
             timeout=OPENAI_REALTIME_TIMEOUT,
         )
         if resp.status_code != 200:
             logger.error(resp.text)
             raise HTTPException(status_code=resp.status_code, detail=resp.text)
         data = resp.json()
-        key = data.get("client_secret", {}).get("value")
+        # GA response shape: {"value": "ek_...", "expires_at": ..., "session": {...}}.
+        # Beta returned {"client_secret": {"value": "ek_..."}} — keep that as a
+        # fallback so a rollback to the Beta endpoint (if needed) still works.
+        key = data.get("value") or data.get("client_secret", {}).get("value")
         return key
 
 
