@@ -430,6 +430,60 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
           return;
         }
 
+        // ──────────────────────────────────────────────────────────────────
+        // Phase 0.6 (Wave 2 backend / Wave 3 frontend) — conversational TBM
+        // mode transitions. Minimal Wave 3 implementation: log + surface a
+        // brief interruption message + ack the LLM. State machine + UI shell
+        // come in Wave 4.
+        // ──────────────────────────────────────────────────────────────────
+        case "enter_tbm_mode": {
+          const workTitle = (args.work_title as string) || "(untitled)";
+          const domain = (args.domain as string) || "unspecified";
+          const workTypeId = (args.work_type_id as string) || "";
+          console.log("[tbm-mode] enter_tbm_mode:", { workTitle, domain, workTypeId });
+          showInterruptionMessage(`TBM 모드 진입: ${workTitle}`);
+          sessionRef.current?.sendToolResult(callId, {
+            result: "success",
+            note: "Frontend received mode entry signal. Continue collecting prior_info.",
+          });
+          return;
+        }
+
+        case "pause_tbm": {
+          const reason = (args.reason as string) || "other";
+          const checkpoint = (args.checkpoint_note as string) || "";
+          console.log("[tbm-mode] pause_tbm:", { reason, checkpoint });
+          showInterruptionMessage(
+            `TBM 일시중지 (${reason})${checkpoint ? ` — ${checkpoint}` : ""}`,
+          );
+          sessionRef.current?.sendToolResult(callId, {
+            result: "success",
+            note: "TBM paused. Answer the user's digression briefly then ask if they want to resume.",
+          });
+          return;
+        }
+
+        case "resume_tbm": {
+          console.log("[tbm-mode] resume_tbm");
+          showInterruptionMessage("TBM 재개");
+          sessionRef.current?.sendToolResult(callId, {
+            result: "success",
+            note: "TBM resumed. Restate one sentence of the checkpoint and continue with the next field.",
+          });
+          return;
+        }
+
+        case "cancel_tbm": {
+          const reason = (args.reason as string) || "";
+          console.log("[tbm-mode] cancel_tbm:", { reason });
+          showInterruptionMessage(`TBM 취소${reason ? ` — ${reason}` : ""}`);
+          sessionRef.current?.sendToolResult(callId, {
+            result: "success",
+            note: "TBM cancelled. Switch back to open EHS chat tone.",
+          });
+          return;
+        }
+
         default:
           sessionRef.current?.sendToolResult(callId, { result: "success" });
           return;
