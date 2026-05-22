@@ -135,7 +135,10 @@ export class WebRTCSession {
       this.workTypeId,
       this.preparedSummary,
     );
-    const sdpRes = await fetch('https://api.openai.com/v1/realtime', {
+    // 2026-05-22 — Realtime GA: SDP exchange moved from /v1/realtime to
+    // /v1/realtime/calls. Model is encoded inside the ephemeral client_secret,
+    // so we MUST NOT pass `?model=...` (GA returns 400 if we do).
+    const sdpRes = await fetch('https://api.openai.com/v1/realtime/calls', {
       method: 'POST',
       body: offer.sdp,
       headers: {
@@ -144,7 +147,11 @@ export class WebRTCSession {
       },
     });
 
-    const answer: RTCSessionDescriptionInit = { type: 'answer', sdp: await sdpRes.text() };
+    const sdpText = await sdpRes.text();
+    if (!sdpRes.ok) {
+      throw new Error(`Realtime SDP exchange failed: ${sdpRes.status} ${sdpText}`);
+    }
+    const answer: RTCSessionDescriptionInit = { type: 'answer', sdp: sdpText };
     await this.conn.setRemoteDescription(answer);
   }
 
