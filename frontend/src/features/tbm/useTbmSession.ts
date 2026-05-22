@@ -257,6 +257,7 @@ export function useTbmSession(opts: UseTbmSessionOptions): UseTbmSessionResult {
       sessionRef,
       setTalking,
       dismissInterruption,
+      onConnectionFailed,
     ],
   );
 

@@ -84,7 +84,7 @@ type PrepareFormLabels = {
   equipment_details: string;
 };
 
-export const LABELS: Record<SessionLanguage, PrepareFormLabels> = {
+const LABELS: Record<SessionLanguage, PrepareFormLabels> = {
   korean: {
     section_title: "오늘의 현장 정보 (선택)",
     section_hint_active: "입력하면 AI가 더 구체적인 위험 추천을 제공합니다.",

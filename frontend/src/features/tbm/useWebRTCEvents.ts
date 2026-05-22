@@ -438,7 +438,6 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
     [
       sessionRef,
       currentMode,
-      setMessages,
       setChecklist,
       setPriorInfo,
       setCueMessage,

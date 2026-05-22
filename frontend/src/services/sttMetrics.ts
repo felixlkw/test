@@ -46,7 +46,6 @@ export function recordFirstToken(): void {
   // dev 환경 콘솔 로깅. production 영향 0.
   if (import.meta.env.DEV) {
     const stats = computeStats();
-    // eslint-disable-next-line no-console
     console.debug(
       `[STT KPI] last=${Math.round(durationMs)}ms p50=${stats.p50}ms p95=${stats.p95}ms mean=${stats.mean}ms n=${stats.n}`,
     );

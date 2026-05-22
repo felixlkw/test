@@ -135,14 +135,47 @@ export class WebRTCSession {
 
     // Create data channel for events
     this.dataChannel = this.conn.createDataChannel('oai-events');
+    // 2026-05-23 — 자동 인사 회귀 픽스. 옛 패턴(dataChannel.onopen에서
+    //   conversation.item.create(role='system') + response.create({modalities:[...]}))은
+    // Realtime GA에서 동작하지 않아 AI가 입을 떼지 않고 사용자 발화 후에만
+    // 응답이 나왔다(서버 VAD 트리거). GA 네이티브 패턴 2가지를 사용:
+    //   1) `session.created`를 받은 뒤에야 트리거 — 서버 측 세션 초기화 완료 보장.
+    //   2) role='user'면 sendTextMessage 그대로 (사용자가 명시 메시지를 첫 입력으로
+    //      주입하는 EHS recommended-question 등). 그 외(default 'system')는
+    //      response.create의 instructions/output_modalities 필드를 직접 써서 채팅
+    //      에 system 말풍선을 흘리지 않고 AI 인사만 발화.
+    let kickoffFired = false;
+    const fireKickoff = () => {
+      if (kickoffFired) return;
+      kickoffFired = true;
+      if (initialMessageRole === 'user') {
+        this.sendTextMessage(resolvedInitialMessage, 'user', true);
+        return;
+      }
+      // GA: response.create + instructions(ephemeral). conversation.item을 만들지 않으므로
+      // 사용자 채팅에 system 메시지가 떠다니지 않는다.
+      this.dataChannel?.send(JSON.stringify({
+        type: 'response.create',
+        response: {
+          instructions: resolvedInitialMessage,
+          output_modalities: ['audio'],
+        },
+      }));
+    };
     this.dataChannel.onmessage = (e: MessageEvent) => {
       const event = JSON.parse(e.data);
+      // GA 권장: 세션 준비 완료 후 첫 응답 트리거. 옛 onopen-only 트리거는 너무 일찍
+      // 발사돼 서버가 무시하던 케이스가 있었다.
+      if (!kickoffFired && (event.type === 'session.created' || event.type === 'session.updated')) {
+        fireKickoff();
+      }
       if (this.options.onEvent) {
         this.options.onEvent(event);
       }
     };
     this.dataChannel.onopen = () => {
-      this.sendTextMessage(resolvedInitialMessage, initialMessageRole, true); // Audio response for initial greeting
+      // 2.5초 동안 session.created가 안 오면 폴백 fire — 호환성 보호망.
+      setTimeout(fireKickoff, 2500);
     };
 
     // Create SDP offer
@@ -198,12 +231,15 @@ export class WebRTCSession {
     };
     this.dataChannel.send(JSON.stringify(event));
 
-    // Create response with appropriate modalities
+    // 2026-05-23 — GA에서 response.create.modalities → response.create.output_modalities
+    // 로 이름이 바뀌어 Beta 이름은 무시된다. 'text'-only 응답이 필요한 케이스를
+    // 살리려고 명시 지정은 유지하되 GA 이름으로 보낸다(없으면 세션 default
+    // [audio] 적용).
     const responseEvent = {
       type: 'response.create',
       response: {
-        modalities: audioResponse ? ['text', 'audio'] : ['text']
-      }
+        output_modalities: audioResponse ? ['audio'] : ['text'],
+      },
     };
     this.dataChannel.send(JSON.stringify(responseEvent));
   }

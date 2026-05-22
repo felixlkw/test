@@ -30,7 +30,6 @@ import type {
 } from "../tbm/types";
 import type {
   UseTbmSessionResult,
-  StartSessionOptions,
 } from "../tbm/useTbmSession";
 import { getInitialCueMessage } from "../../shared/i18n/cueMessages";
 
@@ -370,7 +369,6 @@ export function useChatSession(
     async (
       initialMessage: string | null,
       initialMessageRole: "user" | "assistant" | "system" | null,
-      _opts?: StartSessionOptions,
     ): Promise<void> => {
       if (!initialMessage || initialMessageRole !== "user") return;
       // initialMessage 가 user 면 sendTextMessage 와 동일 흐름.
