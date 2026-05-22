@@ -3,7 +3,6 @@
 // PR C — 메시지의 attachment_ids에 매칭되는 MediaAttachment를 inline 썸네일로,
 // hazard_detections에 매칭되는 결과를 HazardResultCard로 inline 표시.
 import { useEffect, useMemo, useRef, useState } from "react";
-import ReactMarkdown from "react-markdown";
 import { IconClose, IconDoc } from "../../components/Icon";
 import type { ChatMessage, AppMode, CitationDisplay } from "../../features/tbm/types";
 import type {
@@ -172,7 +171,7 @@ export function ChatList({
                     </div>
                   )}
                   <div
-                    className={`px-4 py-2 rounded-hoban-lg text-sm break-words leading-relaxed shadow-sm ${
+                    className={`px-4 py-2 rounded-hoban-lg text-sm break-words leading-relaxed shadow-sm whitespace-pre-wrap ${
                       isWarning
                         ? "bg-hoban-primary text-white border-l-4 border-hoban-primary-deep font-semibold"
                         : isAssistant
@@ -180,47 +179,11 @@ export function ChatList({
                           : "bg-hoban-primary-wash text-hoban-ink border border-hoban-primary/20"
                     }`}
                   >
-                    {/* 2026-05-23 — EHS 이중 채널: assistant text가 markdown
-                        플래그를 달고 오면 ReactMarkdown으로 렌더. 불릿/볼드 등
-                        가독성 강화. 그 외(user, TBM, EHS plain transcript)는
-                        plain text 유지. */}
-                    {isAssistant && msg.markdown ? (
-                      <ReactMarkdown
-                        components={{
-                          ul: ({ children }) => (
-                            <ul className="list-disc pl-5 my-1 space-y-0.5">{children}</ul>
-                          ),
-                          ol: ({ children }) => (
-                            <ol className="list-decimal pl-5 my-1 space-y-0.5">{children}</ol>
-                          ),
-                          li: ({ children }) => <li className="leading-relaxed">{children}</li>,
-                          p: ({ children }) => <p className="my-1 first:mt-0 last:mb-0">{children}</p>,
-                          strong: ({ children }) => (
-                            <strong className="font-semibold text-hoban-primary-deep">{children}</strong>
-                          ),
-                          h2: ({ children }) => (
-                            <h2 className="text-[13px] font-bold mt-2 mb-1 text-hoban-primary-deep">{children}</h2>
-                          ),
-                          h3: ({ children }) => (
-                            <h3 className="text-[13px] font-bold mt-2 mb-1">{children}</h3>
-                          ),
-                          a: ({ children, href }) => (
-                            <a
-                              href={href}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-hoban-primary underline hover:text-hoban-primary-deep"
-                            >
-                              {children}
-                            </a>
-                          ),
-                        }}
-                      >
-                        {msg.text}
-                      </ReactMarkdown>
-                    ) : (
-                      msg.text
-                    )}
+                    {/* 2026-05-23 — 단일 audio 채널 제약 하 긴 답변 가독성. LLM이
+                        transcript 내 \n으로 항목 구분; whitespace-pre-wrap이 줄바꿈
+                        보존해 시각적으로 분리. 불릿 마커는 TTS가 읽어버리므로 미사용
+                        (prompt.py EHS line-break rule 참고). */}
+                    {msg.text}
                   </div>
                   {/* Phase chat-PR3: 메시지 actions 버튼 inline. 음성 폴백
                        안내 메시지의 [다시 시도] / [채팅으로 계속] 버튼. */}

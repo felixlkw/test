@@ -32,6 +32,20 @@ test.describe("smoke / backend health", () => {
       expect(body.key, `language=${language}`).toMatch(/^ek_/);
     }
   });
+
+  // 회귀 보강 (2026-05-23) — EHS 모드는 ['audio','text'] 콤보를 시도하다가 GA API 가
+  // ['audio'] OR ['text'] 만 허용하도록 변경되어 400 으로 실패. 이 테스트가 두 모드
+  // 모두 200 OK 를 보장.
+  test("/api/webrtc-key supports both TBM and EHS modes", async ({ request }) => {
+    for (const mode of ["tbm", "ehs"]) {
+      const res = await request.post("/api/webrtc-key", {
+        data: { language: "korean", domain: "construction", mode },
+      });
+      expect(res.status(), `mode=${mode}`).toBe(200);
+      const body = await res.json();
+      expect(body.key, `mode=${mode}`).toMatch(/^ek_/);
+    }
+  });
 });
 
 test.describe("smoke / SPA brand identity", () => {

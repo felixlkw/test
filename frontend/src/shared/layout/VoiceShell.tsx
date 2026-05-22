@@ -340,34 +340,43 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     currentLanguage,
     // Phase 0.6 Wave 5 — LLM 의 enter_tbm_mode / cancel_tbm 시 AppMode 동기화.
     setCurrentMode,
-    // Phase 0.6 Wave 8+10 — LLM 의 모드 전환 도구 호출 시 진짜 TBM 화면으로 자동
-    // 라우팅 + Wave 10: transition overlay (race 차단 + 시각 신호).
+    // Phase 0.6 Wave 8+10+11 — LLM 의 모드 전환 도구 호출 시:
+    //   Wave 11 (felix HITL): 같은 sessionId 라우팅이 아니라 **새 세션 생성**.
+    //   같은 sessionId 유지 시 IndexedDB 의 이전 모드 messages 가 새 화면에
+    //   그대로 hydrate 되어 TBM 대화가 EHS 화면에 찍히는 문제 발견.
+    //   각 모드 = 별개 세션. 이전 세션은 IndexedDB 에 보존되어 History 에서 조회.
     onLLMRequestedModeSwitch: useCallback(
-      (newMode: AppMode, ctx: { workTitle?: string; reason?: string }) => {
+      async (newMode: AppMode, ctx: { workTitle?: string; reason?: string }) => {
         console.log("[mode-switch] LLM requested →", newMode, ctx);
-        if (!sessionId) {
-          setCurrentMode(newMode);
-          return;
-        }
-        // Wave 10 — 라우팅 동안 입력 차단 + 시각 피드백 (Critic P0 race 해소).
         const s = getTbmTransitionStrings(currentLanguage);
         setTransitionMessage(s.toast.sessionSwitching);
         voiceSessionRef.current?.stopSessionPreserveState();
-        if (newMode === "TBM" && ctx.workTitle) {
-          setCurrentWorkTypeLabel(ctx.workTitle);
+        try {
+          // 새 세션 생성 — 모드별 분리 (TBM 작업 기록 보존, EHS 신규 채팅).
+          const fresh = createEmptySession(
+            newMode === "TBM" ? "TBM" : "EHS",
+            currentLanguage,
+            undefined,
+            newMode === "TBM" ? { domain: currentDomain } : undefined,
+          );
+          if (newMode === "TBM" && ctx.workTitle) {
+            fresh.work_type_label = ctx.workTitle;
+          }
+          await putSession(fresh);
+          const target =
+            newMode === "TBM"
+              ? `/tbm/${fresh.session_id}/run`
+              : `/ehs/${fresh.session_id}`;
+          window.setTimeout(() => {
+            navigate(target);
+            window.setTimeout(() => setTransitionMessage(null), 200);
+          }, 400);
+        } catch (err) {
+          console.error("[mode-switch] failed to create new session:", err);
+          setTransitionMessage(null);
         }
-        if (newMode === "EHS") {
-          setCurrentWorkTypeLabel(undefined);
-          setCurrentWorkTypeId(undefined);
-        }
-        const target = newMode === "TBM" ? `/tbm/${sessionId}/run` : `/ehs/${sessionId}`;
-        window.setTimeout(() => {
-          navigate(target);
-          // overlay 는 새 route mount 후 자동 cleanup (state reset).
-          window.setTimeout(() => setTransitionMessage(null), 200);
-        }, 400);
       },
-      [sessionId, navigate, setCurrentMode, currentLanguage],
+      [navigate, currentLanguage, currentDomain],
     ),
     onBroadcastReady: useCallback(() => {
       setBroadcastPulsing(true);
@@ -2089,18 +2098,24 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
         confirmLabel={getConfirmStrings(currentLanguage).backToEhs.confirm}
         cancelLabel={getConfirmStrings(currentLanguage).backToEhs.cancel}
         onCancel={() => setBackToEhsConfirm(false)}
-        onConfirm={() => {
+        onConfirm={async () => {
           setBackToEhsConfirm(false);
-          if (!sessionId) return;
           const s = getTbmTransitionStrings(currentLanguage);
           setTransitionMessage(s.toast.sessionSwitching);
           voiceSessionRef.current?.stopSessionPreserveState();
-          setCurrentWorkTypeLabel(undefined);
-          setCurrentWorkTypeId(undefined);
-          window.setTimeout(() => {
-            navigate(`/ehs/${sessionId}`);
-            window.setTimeout(() => setTransitionMessage(null), 200);
-          }, 400);
+          // Wave 11 — TBM → EHS 도 새 sessionId 생성. 이전 TBM 메시지가 EHS 화면에
+          // 따라오는 문제 해소. TBM 작업 기록은 IndexedDB 에 그대로 보존.
+          try {
+            const fresh = createEmptySession("EHS", currentLanguage);
+            await putSession(fresh);
+            window.setTimeout(() => {
+              navigate(`/ehs/${fresh.session_id}`);
+              window.setTimeout(() => setTransitionMessage(null), 200);
+            }, 400);
+          } catch (err) {
+            console.error("[back-to-ehs] failed:", err);
+            setTransitionMessage(null);
+          }
         }}
       />
       <TransitionOverlay
