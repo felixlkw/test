@@ -331,36 +331,37 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     currentLanguage,
     // Phase 0.6 Wave 5 — LLM 의 enter_tbm_mode / cancel_tbm 시 AppMode 동기화.
     setCurrentMode,
-    // Phase 0.6 Wave 6 — LLM 의 모드 전환 도구 호출 시 webrtc 세션 재발급.
-    // stopSessionPreserveState → switchMode (state reset) → startSession (new tool set).
-    // 짧은 audio 끊김 (~1-2s) 발생하지만 LLM 이 TBM 도구 (collect_prior_information,
-    // create_dynamic_checklist, update_session_field, finalize_tbm 등) 전체를
-    // 보유하게 되어 진짜 TBM 워크플로우가 작동한다.
+    // Phase 0.6 Wave 8 — LLM 의 모드 전환 도구 호출 시 진짜 TBM 화면으로 자동
+    // 라우팅. URL /ehs/:id → /tbm/:id/run 으로 navigate 하면 VoiceShell 이 re-mount
+    // 되면서 TBM 레이아웃 (체크리스트 패널·8필드 패널 등) 으로 전환된다. 새 mount
+    // 의 useSessionPersistence 가 IndexedDB hydrate → 같은 세션 ID 로 작업 이어짐.
+    // 이전 wave 의 stopSession → switchMode → startSession 시퀀스는 route mount
+    // 가 자동으로 처리하므로 명시 호출 불필요.
     onLLMRequestedModeSwitch: useCallback(
       (newMode: AppMode, ctx: { workTitle?: string; reason?: string }) => {
         console.log("[mode-switch] LLM requested →", newMode, ctx);
-        // 1) 현재 세션 정지 (state 보존 — 새 mode 에 hydrate 됨)
+        if (!sessionId) {
+          // sessionId 없는 fallback — 그냥 mode 만 토글.
+          setCurrentMode(newMode);
+          return;
+        }
+        // 현재 세션 정지 (state 보존). route mount 가 새 세션 시작.
         voiceSessionRef.current?.stopSessionPreserveState();
-        // 2) switchMode — currentMode 변경 + 누적 상태 리셋 (messages, checklist 등).
-        //    이미 EHS 의 채팅 컨텍스트는 LLM 메모리에서만 의미가 있고, TBM 진행에는
-        //    오히려 깔끔하게 시작하는 것이 8필드 채우기에 유리하다.
-        voiceSessionRef.current?.switchMode(newMode);
-        // 3) work_title 을 work_type_label 에 mirror (TBM 첫 발화 시 LLM 이 인지).
+        // work_title → work_type_label mirror.
         if (newMode === "TBM" && ctx.workTitle) {
           setCurrentWorkTypeLabel(ctx.workTitle);
         }
         if (newMode === "EHS") {
-          // cancel_tbm 시 work label 도 지움 — 다음 세션은 일반 EHS 채팅.
           setCurrentWorkTypeLabel(undefined);
           setCurrentWorkTypeId(undefined);
         }
-        // 4) 짧은 지연 후 자동 재시작. 사용자가 직접 시작 버튼 다시 누르는 대신
-        //    자연스러운 흐름 유지. 600ms 지연은 audio 디바이스 release 보장.
-        window.setTimeout(() => {
-          voiceSessionRef.current?.startSession(null, null);
-        }, 600);
+        // 라우팅 — TBM 전환 시 /tbm/:id/run (체크리스트 패널 등장),
+        // EHS 전환 시 /ehs/:id (open chat 레이아웃).
+        const target = newMode === "TBM" ? `/tbm/${sessionId}/run` : `/ehs/${sessionId}`;
+        // setTimeout 으로 stop 이 비동기 정리 완료된 뒤 navigate — race 회피.
+        window.setTimeout(() => navigate(target), 400);
       },
-      [],
+      [sessionId, navigate, setCurrentMode],
     ),
     onBroadcastReady: useCallback(() => {
       setBroadcastPulsing(true);
