@@ -16,7 +16,7 @@ export default function SuggestedQuestionChips({
       {questions.map((q, idx) => (
         <span
           key={`${idx}-${q.slice(0, 12)}`}
-          className="inline-flex items-center px-3 py-1.5 rounded-full bg-white border border-pwc-border text-[12px] text-pwc-ink-soft"
+          className="inline-flex items-center px-3 py-1.5 rounded-full bg-white border border-hoban-border text-[12px] text-hoban-ink-soft"
         >
           {q}
         </span>

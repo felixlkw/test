@@ -257,21 +257,21 @@ export default function PrepareContextForm({
   return (
     <details
       open
-      className="rounded-pwc border border-pwc-border bg-white open:shadow-pwc-card transition-shadow"
+      className="rounded-hoban border border-hoban-border bg-white open:shadow-hoban-card transition-shadow"
     >
       <summary
         className="flex items-center justify-between gap-2 px-4 py-3 cursor-pointer select-none list-none"
         // hide default marker
       >
         <div className="min-w-0">
-          <div className="text-[13px] font-bold uppercase tracking-wider text-pwc-orange">
+          <div className="text-[13px] font-bold uppercase tracking-wider text-hoban-primary">
             {L.section_title}
           </div>
-          <div className="text-[11px] text-pwc-ink-mute mt-0.5">
+          <div className="text-[11px] text-hoban-ink-mute mt-0.5">
             {disabled ? L.section_hint_disabled : L.section_hint_active}
           </div>
         </div>
-        <span className="text-[11px] text-pwc-ink-soft shrink-0">
+        <span className="text-[11px] text-hoban-ink-soft shrink-0">
           {filledCount > 0
             ? `${filledCount}${L.filled_count_suffix}`
             : L.empty}
@@ -279,12 +279,12 @@ export default function PrepareContextForm({
       </summary>
 
       <fieldset
-        className="border-t border-pwc-border px-4 py-4 grid grid-cols-1 sm:grid-cols-2 gap-4"
+        className="border-t border-hoban-border px-4 py-4 grid grid-cols-1 sm:grid-cols-2 gap-4"
         disabled={disabled}
       >
         {/* 작업장소 — PR-feedback-5 신규 */}
         <label className="block sm:col-span-2">
-          <span className="text-[12px] font-semibold text-pwc-ink-soft">
+          <span className="text-[12px] font-semibold text-hoban-ink-soft">
             {L.work_location}
           </span>
           <input
@@ -296,13 +296,13 @@ export default function PrepareContextForm({
             placeholder={
               language === "korean" ? "예: A동 3층 옥상, B라인 클린룸" : ""
             }
-            className="mt-1 w-full rounded-pwc border border-pwc-border bg-pwc-bg-soft px-3 py-2 text-sm focus:border-pwc-orange focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-1 w-full rounded-hoban border border-hoban-border bg-hoban-bg-soft px-3 py-2 text-sm focus:border-hoban-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </label>
 
         {/* 작업내용 — PR-feedback-5 신규 */}
         <label className="block sm:col-span-2">
-          <span className="text-[12px] font-semibold text-pwc-ink-soft">
+          <span className="text-[12px] font-semibold text-hoban-ink-soft">
             {L.work_content_details}
           </span>
           <input
@@ -316,13 +316,13 @@ export default function PrepareContextForm({
                 ? "예: 외벽 도장, 배관 보수, 웨이퍼 이송"
                 : ""
             }
-            className="mt-1 w-full rounded-pwc border border-pwc-border bg-pwc-bg-soft px-3 py-2 text-sm focus:border-pwc-orange focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-1 w-full rounded-hoban border border-hoban-border bg-hoban-bg-soft px-3 py-2 text-sm focus:border-hoban-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </label>
 
         {/* 작업자 수 — 기존 */}
         <label className="block">
-          <span className="text-[12px] font-semibold text-pwc-ink-soft">
+          <span className="text-[12px] font-semibold text-hoban-ink-soft">
             {L.worker_count}
           </span>
           <input
@@ -333,13 +333,13 @@ export default function PrepareContextForm({
             value={value.worker_count ?? ""}
             onChange={(e) => update({ worker_count: parseNum(e.target.value) })}
             placeholder={language === "korean" ? "예: 5" : ""}
-            className="mt-1 w-full rounded-pwc border border-pwc-border bg-pwc-bg-soft px-3 py-2 text-sm focus:border-pwc-orange focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-1 w-full rounded-hoban border border-hoban-border bg-hoban-bg-soft px-3 py-2 text-sm focus:border-hoban-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </label>
 
         {/* 교대 — 기존 */}
         <label className="block">
-          <span className="text-[12px] font-semibold text-pwc-ink-soft">
+          <span className="text-[12px] font-semibold text-hoban-ink-soft">
             {L.shift}
           </span>
           <select
@@ -347,7 +347,7 @@ export default function PrepareContextForm({
             onChange={(e) =>
               update({ shift: e.target.value || undefined })
             }
-            className="mt-1 w-full rounded-pwc border border-pwc-border bg-pwc-bg-soft px-3 py-2 text-sm focus:border-pwc-orange focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-1 w-full rounded-hoban border border-hoban-border bg-hoban-bg-soft px-3 py-2 text-sm focus:border-hoban-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <option value="">{L.shift_options.none}</option>
             <option value="day">{L.shift_options.day}</option>
@@ -359,7 +359,7 @@ export default function PrepareContextForm({
 
         {/* 장비정보 — PR-feedback-5 신규 */}
         <label className="block sm:col-span-2">
-          <span className="text-[12px] font-semibold text-pwc-ink-soft">
+          <span className="text-[12px] font-semibold text-hoban-ink-soft">
             {L.equipment_details}
           </span>
           <input
@@ -373,14 +373,14 @@ export default function PrepareContextForm({
                 ? "예: 5m 사다리, 안전벨트, 가스측정기"
                 : ""
             }
-            className="mt-1 w-full rounded-pwc border border-pwc-border bg-pwc-bg-soft px-3 py-2 text-sm focus:border-pwc-orange focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-1 w-full rounded-hoban border border-hoban-border bg-hoban-bg-soft px-3 py-2 text-sm focus:border-hoban-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </label>
 
         {/* 풍속 — 옥외 도메인만 */}
         {showWind && (
           <label className="block">
-            <span className="text-[12px] font-semibold text-pwc-ink-soft">
+            <span className="text-[12px] font-semibold text-hoban-ink-soft">
               {L.wind_speed}
             </span>
             <input
@@ -394,14 +394,14 @@ export default function PrepareContextForm({
                 update({ wind_speed_mps: parseNum(e.target.value) })
               }
               placeholder={language === "korean" ? "예: 12" : ""}
-              className="mt-1 w-full rounded-pwc border border-pwc-border bg-pwc-bg-soft px-3 py-2 text-sm focus:border-pwc-orange focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-1 w-full rounded-hoban border border-hoban-border bg-hoban-bg-soft px-3 py-2 text-sm focus:border-hoban-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </label>
         )}
 
         {/* 신규 자재 / 공정 — 라벨 변경(필드 키 new_material 유지) */}
         <label className="block">
-          <span className="text-[12px] font-semibold text-pwc-ink-soft">
+          <span className="text-[12px] font-semibold text-hoban-ink-soft">
             {L.new_material}
           </span>
           <input
@@ -411,13 +411,13 @@ export default function PrepareContextForm({
               update({ new_material: e.target.value || undefined })
             }
             placeholder={language === "korean" ? "예: 새 페인트, 신규 용접봉" : ""}
-            className="mt-1 w-full rounded-pwc border border-pwc-border bg-pwc-bg-soft px-3 py-2 text-sm focus:border-pwc-orange focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-1 w-full rounded-hoban border border-hoban-border bg-hoban-bg-soft px-3 py-2 text-sm focus:border-hoban-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </label>
 
         {/* 특이사항 — full width */}
         <label className="block sm:col-span-2">
-          <span className="text-[12px] font-semibold text-pwc-ink-soft">
+          <span className="text-[12px] font-semibold text-hoban-ink-soft">
             {L.special_notes}
           </span>
           <textarea
@@ -431,20 +431,20 @@ export default function PrepareContextForm({
                 ? "예: 인접 공정 가동 중, 작업자 1명 컨디션 저하 등"
                 : ""
             }
-            className="mt-1 w-full rounded-pwc border border-pwc-border bg-pwc-bg-soft px-3 py-2 text-sm focus:border-pwc-orange focus:outline-none resize-y disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-1 w-full rounded-hoban border border-hoban-border bg-hoban-bg-soft px-3 py-2 text-sm focus:border-hoban-primary focus:outline-none resize-y disabled:opacity-50 disabled:cursor-not-allowed"
           />
         </label>
 
         {/* 과거 사고 키워드 — chips */}
         <div className="block sm:col-span-2">
-          <span className="text-[12px] font-semibold text-pwc-ink-soft">
+          <span className="text-[12px] font-semibold text-hoban-ink-soft">
             {L.incident_keywords}
           </span>
-          <div className="mt-1 flex flex-wrap gap-2 items-center rounded-pwc border border-pwc-border bg-pwc-bg-soft px-3 py-2 min-h-[42px]">
+          <div className="mt-1 flex flex-wrap gap-2 items-center rounded-hoban border border-hoban-border bg-hoban-bg-soft px-3 py-2 min-h-[42px]">
             {(value.previous_incident_keywords ?? []).map((kw, i) => (
               <span
                 key={`${kw}-${i}`}
-                className="inline-flex items-center gap-1 rounded-pwc bg-pwc-orange-soft text-pwc-orange-deep px-2 py-0.5 text-[12px]"
+                className="inline-flex items-center gap-1 rounded-hoban bg-hoban-primary-soft text-hoban-primary-deep px-2 py-0.5 text-[12px]"
               >
                 <span>{kw}</span>
                 <button
@@ -452,7 +452,7 @@ export default function PrepareContextForm({
                   onClick={() => removeKeyword(i)}
                   disabled={disabled}
                   aria-label={`${kw} 키워드 제거`}
-                  className="hover:text-pwc-ink disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="hover:text-hoban-ink disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   ×
                 </button>
@@ -471,7 +471,7 @@ export default function PrepareContextForm({
               className="flex-1 min-w-[160px] bg-transparent text-sm focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
-          <p className="text-[11px] text-pwc-ink-mute mt-1">
+          <p className="text-[11px] text-hoban-ink-mute mt-1">
             {L.incident_keywords_pii_note}
           </p>
         </div>

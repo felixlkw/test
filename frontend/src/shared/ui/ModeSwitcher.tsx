@@ -10,15 +10,15 @@ interface ModeSwitcherProps {
 export function ModeSwitcher({ currentMode, onSwitch, disabled }: ModeSwitcherProps) {
   return (
     <div
-      className={`flex bg-pwc-bg-card rounded-full p-1 border border-pwc-border ${
+      className={`flex bg-hoban-bg-card rounded-full p-1 border border-hoban-border ${
         disabled ? "opacity-60" : ""
       }`}
     >
       <button
         className={`px-3 py-1 text-xs font-medium rounded-full transition-all duration-200 disabled:cursor-not-allowed ${
           currentMode === "TBM"
-            ? "bg-pwc-orange text-white shadow-pwc-card"
-            : "text-pwc-ink-soft hover:text-pwc-orange"
+            ? "bg-hoban-primary text-white shadow-hoban-card"
+            : "text-hoban-ink-soft hover:text-hoban-primary"
         }`}
         onClick={() => onSwitch("TBM")}
         disabled={disabled}
@@ -28,8 +28,8 @@ export function ModeSwitcher({ currentMode, onSwitch, disabled }: ModeSwitcherPr
       <button
         className={`px-3 py-1 text-xs font-medium rounded-full transition-all duration-200 disabled:cursor-not-allowed ${
           currentMode === "EHS"
-            ? "bg-pwc-orange text-white shadow-pwc-card"
-            : "text-pwc-ink-soft hover:text-pwc-orange"
+            ? "bg-hoban-primary text-white shadow-hoban-card"
+            : "text-hoban-ink-soft hover:text-hoban-primary"
         }`}
         onClick={() => onSwitch("EHS")}
         disabled={disabled}

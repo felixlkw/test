@@ -72,21 +72,21 @@ function BaselinePerItemPreview({
         onClick={() => setExpanded((v) => !v)}
         aria-expanded={expanded}
         aria-controls={`hrc-baseline-detail-${baselineId}`}
-        className="text-[10px] uppercase tracking-wider text-pwc-orange hover:text-pwc-orange-deep font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-pwc-orange rounded-pwc"
+        className="text-[10px] uppercase tracking-wider text-hoban-primary hover:text-hoban-primary-deep font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-hoban-primary rounded-hoban"
       >
         {expanded ? `▾ ${summary} 접기` : `▸ ${summary} 펼침`}
       </button>
       {expanded && (
         <div
           id={`hrc-baseline-detail-${baselineId}`}
-          className="mt-1.5 space-y-1.5 border-l-2 border-pwc-orange/30 pl-2"
+          className="mt-1.5 space-y-1.5 border-l-2 border-hoban-primary/30 pl-2"
         >
           {sCount > 0 && (
             <div>
-              <div className="text-[10px] font-bold text-pwc-ink-soft uppercase tracking-wider">
+              <div className="text-[10px] font-bold text-hoban-ink-soft uppercase tracking-wider">
                 관련 시나리오
               </div>
-              <ul className="text-[11px] text-pwc-ink leading-snug list-disc pl-4">
+              <ul className="text-[11px] text-hoban-ink leading-snug list-disc pl-4">
                 {(scenarios ?? []).map((s) => (
                   <li key={s.id}>{s.content}</li>
                 ))}
@@ -95,10 +95,10 @@ function BaselinePerItemPreview({
           )}
           {mCount > 0 && (
             <div>
-              <div className="text-[10px] font-bold text-pwc-ink-soft uppercase tracking-wider">
+              <div className="text-[10px] font-bold text-hoban-ink-soft uppercase tracking-wider">
                 대응 조치
               </div>
-              <ul className="text-[11px] text-pwc-ink leading-snug list-disc pl-4">
+              <ul className="text-[11px] text-hoban-ink leading-snug list-disc pl-4">
                 {(mitigations ?? []).map((m) => (
                   <li key={m.id}>{m.content}</li>
                 ))}
@@ -107,10 +107,10 @@ function BaselinePerItemPreview({
           )}
           {pCount > 0 && (
             <div>
-              <div className="text-[10px] font-bold text-pwc-ink-soft uppercase tracking-wider">
+              <div className="text-[10px] font-bold text-hoban-ink-soft uppercase tracking-wider">
                 권장 PPE
               </div>
-              <ul className="text-[11px] text-pwc-ink leading-snug list-disc pl-4">
+              <ul className="text-[11px] text-hoban-ink leading-snug list-disc pl-4">
                 {(ppe ?? []).map((p) => (
                   <li key={p.id}>{p.content}</li>
                 ))}
@@ -131,23 +131,23 @@ export default function HazardRecommendCard({
 }: HazardRecommendCardProps) {
   if (!baseline.length && !conditional.length) {
     return (
-      <div className="text-sm text-pwc-ink-mute py-3">
+      <div className="text-sm text-hoban-ink-mute py-3">
         등록된 위험 추천 항목이 없습니다.
       </div>
     );
   }
   return (
-    <div className="relative bg-white border border-pwc-border rounded-pwc-lg shadow-pwc-card overflow-hidden">
+    <div className="relative bg-white border border-hoban-border rounded-hoban-lg shadow-hoban-card overflow-hidden">
       {/* v0.2.4 PR-feedback-2 — 우상단 spinner indicator. 1단 카드가 이미
           노출된 상태에서 backend 보강 호출이 진행 중일 때만 표시. */}
       {augmenting && (
         <div
-          className="absolute top-2 right-2 z-10 inline-flex items-center gap-1.5 bg-pwc-orange/10 border border-pwc-orange/30 text-pwc-orange-deep text-[10px] font-bold uppercase tracking-wider rounded-pwc px-2 py-1"
+          className="absolute top-2 right-2 z-10 inline-flex items-center gap-1.5 bg-hoban-primary/10 border border-hoban-primary/30 text-hoban-primary-deep text-[10px] font-bold uppercase tracking-wider rounded-hoban px-2 py-1"
           role="status"
           aria-live="polite"
         >
           <span
-            className="inline-block w-2 h-2 rounded-full bg-pwc-orange animate-pulse"
+            className="inline-block w-2 h-2 rounded-full bg-hoban-primary animate-pulse"
             aria-hidden="true"
           />
           AI 보강 중…
@@ -158,11 +158,11 @@ export default function HazardRecommendCard({
           <header className="flex items-center justify-between mb-3">
             <h3
               id="hrc-baseline"
-              className="text-[13px] font-bold uppercase tracking-wider text-pwc-orange"
+              className="text-[13px] font-bold uppercase tracking-wider text-hoban-primary"
             >
               필수 기본 점검
             </h3>
-            <span className="text-[11px] text-pwc-ink-mute">
+            <span className="text-[11px] text-hoban-ink-mute">
               모두 체크리스트에 자동 포함됩니다
             </span>
           </header>
@@ -198,16 +198,16 @@ export default function HazardRecommendCard({
       {conditional.length > 0 && (
         <section
           aria-labelledby="hrc-conditional"
-          className="border-t border-pwc-border p-4"
+          className="border-t border-hoban-border p-4"
         >
           <header className="mb-3">
             <h3
               id="hrc-conditional"
-              className="text-[13px] font-bold uppercase tracking-wider text-pwc-ink-soft"
+              className="text-[13px] font-bold uppercase tracking-wider text-hoban-ink-soft"
             >
               조건부 점검
             </h3>
-            <p className="text-[11px] text-pwc-ink-mute mt-0.5">
+            <p className="text-[11px] text-hoban-ink-mute mt-0.5">
               조건이 맞을 때만 체크리스트에 추가됩니다.
             </p>
           </header>

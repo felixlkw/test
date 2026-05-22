@@ -32,7 +32,7 @@ export function InterruptionToast({ show, message, onDismiss }: InterruptionToas
       aria-live="assertive"
     >
       <div
-        className="relative px-6 py-4 pr-12 text-center text-2xl font-bold bg-pwc-orange text-white border-l-4 border-pwc-orange-deep shadow-lg animate-pulse rounded-pwc-lg max-w-md mx-4"
+        className="relative px-6 py-4 pr-12 text-center text-2xl font-bold bg-hoban-primary text-white border-l-4 border-hoban-primary-deep shadow-lg animate-pulse rounded-hoban-lg max-w-md mx-4"
         style={{ pointerEvents: "auto" }}
       >
         {message}

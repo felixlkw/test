@@ -56,7 +56,7 @@ export function AttachmentPreview({ attachment }: AttachmentPreviewProps) {
       <button
         type="button"
         onClick={() => setLightboxOpen(true)}
-        className="block max-w-[180px] rounded-pwc overflow-hidden border border-pwc-border-strong bg-pwc-bg-card hover:border-pwc-orange focus:outline-none focus-visible:ring-2 focus-visible:ring-pwc-orange"
+        className="block max-w-[180px] rounded-hoban overflow-hidden border border-hoban-border-strong bg-hoban-bg-card hover:border-hoban-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-hoban-primary"
         aria-label="첨부 사진 크게 보기"
       >
         {attachment.thumbnail_data_url ? (
@@ -67,12 +67,12 @@ export function AttachmentPreview({ attachment }: AttachmentPreviewProps) {
             loading="lazy"
           />
         ) : (
-          <div className="px-3 py-4 text-center text-xs text-pwc-ink-mute">
+          <div className="px-3 py-4 text-center text-xs text-hoban-ink-mute">
             사진 (썸네일 없음)
           </div>
         )}
         {attachment.caption && (
-          <div className="px-2 py-1 text-[11px] text-pwc-ink-soft text-left truncate">
+          <div className="px-2 py-1 text-[11px] text-hoban-ink-soft text-left truncate">
             {attachment.caption}
           </div>
         )}
@@ -91,7 +91,7 @@ export function AttachmentPreview({ attachment }: AttachmentPreviewProps) {
               e.stopPropagation();
               setLightboxOpen(false);
             }}
-            className="absolute top-3 right-3 p-2 rounded-pwc bg-black/40 text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-pwc-orange"
+            className="absolute top-3 right-3 p-2 rounded-hoban bg-black/40 text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-hoban-primary"
             aria-label="닫기"
           >
             <IconClose size={18} />

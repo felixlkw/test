@@ -48,7 +48,7 @@ export function AttendeeForm({ onAdd, suggestions = [] }: AttendeeFormProps) {
   };
 
   return (
-    <div className="border border-pwc-border rounded-pwc bg-white p-3 flex flex-col gap-2">
+    <div className="border border-hoban-border rounded-hoban bg-white p-3 flex flex-col gap-2">
       <div className="flex flex-col sm:flex-row gap-2">
         <input
           type="text"
@@ -62,7 +62,7 @@ export function AttendeeForm({ onAdd, suggestions = [] }: AttendeeFormProps) {
           }}
           placeholder="이름"
           aria-label="참석자 이름"
-          className="flex-1 px-3 py-2 rounded-pwc border border-pwc-border-strong text-sm focus:outline-none focus:border-pwc-orange"
+          className="flex-1 px-3 py-2 rounded-hoban border border-hoban-border-strong text-sm focus:outline-none focus:border-hoban-primary"
         />
         <input
           type="text"
@@ -76,20 +76,20 @@ export function AttendeeForm({ onAdd, suggestions = [] }: AttendeeFormProps) {
           }}
           placeholder="역할 (선택)"
           aria-label="참석자 역할"
-          className="flex-1 px-3 py-2 rounded-pwc border border-pwc-border-strong text-sm focus:outline-none focus:border-pwc-orange"
+          className="flex-1 px-3 py-2 rounded-hoban border border-hoban-border-strong text-sm focus:outline-none focus:border-hoban-primary"
         />
         <button
           type="button"
           onClick={handleAdd}
           disabled={!canAdd}
-          className="px-4 py-2 rounded-pwc bg-pwc-orange text-white text-sm font-semibold hover:bg-pwc-orange-deep disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="px-4 py-2 rounded-hoban bg-hoban-primary text-white text-sm font-semibold hover:bg-hoban-primary-deep disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
           추가
         </button>
       </div>
       {suggestions.length > 0 && (
         <div className="flex flex-wrap gap-1.5 pt-1">
-          <span className="text-[10px] uppercase tracking-wider text-pwc-ink-mute font-bold self-center">
+          <span className="text-[10px] uppercase tracking-wider text-hoban-ink-mute font-bold self-center">
             자주 함께
           </span>
           {suggestions.slice(0, 6).map((s, i) => (
@@ -97,7 +97,7 @@ export function AttendeeForm({ onAdd, suggestions = [] }: AttendeeFormProps) {
               key={`${s.name}-${i}`}
               type="button"
               onClick={() => handleSuggestionClick(s)}
-              className="text-[11px] px-2 py-1 rounded-pwc border border-pwc-border bg-pwc-bg-card text-pwc-ink hover:border-pwc-orange hover:text-pwc-orange transition"
+              className="text-[11px] px-2 py-1 rounded-hoban border border-hoban-border bg-hoban-bg-card text-hoban-ink hover:border-hoban-primary hover:text-hoban-primary transition"
             >
               {s.name}
               {s.role ? ` · ${s.role}` : ""}

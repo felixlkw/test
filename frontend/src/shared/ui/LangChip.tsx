@@ -12,7 +12,7 @@ export function LangChip({ currentLanguage, onClick, disabled }: LangChipProps) 
   const cfg = LANGUAGE_CONFIG[currentLanguage];
   return (
     <button
-      className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 bg-pwc-bg-card rounded-full border border-pwc-border text-pwc-ink-soft hover:text-pwc-orange transition-colors text-xs whitespace-nowrap"
+      className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 bg-hoban-bg-card rounded-full border border-hoban-border text-hoban-ink-soft hover:text-hoban-primary transition-colors text-xs whitespace-nowrap"
       onClick={onClick}
       disabled={disabled}
       aria-label={`언어 선택 (현재 ${cfg.name})`}

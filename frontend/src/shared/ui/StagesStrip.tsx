@@ -42,7 +42,7 @@ export function StagesStrip({ currentStage, onClickStage }: StagesStripProps) {
     <nav
       aria-label="TBM 진행 단계"
       // px-2 sm:px-3, py-1 sm:py-1.5 (모바일 컴팩트).
-      className="flex items-center w-full bg-pwc-bg border-b border-pwc-border px-2 sm:px-3 py-1 sm:py-1.5 shrink-0"
+      className="flex items-center w-full bg-hoban-bg border-b border-hoban-border px-2 sm:px-3 py-1 sm:py-1.5 shrink-0"
     >
       <ol className="flex items-center gap-0.5 sm:gap-1 w-full">
         {STAGE_ORDER.map((stage, idx) => {
@@ -51,12 +51,12 @@ export function StagesStrip({ currentStage, onClickStage }: StagesStripProps) {
           const ariaCurrent = isCurrent ? "step" : undefined;
           // 모바일: gap 좁히고, padding/font 작게. 데스크톱은 기존 동일.
           const baseClass =
-            "flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-pwc text-[10px] sm:text-[11px] font-bold uppercase tracking-wider transition whitespace-nowrap";
+            "flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-hoban text-[10px] sm:text-[11px] font-bold uppercase tracking-wider transition whitespace-nowrap";
           const stateClass = isCurrent
-            ? "bg-pwc-orange text-white"
+            ? "bg-hoban-primary text-white"
             : isPast
-              ? "border border-pwc-orange text-pwc-orange bg-white"
-              : "text-pwc-ink-mute bg-transparent";
+              ? "border border-hoban-primary text-hoban-primary bg-white"
+              : "text-hoban-ink-mute bg-transparent";
           const interactiveClass = onClickStage
             ? "hover:opacity-80 cursor-pointer"
             : "cursor-default";
@@ -67,7 +67,7 @@ export function StagesStrip({ currentStage, onClickStage }: StagesStripProps) {
               <span
                 aria-hidden="true"
                 className={`flex-1 h-px mx-0.5 sm:mx-1 ${
-                  idx < currentIndex ? "bg-pwc-orange" : "bg-pwc-border"
+                  idx < currentIndex ? "bg-hoban-primary" : "bg-hoban-border"
                 }`}
               />
             ) : null;
@@ -92,10 +92,10 @@ export function StagesStrip({ currentStage, onClickStage }: StagesStripProps) {
                   aria-hidden="true"
                   className={`inline-flex items-center justify-center w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full text-[9px] sm:text-[10px] shrink-0 ${
                     isCurrent
-                      ? "bg-white text-pwc-orange"
+                      ? "bg-white text-hoban-primary"
                       : isPast
-                        ? "bg-pwc-orange text-white"
-                        : "bg-pwc-border text-pwc-ink-mute"
+                        ? "bg-hoban-primary text-white"
+                        : "bg-hoban-border text-hoban-ink-mute"
                   }`}
                 >
                   {idx + 1}

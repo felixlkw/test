@@ -137,7 +137,7 @@ export default function HistoryScreen() {
   ];
 
   return (
-    <div className="w-full min-h-screen bg-pwc-bg text-pwc-ink flex flex-col">
+    <div className="w-full min-h-screen bg-hoban-bg text-hoban-ink flex flex-col">
       <TopBar title="과거 TBM 기록" backTo="/" />
 
       <div className="flex-1 px-5 py-4">
@@ -149,13 +149,13 @@ export default function HistoryScreen() {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="작업명·요약·첫 메시지 검색"
             aria-label="세션 검색"
-            className="w-full px-3 py-2 rounded-pwc border border-pwc-border-strong text-sm focus:outline-none focus:border-pwc-orange"
+            className="w-full px-3 py-2 rounded-hoban border border-hoban-border-strong text-sm focus:outline-none focus:border-hoban-primary"
           />
         </div>
 
         {/* PR-feedback-1 (v0.2.2) — 상태 세그먼트 컨트롤. 홈 카운트 배지 →
             ?filter=draft 진입 지점. EHS 미완료 세션은 "미완료" 탭에서 제외. */}
-        <div className="mb-3 inline-flex rounded-pwc border border-pwc-border bg-white p-0.5">
+        <div className="mb-3 inline-flex rounded-hoban border border-hoban-border bg-white p-0.5">
           {STATUS_FILTERS.map((f) => {
             const selected = statusFilter === f.value;
             return (
@@ -164,10 +164,10 @@ export default function HistoryScreen() {
                 type="button"
                 onClick={() => setStatusFilter(f.value)}
                 className={[
-                  "text-[12px] px-3 py-1.5 rounded-[calc(var(--pwc-r)-2px)] font-semibold transition",
+                  "text-[12px] px-3 py-1.5 rounded-[calc(var(--hoban-r)-2px)] font-semibold transition",
                   selected
-                    ? "bg-pwc-orange text-white"
-                    : "text-pwc-ink-soft hover:text-pwc-orange",
+                    ? "bg-hoban-primary text-white"
+                    : "text-hoban-ink-soft hover:text-hoban-primary",
                 ].join(" ")}
                 aria-pressed={selected}
               >
@@ -187,10 +187,10 @@ export default function HistoryScreen() {
                 type="button"
                 onClick={() => setDomainFilter(f.value)}
                 className={[
-                  "text-[11px] px-2.5 py-1 rounded-pwc border font-semibold transition",
+                  "text-[11px] px-2.5 py-1 rounded-hoban border font-semibold transition",
                   selected
-                    ? "bg-pwc-orange text-white border-pwc-orange"
-                    : "bg-white text-pwc-ink-soft border-pwc-border hover:border-pwc-orange hover:text-pwc-orange",
+                    ? "bg-hoban-primary text-white border-hoban-primary"
+                    : "bg-white text-hoban-ink-soft border-hoban-border hover:border-hoban-primary hover:text-hoban-primary",
                 ].join(" ")}
                 aria-pressed={selected}
               >
@@ -203,10 +203,10 @@ export default function HistoryScreen() {
             type="button"
             onClick={() => setIncludeArchived((v) => !v)}
             className={[
-              "text-[11px] px-2.5 py-1 rounded-pwc border font-semibold transition",
+              "text-[11px] px-2.5 py-1 rounded-hoban border font-semibold transition",
               includeArchived
-                ? "bg-pwc-bg-card text-pwc-ink border-pwc-border-strong"
-                : "bg-white text-pwc-ink-soft border-pwc-border hover:border-pwc-orange hover:text-pwc-orange",
+                ? "bg-hoban-bg-card text-hoban-ink border-hoban-border-strong"
+                : "bg-white text-hoban-ink-soft border-hoban-border hover:border-hoban-primary hover:text-hoban-primary",
             ].join(" ")}
             aria-pressed={includeArchived}
           >
@@ -214,17 +214,17 @@ export default function HistoryScreen() {
           </button>
         </div>
 
-        {loading && <div className="text-pwc-ink-mute text-sm">불러오는 중...</div>}
+        {loading && <div className="text-hoban-ink-mute text-sm">불러오는 중...</div>}
 
         {!loading && filtered.length === 0 && (
-          <div className="text-center text-pwc-ink-mute text-sm mt-16">
+          <div className="text-center text-hoban-ink-mute text-sm mt-16">
             {merged.length === 0 ? "저장된 세션이 없습니다." : "결과가 없습니다."}
           </div>
         )}
 
         {!loading && filtered.length > 0 && (
           <>
-            <ul className="divide-y divide-pwc-border border-t border-pwc-border">
+            <ul className="divide-y divide-hoban-border border-t border-hoban-border">
               {visible.map((s) => {
                 const isConfirmed = s.status === "confirmed";
                 const isDraft = s.status === "draft";
@@ -265,20 +265,20 @@ export default function HistoryScreen() {
                     className={[
                       "w-full flex items-center gap-3 py-4 text-left transition cursor-pointer",
                       isArchived
-                        ? "opacity-60 hover:bg-pwc-bg-card"
+                        ? "opacity-60 hover:bg-hoban-bg-card"
                         : isStaleDraft
-                          ? "opacity-60 hover:bg-pwc-orange-wash"
-                          : "hover:bg-pwc-orange-wash",
+                          ? "opacity-60 hover:bg-hoban-primary-wash"
+                          : "hover:bg-hoban-primary-wash",
                     ].join(" ")}
                   >
                     <div className="w-24 shrink-0 pl-1">
                       <div className="text-sm font-bold">{formatDate(s.updated_at)}</div>
-                      <div className="text-[11px] text-pwc-ink-mute">
+                      <div className="text-[11px] text-hoban-ink-mute">
                         {formatTime(s.updated_at)}
                       </div>
                       {/* PR-feedback-1 — relative time(예: "3분 전")을 부가
                           정보로 추가. 절대 날짜는 위에서 그대로 표시. */}
-                      <div className="text-[10px] text-pwc-ink-mute mt-0.5">
+                      <div className="text-[10px] text-hoban-ink-mute mt-0.5">
                         {formatRelativeTime(s.updated_at, "korean")}
                       </div>
                     </div>
@@ -287,25 +287,25 @@ export default function HistoryScreen() {
                         <span
                           className={`text-[10px] px-1.5 py-0.5 font-bold uppercase tracking-wider ${
                             isConfirmed
-                              ? "text-pwc-ink bg-pwc-bg-card"
-                              : "text-pwc-orange bg-pwc-orange-wash"
+                              ? "text-hoban-ink bg-hoban-bg-card"
+                              : "text-hoban-primary bg-hoban-primary-wash"
                           }`}
                         >
                           {isConfirmed ? "확정" : "초안"}
                         </span>
-                        <span className="text-[10px] text-pwc-ink-mute uppercase tracking-wider">
+                        <span className="text-[10px] text-hoban-ink-mute uppercase tracking-wider">
                           {s.mode}
                         </span>
                         <DomainBadge domain={s.domain} />
                         <PermitChip count={permitCount} />
                         {isArchived && (
-                          <span className="text-[10px] px-1.5 py-0.5 font-bold uppercase tracking-wider text-pwc-ink-soft bg-pwc-bg-card">
+                          <span className="text-[10px] px-1.5 py-0.5 font-bold uppercase tracking-wider text-hoban-ink-soft bg-hoban-bg-card">
                             보관
                           </span>
                         )}
                         {isStaleDraft && (
                           <span
-                            className="text-[10px] px-1.5 py-0.5 font-bold uppercase tracking-wider text-pwc-ink-mute bg-pwc-bg-card"
+                            className="text-[10px] px-1.5 py-0.5 font-bold uppercase tracking-wider text-hoban-ink-mute bg-hoban-bg-card"
                             title="14일 이상 미완료"
                           >
                             오래됨
@@ -313,7 +313,7 @@ export default function HistoryScreen() {
                         )}
                       </div>
                       <div className="text-sm font-semibold truncate">{workTitle}</div>
-                      <div className="text-[11px] text-pwc-ink-mute mt-0.5">
+                      <div className="text-[11px] text-hoban-ink-mute mt-0.5">
                         메시지 {s.messages.length}개 · 체크리스트{" "}
                         {checklist.length}개
                         {progressPct !== null && ` · ${progressPct}%`}
@@ -323,7 +323,7 @@ export default function HistoryScreen() {
                         다른 탭은 종래 chevron만. */}
                     {statusFilter === "draft" && isDraft ? (
                       <span
-                        className="shrink-0 inline-flex items-center gap-1 text-[11px] font-bold text-pwc-orange uppercase tracking-wider"
+                        className="shrink-0 inline-flex items-center gap-1 text-[11px] font-bold text-hoban-primary uppercase tracking-wider"
                         aria-label={getHistoryContinueCtaLabel("korean")}
                       >
                         {getHistoryContinueCtaLabel("korean")}
@@ -332,13 +332,13 @@ export default function HistoryScreen() {
                     ) : (
                       <IconChevronRight
                         size={16}
-                        className="text-pwc-ink-mute shrink-0"
+                        className="text-hoban-ink-mute shrink-0"
                       />
                     )}
                     {!isArchived && (
                       <button
                         onClick={(e) => handleArchive(s.session_id, e)}
-                        className="shrink-0 w-9 h-9 flex items-center justify-center text-pwc-ink-mute hover:text-pwc-orange"
+                        className="shrink-0 w-9 h-9 flex items-center justify-center text-hoban-ink-mute hover:text-hoban-primary"
                         aria-label="보관"
                         title="보관함으로 이동"
                       >
@@ -355,7 +355,7 @@ export default function HistoryScreen() {
                 <button
                   type="button"
                   onClick={() => setPageCount((n) => n + 1)}
-                  className="text-[12px] px-4 py-2 rounded-pwc border border-pwc-border-strong bg-white text-pwc-ink-soft font-semibold hover:border-pwc-orange hover:text-pwc-orange transition"
+                  className="text-[12px] px-4 py-2 rounded-hoban border border-hoban-border-strong bg-white text-hoban-ink-soft font-semibold hover:border-hoban-primary hover:text-hoban-primary transition"
                 >
                   {getHistoryShowMoreLabel("korean")} ({filtered.length - visibleLimit})
                 </button>

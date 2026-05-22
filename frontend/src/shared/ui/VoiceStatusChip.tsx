@@ -13,9 +13,9 @@ interface VoiceStatusChipProps {
 // 2026-05-06 mobile fix — 모바일은 아이콘만(텍스트 sr-only), 데스크톱은 아이콘+텍스트.
 // padding 모바일 컴팩트(px-2 → sm:px-3) — 360px 폭에서 가로 점유율 축소.
 const BASE =
-  "inline-flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 rounded-pwc " +
+  "inline-flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 rounded-hoban " +
   "text-[12px] font-bold uppercase tracking-wider border transition-colors " +
-  "focus:outline-none focus-visible:ring-2 focus-visible:ring-pwc-orange " +
+  "focus:outline-none focus-visible:ring-2 focus-visible:ring-hoban-primary " +
   "disabled:opacity-60 disabled:cursor-not-allowed whitespace-nowrap";
 
 function variantClass(
@@ -24,24 +24,24 @@ function variantClass(
   talking: "idle" | "user" | "assistant",
 ): string {
   if (connecting) {
-    return "bg-pwc-bg-card text-pwc-ink-soft border-pwc-border";
+    return "bg-hoban-bg-card text-hoban-ink-soft border-hoban-border";
   }
   if (talking === "user") {
     return (
-      "bg-pwc-orange text-white border-pwc-orange-deep " +
+      "bg-hoban-primary text-white border-hoban-primary-deep " +
       "shadow-[0_0_0_4px_rgba(224,48,30,0.15)] animate-pulse"
     );
   }
   if (talking === "assistant") {
     return (
-      "bg-white text-pwc-orange-deep border-pwc-orange " +
+      "bg-white text-hoban-primary-deep border-hoban-primary " +
       "shadow-[0_0_0_4px_rgba(224,48,30,0.10)] animate-pulse"
     );
   }
   if (sessionActive) {
-    return "bg-white text-pwc-orange-deep border-pwc-orange hover:bg-pwc-orange-wash";
+    return "bg-white text-hoban-primary-deep border-hoban-primary hover:bg-hoban-primary-wash";
   }
-  return "bg-pwc-orange text-white border-pwc-orange-deep hover:bg-pwc-orange-deep";
+  return "bg-hoban-primary text-white border-hoban-primary-deep hover:bg-hoban-primary-deep";
 }
 
 export function VoiceStatusChip({

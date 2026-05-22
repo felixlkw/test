@@ -20,13 +20,13 @@ function MitigationSourceChip({
 }) {
   if (source === "catalog") {
     return (
-      <span className="inline-flex items-center px-1.5 py-0.5 rounded-pwc text-[10px] font-semibold bg-pwc-bg-card text-pwc-ink-soft border border-pwc-border">
+      <span className="inline-flex items-center px-1.5 py-0.5 rounded-hoban text-[10px] font-semibold bg-hoban-bg-card text-hoban-ink-soft border border-hoban-border">
         카탈로그
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center px-1.5 py-0.5 rounded-pwc text-[10px] font-semibold bg-pwc-orange-wash text-pwc-orange-deep border border-pwc-orange/30">
+    <span className="inline-flex items-center px-1.5 py-0.5 rounded-hoban text-[10px] font-semibold bg-hoban-primary-wash text-hoban-primary-deep border border-hoban-primary/30">
       {source === "llm" ? "AI 보강" : "AI"}
     </span>
   );

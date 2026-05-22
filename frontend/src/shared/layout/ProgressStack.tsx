@@ -26,9 +26,9 @@ export function ProgressStack({
   return (
     <>
       {/* 8-field structured progress hairline (TBM only) */}
-      <div className="h-1 bg-pwc-border shrink-0">
+      <div className="h-1 bg-hoban-border shrink-0">
         <div
-          className="h-full bg-pwc-orange transition-all duration-300"
+          className="h-full bg-hoban-primary transition-all duration-300"
           style={{ width: `${structuredProgressPercent}%` }}
         />
       </div>
@@ -40,29 +40,29 @@ export function ProgressStack({
         onClick={onTogglePanel}
         aria-expanded={showChecklistPanel}
         aria-label="체크리스트 펼치기"
-        className={`w-full flex items-center bg-pwc-bg h-8 sm:h-10 justify-between border-b border-pwc-border px-3 sm:px-4 transition-colors shrink-0 ${
-          showChecklistPanel ? "bg-pwc-orange-wash" : "hover:bg-pwc-orange-wash/50"
+        className={`w-full flex items-center bg-hoban-bg h-8 sm:h-10 justify-between border-b border-hoban-border px-3 sm:px-4 transition-colors shrink-0 ${
+          showChecklistPanel ? "bg-hoban-primary-wash" : "hover:bg-hoban-primary-wash/50"
         }`}
       >
-        <span className="text-[11px] uppercase tracking-wider text-pwc-ink-soft font-bold mr-2 sm:mr-3 hidden sm:inline">
+        <span className="text-[11px] uppercase tracking-wider text-hoban-ink-soft font-bold mr-2 sm:mr-3 hidden sm:inline">
           체크리스트
         </span>
-        <span className="text-[11px] uppercase tracking-wider text-pwc-ink-soft font-bold mr-2 sm:hidden">
+        <span className="text-[11px] uppercase tracking-wider text-hoban-ink-soft font-bold mr-2 sm:hidden">
           ✓
         </span>
         <div className="flex-1 flex items-center min-w-0">
-          <div className="w-full h-1.5 bg-pwc-border overflow-hidden rounded-full">
+          <div className="w-full h-1.5 bg-hoban-border overflow-hidden rounded-full">
             <div
-              className="h-full bg-pwc-orange transition-all duration-300"
+              className="h-full bg-hoban-primary transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
         </div>
-        <span className="ml-2 sm:ml-4 font-bold text-pwc-orange text-[11px] min-w-[36px] sm:min-w-[40px] text-right tracking-wider whitespace-nowrap">
+        <span className="ml-2 sm:ml-4 font-bold text-hoban-primary text-[11px] min-w-[36px] sm:min-w-[40px] text-right tracking-wider whitespace-nowrap">
           {completedCount}/{totalCount}
         </span>
         <svg
-          className={`ml-1 sm:ml-2 w-4 h-4 text-pwc-ink-soft transition-transform shrink-0 ${
+          className={`ml-1 sm:ml-2 w-4 h-4 text-hoban-ink-soft transition-transform shrink-0 ${
             showChecklistPanel ? "rotate-180" : ""
           }`}
           fill="none"

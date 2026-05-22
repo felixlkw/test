@@ -55,16 +55,16 @@ export function LangDropdown({
   return (
     <div
       data-lang-dropdown
-      className="fixed bg-white border border-pwc-border rounded-lg shadow-lg min-w-[140px]"
+      className="fixed bg-white border border-hoban-border rounded-lg shadow-lg min-w-[140px]"
       style={{ top, right, zIndex: 30 }}
     >
       {Object.entries(LANGUAGE_CONFIG).map(([key, config]) => (
         <button
           key={key}
-          className={`w-full px-3 py-2 text-left text-xs hover:bg-pwc-orange-wash transition-colors flex items-center gap-2 first:rounded-t-lg last:rounded-b-lg ${
+          className={`w-full px-3 py-2 text-left text-xs hover:bg-hoban-primary-wash transition-colors flex items-center gap-2 first:rounded-t-lg last:rounded-b-lg ${
             currentLanguage === key
-              ? "bg-pwc-orange/20 text-pwc-ink"
-              : "text-pwc-ink-soft"
+              ? "bg-hoban-primary/20 text-hoban-ink"
+              : "text-hoban-ink-soft"
           }`}
           onClick={() => onSelect(key as SessionLanguage)}
           disabled={disabled}

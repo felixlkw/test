@@ -5,7 +5,7 @@
 //     TBMQuestionCard)는 InfoCardBase를 wrap한다.
 //   - kind별 PwC 토큰 매핑은 본 파일 KIND_STYLES에 단일화 — 새 카드 추가 시
 //     KIND_STYLES만 갱신.
-//   - radius rounded-pwc-lg(8px), padding px-3 py-2, shadow shadow-pwc-card
+//   - radius rounded-hoban-lg(8px), padding px-3 py-2, shadow shadow-hoban-card
 //     일관 적용. 좌측 icon slot 16~20px.
 //
 // invariants:
@@ -55,43 +55,43 @@ interface KindStyle {
 const KIND_STYLES: Record<CardKind, KindStyle> = {
   // hazard: 위험요인 — 강조 톤(오렌지 wash + 오렌지 border)
   hazard: {
-    bg: "bg-pwc-orange-wash",
-    border: "border-pwc-orange/40",
-    text: "text-pwc-ink",
-    meta: "text-pwc-ink-soft",
-    titleColor: "text-pwc-ink",
+    bg: "bg-hoban-primary-wash",
+    border: "border-hoban-primary/40",
+    text: "text-hoban-ink",
+    meta: "text-hoban-ink-soft",
+    titleColor: "text-hoban-ink",
   },
   // origin: 원인 — 보조 톤(카드 bg + 회색 border + 약한 텍스트)
   origin: {
-    bg: "bg-pwc-bg-card",
-    border: "border-pwc-border",
-    text: "text-pwc-ink-soft",
-    meta: "text-pwc-ink-mute",
-    titleColor: "text-pwc-ink-soft",
+    bg: "bg-hoban-bg-card",
+    border: "border-hoban-border",
+    text: "text-hoban-ink-soft",
+    meta: "text-hoban-ink-mute",
+    titleColor: "text-hoban-ink-soft",
   },
   // mitigation: 조치 — 흰 카드 + 진한 오렌지 border (액션 톤)
   mitigation: {
     bg: "bg-white",
-    border: "border-pwc-orange-deep/40",
-    text: "text-pwc-ink",
-    meta: "text-pwc-ink-soft",
-    titleColor: "text-pwc-orange-deep",
+    border: "border-hoban-primary-deep/40",
+    text: "text-hoban-ink",
+    meta: "text-hoban-ink-soft",
+    titleColor: "text-hoban-primary-deep",
   },
   // incident: 사고사례 — 회색 톤(약하게)
   incident: {
-    bg: "bg-pwc-bg-soft",
-    border: "border-pwc-border",
-    text: "text-pwc-ink-mute",
-    meta: "text-pwc-ink-mute",
-    titleColor: "text-pwc-ink-soft",
+    bg: "bg-hoban-bg-soft",
+    border: "border-hoban-border",
+    text: "text-hoban-ink-mute",
+    meta: "text-hoban-ink-mute",
+    titleColor: "text-hoban-ink-soft",
   },
   // question: TBM 질문 — 흰 카드 + 점선 border (질문 톤, 클릭 시 hover)
   question: {
     bg: "bg-white",
-    border: "border-pwc-border",
-    text: "text-pwc-ink",
-    meta: "text-pwc-ink-soft",
-    titleColor: "text-pwc-ink",
+    border: "border-hoban-border",
+    text: "text-hoban-ink",
+    meta: "text-hoban-ink-soft",
+    titleColor: "text-hoban-ink",
   },
 };
 
@@ -114,14 +114,14 @@ export function InfoCardBase({
   const interactive = !!onClick;
 
   const wrapperClass = [
-    "rounded-pwc-lg shadow-pwc-card px-3 py-2",
+    "rounded-hoban-lg shadow-hoban-card px-3 py-2",
     style.bg,
     style.text,
     "border",
     useDashed ? "border-dashed" : "",
     style.border,
     interactive
-      ? "cursor-pointer hover:border-pwc-orange focus:outline-none focus-visible:ring-2 focus-visible:ring-pwc-orange transition-colors text-left"
+      ? "cursor-pointer hover:border-hoban-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-hoban-primary transition-colors text-left"
       : "",
     className ?? "",
   ]

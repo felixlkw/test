@@ -314,9 +314,9 @@ export default function FinishScreen() {
   // ── render ──────────────────────────────────────────────
   if (loadState === "loading") {
     return (
-      <div className="min-h-screen bg-pwc-bg text-pwc-ink">
+      <div className="min-h-screen bg-hoban-bg text-hoban-ink">
         <TopBar title="정리" />
-        <div className="px-5 py-10 text-sm text-pwc-ink-mute" role="status">
+        <div className="px-5 py-10 text-sm text-hoban-ink-mute" role="status">
           세션을 불러오는 중…
         </div>
       </div>
@@ -324,10 +324,10 @@ export default function FinishScreen() {
   }
   if (loadState === "error" || !session) {
     return (
-      <div className="min-h-screen bg-pwc-bg text-pwc-ink">
+      <div className="min-h-screen bg-hoban-bg text-hoban-ink">
         <TopBar title="정리" backTo="/" />
         <div className="px-5 py-10" role="alert">
-          <p className="text-sm text-pwc-orange-deep">
+          <p className="text-sm text-hoban-primary-deep">
             {loadError ?? "세션을 불러오지 못했습니다."}
           </p>
           <CTAButton
@@ -347,7 +347,7 @@ export default function FinishScreen() {
   const backTo = `/tbm/${session.session_id}/run`;
 
   return (
-    <div className="min-h-screen bg-pwc-bg text-pwc-ink">
+    <div className="min-h-screen bg-hoban-bg text-hoban-ink">
       <TopBar title="정리" backTo={backTo} />
 
       <main className="px-5 py-5 space-y-7 max-w-2xl mx-auto pb-24">
@@ -355,7 +355,7 @@ export default function FinishScreen() {
         <section aria-labelledby="finish-summary">
           <h2
             id="finish-summary"
-            className="font-serif-display text-[20px] text-pwc-ink"
+            className="font-serif-display text-[20px] text-hoban-ink"
           >
             1. 요약
           </h2>
@@ -365,7 +365,7 @@ export default function FinishScreen() {
             onChange={(e) => setFinalSummary(e.target.value)}
             placeholder="AI가 생성한 요약을 검토·편집하세요. 비어 있으면 종료 시 자동 생성됩니다."
             rows={6}
-            className="w-full px-3 py-2 rounded-pwc border border-pwc-border-strong text-sm focus:outline-none focus:border-pwc-orange resize-y"
+            className="w-full px-3 py-2 rounded-hoban border border-hoban-border-strong text-sm focus:outline-none focus:border-hoban-primary resize-y"
           />
         </section>
 
@@ -373,7 +373,7 @@ export default function FinishScreen() {
         <section aria-labelledby="finish-structured">
           <h2
             id="finish-structured"
-            className="font-serif-display text-[20px] text-pwc-ink"
+            className="font-serif-display text-[20px] text-hoban-ink"
           >
             2. 위험·대응 정리
           </h2>
@@ -421,11 +421,11 @@ export default function FinishScreen() {
         <section aria-labelledby="finish-attendees">
           <h2
             id="finish-attendees"
-            className="font-serif-display text-[20px] text-pwc-ink"
+            className="font-serif-display text-[20px] text-hoban-ink"
           >
             3. 참석자 ({attendees.length}명)
           </h2>
-          <p className="text-xs text-pwc-ink-mute mt-1">
+          <p className="text-xs text-hoban-ink-mute mt-1">
             이름과 역할을 추가한 뒤 ○ 아이콘을 눌러 서명 또는 본인 동의를 받으세요.
             개인정보는 단말 내부(IndexedDB)에만 저장됩니다.
           </p>
@@ -444,7 +444,7 @@ export default function FinishScreen() {
         <section aria-labelledby="finish-preview">
           <h2
             id="finish-preview"
-            className="font-serif-display text-[20px] text-pwc-ink"
+            className="font-serif-display text-[20px] text-hoban-ink"
           >
             4. 미리보기
           </h2>
@@ -465,13 +465,13 @@ export default function FinishScreen() {
           {actionError && (
             <div
               role="alert"
-              className="mb-3 text-sm text-pwc-orange-deep border border-pwc-orange-deep/40 rounded-pwc px-3 py-2"
+              className="mb-3 text-sm text-hoban-primary-deep border border-hoban-primary-deep/40 rounded-hoban px-3 py-2"
             >
               {actionError}
             </div>
           )}
           {lastReportInfo && (
-            <div className="mb-3 text-xs text-pwc-ink-soft border border-pwc-border rounded-pwc px-3 py-2 bg-pwc-bg-card">
+            <div className="mb-3 text-xs text-hoban-ink-soft border border-hoban-border rounded-hoban px-3 py-2 bg-hoban-bg-card">
               {lastReportInfo}
             </div>
           )}
@@ -502,7 +502,7 @@ export default function FinishScreen() {
               {finishing ? "종료 처리 중…" : "TBM 종료"}
             </CTAButton>
           </div>
-          <p className="text-[11px] text-pwc-ink-mute mt-2">
+          <p className="text-[11px] text-hoban-ink-mute mt-2">
             "TBM 종료" 시 세션이 확정되고 보관함으로 이동합니다. 영구 삭제는
             설정에서 가능합니다.
           </p>
@@ -534,14 +534,14 @@ function StructuredField({
 }) {
   return (
     <div>
-      <label className="text-[10px] uppercase tracking-wider text-pwc-ink-mute font-bold block mb-1">
+      <label className="text-[10px] uppercase tracking-wider text-hoban-ink-mute font-bold block mb-1">
         {label}
       </label>
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         rows={2}
-        className="w-full px-3 py-2 rounded-pwc border border-pwc-border-strong text-sm focus:outline-none focus:border-pwc-orange resize-y"
+        className="w-full px-3 py-2 rounded-hoban border border-hoban-border-strong text-sm focus:outline-none focus:border-hoban-primary resize-y"
       />
     </div>
   );
@@ -560,9 +560,9 @@ function StructuredArrayField({
   const text = value.join("\n");
   return (
     <div>
-      <label className="text-[10px] uppercase tracking-wider text-pwc-ink-mute font-bold block mb-1">
+      <label className="text-[10px] uppercase tracking-wider text-hoban-ink-mute font-bold block mb-1">
         {label}{" "}
-        <span className="text-pwc-ink-mute font-normal normal-case tracking-normal">
+        <span className="text-hoban-ink-mute font-normal normal-case tracking-normal">
           (줄바꿈으로 항목 구분)
         </span>
       </label>
@@ -576,7 +576,7 @@ function StructuredArrayField({
           onChange(next);
         }}
         rows={Math.max(2, value.length || 2)}
-        className="w-full px-3 py-2 rounded-pwc border border-pwc-border-strong text-sm focus:outline-none focus:border-pwc-orange resize-y"
+        className="w-full px-3 py-2 rounded-hoban border border-hoban-border-strong text-sm focus:outline-none focus:border-hoban-primary resize-y"
       />
     </div>
   );

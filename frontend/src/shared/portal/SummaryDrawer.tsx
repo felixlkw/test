@@ -64,12 +64,12 @@ export function SummaryDrawer({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md h-full bg-pwc-bg text-pwc-ink border-l border-pwc-border overflow-y-auto"
+        className="w-full max-w-md h-full bg-hoban-bg text-hoban-ink border-l border-hoban-border overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-pwc-bg border-b border-pwc-border px-5 py-4 flex items-center justify-between gap-3">
+        <div className="sticky top-0 bg-hoban-bg border-b border-hoban-border px-5 py-4 flex items-center justify-between gap-3">
           <div className="min-w-0">
-            <div className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold">
+            <div className="text-[11px] uppercase tracking-wider text-hoban-primary font-bold">
               지금까지 정리본
             </div>
             <div className="font-serif-display text-[22px] leading-tight mt-0.5">
@@ -90,8 +90,8 @@ export function SummaryDrawer({
                 }
                 className={
                   broadcastReady
-                    ? "flex items-center gap-1 bg-pwc-orange hover:bg-pwc-orange-deep text-white font-bold text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-pwc transition whitespace-nowrap"
-                    : "flex items-center gap-1 bg-pwc-bg-soft text-pwc-ink-soft font-bold text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-pwc border border-pwc-border-strong cursor-not-allowed whitespace-nowrap"
+                    ? "flex items-center gap-1 bg-hoban-primary hover:bg-hoban-primary-deep text-white font-bold text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-hoban transition whitespace-nowrap"
+                    : "flex items-center gap-1 bg-hoban-bg-soft text-hoban-ink-soft font-bold text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-hoban border border-hoban-border-strong cursor-not-allowed whitespace-nowrap"
                 }
               >
                 <span aria-hidden="true">📢</span>
@@ -100,7 +100,7 @@ export function SummaryDrawer({
             )}
             <button
               onClick={onClose}
-              className="w-9 h-9 flex items-center justify-center text-pwc-ink-soft hover:text-pwc-orange"
+              className="w-9 h-9 flex items-center justify-center text-hoban-ink-soft hover:text-hoban-primary"
               aria-label="close"
             >
               <IconClose size={20} />
@@ -110,11 +110,11 @@ export function SummaryDrawer({
 
         <div className="p-5">
           {finalSummary && (
-            <section className="mb-5 border-l-4 border-pwc-orange bg-pwc-orange-wash p-4">
-              <div className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold mb-2">
+            <section className="mb-5 border-l-4 border-hoban-primary bg-hoban-primary-wash p-4">
+              <div className="text-[11px] uppercase tracking-wider text-hoban-primary font-bold mb-2">
                 최종 요약 · AI 생성
               </div>
-              <div className="text-sm whitespace-pre-wrap leading-relaxed text-pwc-ink">
+              <div className="text-sm whitespace-pre-wrap leading-relaxed text-hoban-ink">
                 {finalSummary}
               </div>
             </section>
@@ -124,7 +124,7 @@ export function SummaryDrawer({
           {baselineList.length > 0 && (
             <section className="mb-5">
               <div className="flex items-center justify-between mb-2">
-                <div className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold">
+                <div className="text-[11px] uppercase tracking-wider text-hoban-primary font-bold">
                   준비 단계 필수 점검 ({baselineList.length}건)
                 </div>
               </div>
@@ -132,17 +132,17 @@ export function SummaryDrawer({
                 {baselineList.map((content, i) => (
                   <li
                     key={`baseline-${i}`}
-                    className="flex items-start gap-2 text-sm rounded-pwc px-3 py-2 border border-pwc-orange/30 bg-pwc-orange-wash"
+                    className="flex items-start gap-2 text-sm rounded-hoban px-3 py-2 border border-hoban-primary/30 bg-hoban-primary-wash"
                   >
                     <span
                       aria-hidden
-                      className="mt-[2px] inline-flex w-4 h-4 shrink-0 items-center justify-center text-pwc-orange-deep"
+                      className="mt-[2px] inline-flex w-4 h-4 shrink-0 items-center justify-center text-hoban-primary-deep"
                       title="준비 단계 필수 항목"
                     >
                       <IconLock size={12} />
                     </span>
                     <div className="flex-1 min-w-0">
-                      <div className="leading-snug text-pwc-ink">{content}</div>
+                      <div className="leading-snug text-hoban-ink">{content}</div>
                     </div>
                   </li>
                 ))}
@@ -153,17 +153,17 @@ export function SummaryDrawer({
           {/* Cycle 2 이슈 4: 체크리스트 진행 섹션 */}
           <section className="mb-5">
             <div className="flex items-center justify-between mb-2">
-              <div className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold">
+              <div className="text-[11px] uppercase tracking-wider text-hoban-primary font-bold">
                 체크리스트 진행
               </div>
               {checklist.length > 0 && (
-                <div className="text-[11px] text-pwc-ink-soft">
+                <div className="text-[11px] text-hoban-ink-soft">
                   {completedCount}/{checklist.length}
                 </div>
               )}
             </div>
             {checklist.length === 0 ? (
-              <div className="text-xs text-pwc-ink-soft bg-pwc-bg-card border border-pwc-border rounded-pwc px-3 py-3">
+              <div className="text-xs text-hoban-ink-soft bg-hoban-bg-card border border-hoban-border rounded-hoban px-3 py-3">
                 체크리스트가 아직 생성되지 않았습니다
               </div>
             ) : (
@@ -174,18 +174,18 @@ export function SummaryDrawer({
                   return (
                     <li
                       key={item.index}
-                      className={`flex items-start gap-2 text-sm rounded-pwc px-3 py-2 border ${
+                      className={`flex items-start gap-2 text-sm rounded-hoban px-3 py-2 border ${
                         checked
-                          ? "border-pwc-orange/40 bg-pwc-orange-wash"
-                          : "border-pwc-border bg-pwc-bg-card"
+                          ? "border-hoban-primary/40 bg-hoban-primary-wash"
+                          : "border-hoban-border bg-hoban-bg-card"
                       }`}
                     >
                       <span
                         aria-hidden
                         className={`mt-[2px] inline-flex w-4 h-4 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
                           checked
-                            ? "bg-pwc-orange text-white"
-                            : "bg-white text-pwc-ink-soft border border-pwc-border-strong"
+                            ? "bg-hoban-primary text-white"
+                            : "bg-white text-hoban-ink-soft border border-hoban-border-strong"
                         }`}
                       >
                         {checked ? "✓" : "○"}
@@ -193,21 +193,21 @@ export function SummaryDrawer({
                       <div className="flex-1 min-w-0">
                         <div
                           className={`leading-snug ${
-                            checked ? "text-pwc-ink" : "text-pwc-ink-soft"
+                            checked ? "text-hoban-ink" : "text-hoban-ink-soft"
                           }`}
                         >
                           {item.content}
                         </div>
                         {checked && item.utterance && (
                           <div
-                            className="mt-1 text-[11px] text-pwc-ink-soft truncate"
+                            className="mt-1 text-[11px] text-hoban-ink-soft truncate"
                             title={item.utterance}
                           >
                             “{item.utterance}”
                           </div>
                         )}
                         {checked && time && (
-                          <div className="mt-0.5 text-[10px] uppercase tracking-wider text-pwc-ink-soft">
+                          <div className="mt-0.5 text-[10px] uppercase tracking-wider text-hoban-ink-soft">
                             {time}
                           </div>
                         )}
@@ -234,21 +234,21 @@ export function SummaryDrawer({
           </div>
 
           {hazardSuggestions.length > 0 && (
-            <section className="mt-6 border-l-4 border-pwc-orange bg-pwc-orange-wash p-4">
-              <div className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold mb-2">
+            <section className="mt-6 border-l-4 border-hoban-primary bg-hoban-primary-wash p-4">
+              <div className="text-[11px] uppercase tracking-wider text-hoban-primary font-bold mb-2">
                 AI 추가 확인 제안
               </div>
               <ul className="flex flex-col gap-3">
                 {hazardSuggestions.map((s, i) => (
                   <li key={i} className="text-sm">
-                    <div className="font-semibold text-pwc-ink">• {s.hazard}</div>
-                    <div className="text-pwc-ink-soft text-xs mt-0.5">{s.rationale}</div>
+                    <div className="font-semibold text-hoban-ink">• {s.hazard}</div>
+                    <div className="text-hoban-ink-soft text-xs mt-0.5">{s.rationale}</div>
                   </li>
                 ))}
               </ul>
               <button
                 onClick={onClearHazardSuggestions}
-                className="mt-3 w-full text-xs py-2 rounded-pwc bg-white text-pwc-ink-soft border border-pwc-border hover:text-pwc-orange hover:border-pwc-orange transition"
+                className="mt-3 w-full text-xs py-2 rounded-hoban bg-white text-hoban-ink-soft border border-hoban-border hover:text-hoban-primary hover:border-hoban-primary transition"
               >
                 제안 닫기
               </button>

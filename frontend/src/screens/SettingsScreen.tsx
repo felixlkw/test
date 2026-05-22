@@ -25,8 +25,8 @@ import {
   type RetentionOption,
 } from "../services/retention";
 
-// Tenant-aware visible-domain list. 비가시 도메인(예: LG Innotek의 semiconductor)은
-// 상태 초기화 / 토글 행 / 기본 도메인 드롭다운 모두에서 노출 자체를 제거.
+// Tenant-aware visible-domain list. 비가시 도메인(예: 호반 테넌트의 heavy_industry·
+// semiconductor)은 상태 초기화 / 토글 행 / 기본 도메인 드롭다운 모두에서 노출 제거.
 const VISIBLE_DOMAINS = ALL_DOMAINS.filter(isDomainVisible);
 
 // PR D Q8 — 운영 섹션 localStorage 키.
@@ -212,45 +212,45 @@ export default function SettingsScreen() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-pwc-bg text-pwc-ink flex flex-col">
+    <div className="w-full min-h-screen bg-hoban-bg text-hoban-ink flex flex-col">
       <TopBar title="설정" backTo="/" />
 
       <div className="flex-1 px-5 py-6 flex flex-col gap-8">
         <section>
-          <h2 className="font-serif-display text-[20px] text-pwc-ink">앱 정보</h2>
+          <h2 className="font-serif-display text-[20px] text-hoban-ink">앱 정보</h2>
           <RuleLine className="mt-2 mb-4" />
-          <div className="flex justify-between text-sm py-2 border-b border-pwc-border">
-            <span className="text-pwc-ink-soft">앱 버전</span>
+          <div className="flex justify-between text-sm py-2 border-b border-hoban-border">
+            <span className="text-hoban-ink-soft">앱 버전</span>
             <span className="font-semibold">{appVersion}</span>
           </div>
           {backendVersion && (
-            <div className="flex justify-between text-sm py-2 border-b border-pwc-border">
-              <span className="text-pwc-ink-soft">백엔드 버전</span>
+            <div className="flex justify-between text-sm py-2 border-b border-hoban-border">
+              <span className="text-hoban-ink-soft">백엔드 버전</span>
               <span className="font-semibold">{backendVersion}</span>
             </div>
           )}
-          <div className="flex justify-between text-sm py-2 border-b border-pwc-border">
-            <span className="text-pwc-ink-soft">활성 세션</span>
+          <div className="flex justify-between text-sm py-2 border-b border-hoban-border">
+            <span className="text-hoban-ink-soft">활성 세션</span>
             <span className="font-semibold">{sessions.length}개</span>
           </div>
-          <div className="flex justify-between text-sm py-2 border-b border-pwc-border">
-            <span className="text-pwc-ink-soft">보관된 세션</span>
+          <div className="flex justify-between text-sm py-2 border-b border-hoban-border">
+            <span className="text-hoban-ink-soft">보관된 세션</span>
             <span className="font-semibold">{archivedSessions.length}개</span>
           </div>
           <div className="flex justify-between text-sm py-2">
-            <span className="text-pwc-ink-soft">빌드</span>
+            <span className="text-hoban-ink-soft">빌드</span>
             <span className="font-semibold">PwC Brand · Light</span>
           </div>
         </section>
 
         <section>
-          <h2 className="font-serif-display text-[20px] text-pwc-ink">AI 컨텍스트 활용</h2>
+          <h2 className="font-serif-display text-[20px] text-hoban-ink">AI 컨텍스트 활용</h2>
           <RuleLine className="mt-2 mb-4" />
-          <p className="text-[12px] text-pwc-ink-soft mb-3">
+          <p className="text-[12px] text-hoban-ink-soft mb-3">
             도메인별로 PrepareScreen 컨텍스트 입력(작업자 수·풍속·신규 자재 등)을
             LLM에 전달할지 선택합니다.
           </p>
-          <ul className="divide-y divide-pwc-border border border-pwc-border rounded-pwc bg-white">
+          <ul className="divide-y divide-hoban-border border border-hoban-border rounded-hoban bg-white">
             {VISIBLE_DOMAINS.map((d) => {
               const enabled = aiContextByDomain[d];
               return (
@@ -258,7 +258,7 @@ export default function SettingsScreen() {
                   key={d}
                   className="flex items-center justify-between px-4 py-3"
                 >
-                  <span className="text-sm font-semibold text-pwc-ink">
+                  <span className="text-sm font-semibold text-hoban-ink">
                     {DOMAIN_LABEL_KO[d]}
                   </span>
                   <button
@@ -268,16 +268,16 @@ export default function SettingsScreen() {
                     aria-label={`${DOMAIN_LABEL_KO[d]} AI 컨텍스트 활용 ${enabled ? "사용 안 함으로 전환" : "사용함으로 전환"}`}
                     onClick={() => toggleDomainAiContext(d)}
                     className={[
-                      "relative inline-flex items-center gap-2 rounded-pwc px-3 py-1.5 text-[12px] font-semibold transition border",
+                      "relative inline-flex items-center gap-2 rounded-hoban px-3 py-1.5 text-[12px] font-semibold transition border",
                       enabled
-                        ? "bg-pwc-orange text-white border-pwc-orange hover:bg-pwc-orange-deep"
-                        : "bg-white text-pwc-ink-soft border-pwc-border hover:border-pwc-orange",
+                        ? "bg-hoban-primary text-white border-hoban-primary hover:bg-hoban-primary-deep"
+                        : "bg-white text-hoban-ink-soft border-hoban-border hover:border-hoban-primary",
                     ].join(" ")}
                   >
                     <span
                       className={[
                         "inline-block w-2 h-2 rounded-full",
-                        enabled ? "bg-white" : "bg-pwc-ink-mute",
+                        enabled ? "bg-white" : "bg-hoban-ink-mute",
                       ].join(" ")}
                       aria-hidden="true"
                     />
@@ -287,21 +287,21 @@ export default function SettingsScreen() {
               );
             })}
           </ul>
-          <p className="text-[11px] text-pwc-ink-mute mt-2">
+          <p className="text-[11px] text-hoban-ink-mute mt-2">
             OFF 시 PrepareScreen 컨텍스트 입력이 LLM에 전달되지 않습니다.
             baseline 추천은 정적 카탈로그만 사용합니다. (반도체 기본 OFF)
           </p>
         </section>
 
         <section>
-          <h2 className="font-serif-display text-[20px] text-pwc-ink">카메라 사용 허용</h2>
+          <h2 className="font-serif-display text-[20px] text-hoban-ink">카메라 사용 허용</h2>
           <RuleLine className="mt-2 mb-4" />
-          <p className="text-[12px] text-pwc-ink-soft mb-3">
+          <p className="text-[12px] text-hoban-ink-soft mb-3">
             도메인별로 사진 분석 캡처를 허용할지 선택합니다. OFF 시 RunScreen
             카메라 버튼이 노출되지 않습니다. (반도체 기본 OFF — 영업비밀/사이트
             보안)
           </p>
-          <ul className="divide-y divide-pwc-border border border-pwc-border rounded-pwc bg-white">
+          <ul className="divide-y divide-hoban-border border border-hoban-border rounded-hoban bg-white">
             {VISIBLE_DOMAINS.map((d) => {
               const enabled = cameraByDomain[d];
               return (
@@ -309,7 +309,7 @@ export default function SettingsScreen() {
                   key={d}
                   className="flex items-center justify-between px-4 py-3"
                 >
-                  <span className="text-sm font-semibold text-pwc-ink">
+                  <span className="text-sm font-semibold text-hoban-ink">
                     {DOMAIN_LABEL_KO[d]}
                   </span>
                   <button
@@ -319,16 +319,16 @@ export default function SettingsScreen() {
                     aria-label={`${DOMAIN_LABEL_KO[d]} 카메라 사용 ${enabled ? "사용 안 함으로 전환" : "사용함으로 전환"}`}
                     onClick={() => toggleDomainCamera(d)}
                     className={[
-                      "relative inline-flex items-center gap-2 rounded-pwc px-3 py-1.5 text-[12px] font-semibold transition border",
+                      "relative inline-flex items-center gap-2 rounded-hoban px-3 py-1.5 text-[12px] font-semibold transition border",
                       enabled
-                        ? "bg-pwc-orange text-white border-pwc-orange hover:bg-pwc-orange-deep"
-                        : "bg-white text-pwc-ink-soft border-pwc-border hover:border-pwc-orange",
+                        ? "bg-hoban-primary text-white border-hoban-primary hover:bg-hoban-primary-deep"
+                        : "bg-white text-hoban-ink-soft border-hoban-border hover:border-hoban-primary",
                     ].join(" ")}
                   >
                     <span
                       className={[
                         "inline-block w-2 h-2 rounded-full",
-                        enabled ? "bg-white" : "bg-pwc-ink-mute",
+                        enabled ? "bg-white" : "bg-hoban-ink-mute",
                       ].join(" ")}
                       aria-hidden="true"
                     />
@@ -338,7 +338,7 @@ export default function SettingsScreen() {
               );
             })}
           </ul>
-          <p className="text-[11px] text-pwc-ink-mute mt-2">
+          <p className="text-[11px] text-hoban-ink-mute mt-2">
             촬영한 사진은 안전 위험 분석을 위해 OpenAI API에 전송되며, 단말
             내부(IndexedDB)에만 저장됩니다.
           </p>
@@ -346,21 +346,21 @@ export default function SettingsScreen() {
 
         {/* PR D Q8 (OLD-M14) — 운영 옵션. */}
         <section>
-          <h2 className="font-serif-display text-[20px] text-pwc-ink">운영</h2>
+          <h2 className="font-serif-display text-[20px] text-hoban-ink">운영</h2>
           <RuleLine className="mt-2 mb-4" />
 
           {/* default domain */}
-          <div className="flex items-center justify-between gap-3 py-2 border-b border-pwc-border">
+          <div className="flex items-center justify-between gap-3 py-2 border-b border-hoban-border">
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-pwc-ink">기본 도메인</div>
-              <div className="text-[11px] text-pwc-ink-mute mt-0.5">
+              <div className="text-sm font-semibold text-hoban-ink">기본 도메인</div>
+              <div className="text-[11px] text-hoban-ink-mute mt-0.5">
                 새 TBM 시작 시 자동 적용. "선택 안 함"이면 기존 도메인 시트 노출.
               </div>
             </div>
             <select
               value={defaultDomain}
               onChange={(e) => handleDefaultDomainChange(e.target.value)}
-              className="px-2 py-1.5 text-sm rounded-pwc border border-pwc-border-strong bg-white focus:outline-none focus:border-pwc-orange"
+              className="px-2 py-1.5 text-sm rounded-hoban border border-hoban-border-strong bg-white focus:outline-none focus:border-hoban-primary"
               aria-label="기본 도메인 선택"
             >
               <option value="">선택 안 함</option>
@@ -373,17 +373,17 @@ export default function SettingsScreen() {
           </div>
 
           {/* retention */}
-          <div className="flex items-center justify-between gap-3 py-2 border-b border-pwc-border">
+          <div className="flex items-center justify-between gap-3 py-2 border-b border-hoban-border">
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-pwc-ink">보존 기간</div>
-              <div className="text-[11px] text-pwc-ink-mute mt-0.5">
+              <div className="text-sm font-semibold text-hoban-ink">보존 기간</div>
+              <div className="text-[11px] text-hoban-ink-mute mt-0.5">
                 보관된 세션은 설정한 기간 이후 자동 영구 삭제. 활성 세션은 영향 없음.
               </div>
             </div>
             <select
               value={retention}
               onChange={(e) => handleRetentionChange(e.target.value)}
-              className="px-2 py-1.5 text-sm rounded-pwc border border-pwc-border-strong bg-white focus:outline-none focus:border-pwc-orange"
+              className="px-2 py-1.5 text-sm rounded-hoban border border-hoban-border-strong bg-white focus:outline-none focus:border-hoban-primary"
               aria-label="보존 기간 선택"
             >
               <option value="30">30일</option>
@@ -399,7 +399,7 @@ export default function SettingsScreen() {
               type="button"
               onClick={handleExport}
               disabled={opBusy || sessions.length + archivedSessions.length === 0}
-              className="w-full rounded-pwc border border-pwc-border-strong bg-white text-pwc-ink py-2.5 text-sm font-semibold hover:border-pwc-orange hover:text-pwc-orange disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="w-full rounded-hoban border border-hoban-border-strong bg-white text-hoban-ink py-2.5 text-sm font-semibold hover:border-hoban-primary hover:text-hoban-primary disabled:opacity-40 disabled:cursor-not-allowed transition"
             >
               세션 export (JSON)
             </button>
@@ -407,7 +407,7 @@ export default function SettingsScreen() {
               type="button"
               onClick={handleImportClick}
               disabled={opBusy}
-              className="w-full rounded-pwc border border-pwc-border-strong bg-white text-pwc-ink py-2.5 text-sm font-semibold hover:border-pwc-orange hover:text-pwc-orange disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="w-full rounded-hoban border border-hoban-border-strong bg-white text-hoban-ink py-2.5 text-sm font-semibold hover:border-hoban-primary hover:text-hoban-primary disabled:opacity-40 disabled:cursor-not-allowed transition"
             >
               세션 import (JSON)
             </button>
@@ -420,16 +420,16 @@ export default function SettingsScreen() {
               aria-hidden="true"
             />
             {opMessage && (
-              <p className="text-[11px] text-pwc-ink-soft border border-pwc-border rounded-pwc px-2 py-1.5 bg-pwc-bg-card">
+              <p className="text-[11px] text-hoban-ink-soft border border-hoban-border rounded-hoban px-2 py-1.5 bg-hoban-bg-card">
                 {opMessage}
               </p>
             )}
             {opError && (
-              <p className="text-[11px] text-pwc-orange-deep border border-pwc-orange-deep/40 rounded-pwc px-2 py-1.5">
+              <p className="text-[11px] text-hoban-primary-deep border border-hoban-primary-deep/40 rounded-hoban px-2 py-1.5">
                 {opError}
               </p>
             )}
-            <p className="text-[11px] text-pwc-ink-mute">
+            <p className="text-[11px] text-hoban-ink-mute">
               사진/리포트 PDF blob은 export에 포함되지 않습니다. import 시 ID 충돌
               세션은 새 ID로 추가됩니다.
             </p>
@@ -437,35 +437,35 @@ export default function SettingsScreen() {
         </section>
 
         <section>
-          <h2 className="font-serif-display text-[20px] text-pwc-ink">보관함</h2>
+          <h2 className="font-serif-display text-[20px] text-hoban-ink">보관함</h2>
           <RuleLine className="mt-2 mb-4" />
-          <p className="text-[12px] text-pwc-ink-soft mb-3">
+          <p className="text-[12px] text-hoban-ink-soft mb-3">
             보관된 세션 {archivedSessions.length}개. 보관 후에는 이력 목록에서 보이지 않으나
             기기에는 남아 있습니다.
           </p>
           <button
             onClick={handleDeleteArchived}
             disabled={busy || archivedSessions.length === 0}
-            className="w-full rounded-pwc bg-pwc-orange text-white py-3 text-sm font-semibold active:scale-[0.99] transition disabled:opacity-40 disabled:cursor-not-allowed hover:bg-pwc-orange-deep"
+            className="w-full rounded-hoban bg-hoban-primary text-white py-3 text-sm font-semibold active:scale-[0.99] transition disabled:opacity-40 disabled:cursor-not-allowed hover:bg-hoban-primary-deep"
           >
             보관함 영구 삭제 →
           </button>
-          <p className="text-[11px] text-pwc-ink-mute mt-2">
+          <p className="text-[11px] text-hoban-ink-mute mt-2">
             보관된 세션만 영구 삭제됩니다. 활성 세션은 영향 없음.
           </p>
         </section>
 
         <section>
-          <h2 className="font-serif-display text-[20px] text-pwc-ink">데이터</h2>
+          <h2 className="font-serif-display text-[20px] text-hoban-ink">데이터</h2>
           <RuleLine className="mt-2 mb-4" />
           <button
             onClick={handleClearAll}
             disabled={busy || sessions.length + archivedSessions.length === 0}
-            className="w-full rounded-pwc bg-pwc-orange text-white py-3 text-sm font-semibold active:scale-[0.99] transition disabled:opacity-40 disabled:cursor-not-allowed hover:bg-pwc-orange-deep"
+            className="w-full rounded-hoban bg-hoban-primary text-white py-3 text-sm font-semibold active:scale-[0.99] transition disabled:opacity-40 disabled:cursor-not-allowed hover:bg-hoban-primary-deep"
           >
             활성 + 보관 모든 세션 영구 삭제 →
           </button>
-          <p className="text-[11px] text-pwc-ink-mute mt-2">
+          <p className="text-[11px] text-hoban-ink-mute mt-2">
             기기에 저장된 모든 TBM 세션과 대화 기록이 영구 삭제됩니다. 복구할 수 없습니다.
           </p>
         </section>

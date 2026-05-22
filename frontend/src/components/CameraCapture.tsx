@@ -158,7 +158,7 @@ export function CameraCapture({ open, onClose, onCapture }: CameraCaptureProps) 
         <button
           type="button"
           onClick={handleClose}
-          className="p-2 rounded-pwc text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-pwc-orange"
+          className="p-2 rounded-hoban text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-hoban-primary"
           aria-label="카메라 닫기"
         >
           <IconClose size={18} />
@@ -172,7 +172,7 @@ export function CameraCapture({ open, onClose, onCapture }: CameraCaptureProps) 
             <button
               type="button"
               onClick={() => fileRef.current?.click()}
-              className="bg-pwc-orange hover:bg-pwc-orange-deep text-white text-sm font-bold rounded-pwc px-5 py-2.5"
+              className="bg-hoban-primary hover:bg-hoban-primary-deep text-white text-sm font-bold rounded-hoban px-5 py-2.5"
             >
               사진 파일 선택
             </button>
@@ -201,10 +201,10 @@ export function CameraCapture({ open, onClose, onCapture }: CameraCaptureProps) 
             type="button"
             onClick={captureFrame}
             disabled={busy || !!error}
-            className="w-16 h-16 rounded-full bg-white border-4 border-pwc-orange disabled:opacity-50 hover:scale-105 transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-pwc-orange"
+            className="w-16 h-16 rounded-full bg-white border-4 border-hoban-primary disabled:opacity-50 hover:scale-105 transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-hoban-primary"
             aria-label="촬영"
           >
-            <span className="block w-12 h-12 mx-auto rounded-full bg-pwc-orange" />
+            <span className="block w-12 h-12 mx-auto rounded-full bg-hoban-primary" />
           </button>
         </footer>
       )}

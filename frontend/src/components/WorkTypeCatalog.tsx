@@ -31,7 +31,7 @@ export default function WorkTypeCatalog({
 }: WorkTypeCatalogProps) {
   if (loading) {
     return (
-      <div className="text-sm text-pwc-ink-mute py-4" role="status" aria-live="polite">
+      <div className="text-sm text-hoban-ink-mute py-4" role="status" aria-live="polite">
         작업유형 불러오는 중…
       </div>
     );
@@ -39,7 +39,7 @@ export default function WorkTypeCatalog({
   if (error) {
     return (
       <div
-        className="text-sm text-pwc-orange-deep border border-pwc-orange-deep/40 rounded-pwc px-3 py-2"
+        className="text-sm text-hoban-primary-deep border border-hoban-primary-deep/40 rounded-hoban px-3 py-2"
         role="alert"
       >
         작업유형을 불러오지 못했습니다 — {error}
@@ -48,7 +48,7 @@ export default function WorkTypeCatalog({
   }
   if (!workTypes.length) {
     return (
-      <div className="text-sm text-pwc-ink-mute py-4">
+      <div className="text-sm text-hoban-ink-mute py-4">
         선택 가능한 작업유형이 없습니다. 도메인을 다시 확인하세요.
       </div>
     );
@@ -75,17 +75,17 @@ export default function WorkTypeCatalog({
               onClick={() => onSelect(wt.id)}
               aria-pressed={selected}
               className={
-                "w-full text-left rounded-pwc border p-4 transition focus-visible:outline-2 focus-visible:outline-pwc-orange focus-visible:outline-offset-2 " +
+                "w-full text-left rounded-hoban border p-4 transition focus-visible:outline-2 focus-visible:outline-hoban-primary focus-visible:outline-offset-2 " +
                 (selected
-                  ? "border-pwc-orange bg-pwc-orange-wash"
-                  : "border-pwc-border hover:border-pwc-orange")
+                  ? "border-hoban-primary bg-hoban-primary-wash"
+                  : "border-hoban-border hover:border-hoban-primary")
               }
             >
-              <div className="text-sm font-semibold text-pwc-ink">
+              <div className="text-sm font-semibold text-hoban-ink">
                 {primary}
               </div>
               {secondary && (
-                <div className="text-[11px] text-pwc-ink-mute mt-1">
+                <div className="text-[11px] text-hoban-ink-mute mt-1">
                   {secondary}
                 </div>
               )}

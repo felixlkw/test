@@ -16,19 +16,19 @@ interface TopBarProps {
 export default function TopBar({ title, backTo, right }: TopBarProps) {
   const navigate = useNavigate();
   return (
-    <div className="w-full bg-pwc-bg text-pwc-ink">
+    <div className="w-full bg-hoban-bg text-hoban-ink">
       <div className="h-14 flex items-center justify-between px-4">
         <button
           onClick={() => (backTo ? navigate(backTo) : navigate(-1))}
-          className="w-10 h-10 flex items-center justify-center text-pwc-ink hover:text-pwc-orange active:scale-95 transition"
+          className="w-10 h-10 flex items-center justify-center text-hoban-ink hover:text-hoban-primary active:scale-95 transition"
           aria-label="back"
         >
           <IconChevronLeft size={22} />
         </button>
-        <h1 className="font-serif-display text-[18px] text-pwc-ink truncate">
+        <h1 className="font-serif-display text-[18px] text-hoban-ink truncate">
           {title}
         </h1>
-        <div className="w-10 h-10 flex items-center justify-center text-pwc-ink-soft">
+        <div className="w-10 h-10 flex items-center justify-center text-hoban-ink-soft">
           {right}
         </div>
       </div>

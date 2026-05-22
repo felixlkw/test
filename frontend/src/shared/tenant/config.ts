@@ -1,19 +1,14 @@
-// Tenant configuration for multi-PoC deployment (frontend mirror).
+// Tenant configuration — Hoban Group SafeMate (frontend mirror).
 //
-// Each PoC (customer-facing demo) is a TenantConfig: company name, app name,
-// domain label overrides, hidden domains, and (Phase 3) EHS recommended
-// question seeds. The active tenant is selected at build time via the
-// VITE_TENANT_ID environment variable.
+// Branch client/hoban-safemate is dedicated to Hoban Group with two
+// priority subsidiaries:
+//   • 호반건설 (Hoban E&C) — apartments, mixed-use, civil SOC, resorts
+//   • 대한전선 (Taihan Cable) — cable manufacturing + EPC (cable laying,
+//     substation construction)
 //
-// To add a new customer PoC:
-//   1. Add a new TenantConfig entry below.
-//   2. Register it in TENANTS.
-//   3. Set VITE_TENANT_ID=<id> in the Railway service for that customer
-//      (and mirror it as TENANT_ID for the backend service).
-//
-// The backend domain keys are kept stable across tenants so IndexedDB session
-// data and request/response contracts remain compatible. Only user-facing
-// labels and content vary.
+// Other subsidiaries (호반산업·호반리조트·대한조선) are folded into
+// construction where relevant. heavy_industry / semiconductor domains are
+// hidden from the Hoban UI.
 
 import type { SessionDomain } from "../../services/sessionModel";
 
@@ -22,9 +17,7 @@ export interface TenantConfig {
   companyName: string;
   appName: string;
   domainLabels: Record<SessionDomain, string>;
-  // backend domain keys to hide from user-facing UI (still valid server-side)
   hiddenDomains: ReadonlySet<SessionDomain>;
-  // Phase 3 — per-domain EHS recommended question seeds (filled later)
   ehsRecommendedQuestions: Partial<Record<SessionDomain, string[]>>;
 }
 
@@ -42,90 +35,61 @@ const DEFAULT: TenantConfig = {
   ehsRecommendedQuestions: {},
 };
 
-const LG_INNOTEK: TenantConfig = {
-  id: "lg_innotek",
-  companyName: "LG이노텍",
-  appName: "Safety Vision",
-  domainLabels: {
-    manufacturing: "생산",
-    construction: "건설",
-    heavy_industry: "설비관리",
-    semiconductor: "반도체",
-  },
-  hiddenDomains: new Set<SessionDomain>(["semiconductor"]),
-  ehsRecommendedQuestions: {
-    // 생산 — 광학·패키지·모빌리티 양산 라인
-    manufacturing: [
-      "카메라 모듈 조립 라인에 신규 UV 경화 광원이 도입됐는데 작업자 망막 보호 절차는 어떻게 정해야 해?",
-      "FC-BGA 도금 라인의 산 미스트 폭로를 줄이려면 LEV 풍속 기준을 얼마로 잡아야 해?",
-      "자율주행 LiDAR 센서 SMT 라인에서 Class 3R 적외선 광원 인터록 점검은 어느 주기로 해야 해?",
-      "OLED 메탈 마스크 펨토초 레이저 가공 중 금속 흄 노출 기준과 환기 권고는?",
-      "EV 파워모듈 DC 링크 캐패시터 잔류전압 측정 절차와 안전대기 시간은 어떻게 돼?",
-      "클린룸에서 IPA 세정 시 정전기 화재 위험을 어떻게 평가하고 통제해야 해?",
-      "스크린프린터 스퀴지 협착 사고 사례와 인터록 보강 방안 알려줘.",
-      "AGV와 작업자 동선이 교차되는 구역에서 구역 분리 기준은 어떻게 정해야 해?",
-      "솔더 리플로우 250°C 잔열·흄 환기 기준과 쿨링 대기 시간은?",
-      "픽업 노즐 진공 흡착 장비 협착 방지 인터록은 어떻게 점검해?",
-      "광학 모듈 조립 라인에 신규 작업자가 투입됐을 때 ESD 안전교육은 어떻게 구성해?",
-      "AOI 검사기 Class 3B 레이저 가시광 누설 점검 주기와 측정 방법은?",
-    ],
-    // 설비관리 — 클린룸·노광·검사·도금 PM
-    heavy_industry: [
-      "노광 장비 RF generator 잔류전압 LOTO 절차와 검전 기준은?",
-      "HF 잔류 약액 라인 DI 플러시 검증 방법과 pH 기준은?",
-      "도금조 시안화물 약액이 산과 혼입됐을 때 HCN 발생 즉시 조치는 어떻게 해?",
-      "특수가스 캐비닛 차압 게이지 알람 기준과 25% LEL 감지기 대응은?",
-      "SiH4 자연발화 위험이 있는 가스 캐비닛 leak test 절차와 He 누설률 기준은?",
-      "FFU 필터 교체 시 천장 안전대 부착점은 어떻게 확인하고 점검해?",
-      "노광기 stepper 광학 정렬 calibration 중 작업자 보호 기준은?",
-      "도금 라인 SOP 변경 시 외국인 작업자 재교육은 어떤 방식이 효과적이야?",
-      "AOI 광학 검사장비 calibration 시 잔류 RF 검증은 어떤 절차로 해?",
-      "클린룸 등급 Class 100 입자 오염 측정 주기와 알람 기준은?",
-      "폐 ULPA 필터 분진 흡착 위험을 줄이는 처리 절차는 어떻게 돼?",
-      "UPW 배관 점검 시 압력 해제와 group LOTO는 어떻게 적용해?",
-    ],
-    // 건설 — 팹 증설·클린룸 시공·설비 반입
-    construction: [
-      "클린룸 FFU 양중 시 천장 안전대 부착점은 어디로 잡아야 해?",
-      "5톤 노광 장비 반입 경로의 raised floor 하중 검토는 어떤 절차로 해?",
-      "특수가스 라인 가압 leak test 절차와 작업자 안전거리는 어떻게 정해?",
-      "클린룸 시공 중 인접 가동 라인의 양압 손실을 막으려면 어떤 격리 조치가 필요해?",
-      "도금 약액 라인 시공 중 시운전 약액이 누설됐을 때 즉시 대응은?",
-      "케미컬 라인 cycle purge 회수 기준과 압력 강하 검증은?",
-      "에폭시 도장 밀폐공간 작업의 환기 풍량과 가스 측정 주기는?",
-      "강풍 시 외장 panel 비산을 막기 위한 양중 중단 풍속 기준은?",
-      "가스 캐비닛 anchor 시공 토크 기준과 검사 항목은?",
-      "raised floor 개구부 추락을 막기 위한 가설 펜스와 표지 기준은?",
-      "인접 가동 fab을 보호하는 격리 차폐막 기준과 분진 통제는 어떻게 해?",
-      "고압 인입 시 group lock LOTO 절차와 검전 단계는 어떻게 돼?",
-    ],
-  },
-};
-
 const HOBAN: TenantConfig = {
   id: "hoban",
-  companyName: "호반건설",
-  appName: "SafeMate",
+  companyName: "호반그룹",
+  appName: "호반 세이프",
   domainLabels: {
-    manufacturing: "제조",
+    // 'manufacturing' 키는 대한전선 케이블 공장 의미로 재용도.
+    manufacturing: "케이블 제조",
     construction: "건설",
     heavy_industry: "중공업",
     semiconductor: "반도체",
   },
-  hiddenDomains: new Set<SessionDomain>(),
-  ehsRecommendedQuestions: {},
+  hiddenDomains: new Set<SessionDomain>(["heavy_industry", "semiconductor"]),
+  ehsRecommendedQuestions: {
+    // 건설 — 호반건설 시공 + 대한전선 EPC
+    construction: [
+      "호반써밋 RC 골조 갱폼 인양 시 강풍 풍속 기준과 신호수 배치는 어떻게 해야 해?",
+      "지하주차장 흙막이 공사 중 인접 구조물 침하 모니터링 기준과 대응은?",
+      "베르디움 마감공정에서 외국인 도장팀 유기용제 노출을 줄이는 환기 계획은?",
+      "타워크레인 2대 동시 운용 시 인접 반경 충돌 방지 절차와 신호 체계는?",
+      "지하 정화조·집수정 진입 전 산소 농도와 황화수소 측정 기준은?",
+      "리솜리조트 증축 현장에서 운영 중 객실 동선과 공사 동선 분리 기준은?",
+      "민자 도로 터널 굴착 중 막장 붕괴 징후를 어떤 모니터링으로 잡아?",
+      "콘크리트 타설 중 동바리 좌굴 징후를 작업자가 어떻게 인지하고 신고해?",
+      "베트남·태국·우즈벡 신규 작업자 입소 교육에 픽토그램·모국어 자료는 어떻게 준비해?",
+      "대한전선 지중 케이블 풀링 시 맨홀 밀폐공간 가스 측정과 환기 절차는?",
+      "변전소 시공 중 인접 활선 이격거리 점검과 LOTO 검전·단락접지 절차는?",
+      "해저케이블 선상 포설 시 강풍·파고 게이트와 잠수 인터페이스 안전 절차는?",
+    ],
+    // 케이블 제조 — 대한전선 안양·당진·베트남 공장
+    manufacturing: [
+      "동조괴 연속주조 1100°C 용탕 비산을 막는 차폐벽·PPE·비상정지 절차는?",
+      "도체 연신 공정 권취 협착 사고 예방을 위한 인터록과 비상정지 점검 주기는?",
+      "XLPE 압출 라인 가교가스(쿠멘 하이드로퍼옥사이드) 누설 시 환기·LEL 모니터링 기준은?",
+      "납 시즈 압출 공정에서 납 흄 TLV 0.05 mg/m³ 유지 환기·국소배기 점검은?",
+      "차폐 편조 권취 협착 방지 인터록과 신규 작업자 교육은 어떻게 운영해?",
+      "50톤급 케이블 드럼 권취·이송 중 전도 방지 표준 결박과 양중 절차는?",
+      "HV 시험장 250 kV 인가 후 잔류전하 방전 시간(시정수 × 5)과 검전 절차는?",
+      "부분방전(PD) 시험장 출입 인터록과 비상정지 검증 주기는?",
+      "당진 해저케이블 수직 압출장 회전 드럼 협착·낙하 방지 절차는?",
+      "베트남 공장 현지 작업자 LOTO·검전·단락접지 표준 손짓 정착 방안은?",
+      "케이블 드럼 창고 협소공간 점검 시 O2 18~23.5% 측정과 단독작업 금지는?",
+      "광케이블 클린룸 작업 시 정전기 화재·먼지 통제와 ESD 접지 기준은?",
+    ],
+  },
 };
 
 const TENANTS: Record<string, TenantConfig> = {
   [DEFAULT.id]: DEFAULT,
-  [LG_INNOTEK.id]: LG_INNOTEK,
   [HOBAN.id]: HOBAN,
 };
 
 const ACTIVE_ID =
-  (import.meta.env.VITE_TENANT_ID as string | undefined) ?? DEFAULT.id;
+  (import.meta.env.VITE_TENANT_ID as string | undefined) ?? HOBAN.id;
 
-export const tenant: TenantConfig = TENANTS[ACTIVE_ID] ?? DEFAULT;
+export const tenant: TenantConfig = TENANTS[ACTIVE_ID] ?? HOBAN;
 
 export function isDomainVisible(domain: SessionDomain): boolean {
   return !tenant.hiddenDomains.has(domain);

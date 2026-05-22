@@ -39,10 +39,12 @@ import { pickContent } from "./catalogI18n";
 import { tenant as tenantConfig } from "../shared/tenant/config";
 
 // PwC 토큰 (tailwind.config.js 1:1 매핑).
-const PWC_ORANGE = rgb(0xe0 / 255, 0x30 / 255, 0x1e / 255);
-const PWC_INK = rgb(0x1e / 255, 0x1e / 255, 0x1e / 255);
-const PWC_INK_SOFT = rgb(0x55 / 255, 0x55 / 255, 0x55 / 255);
-const PWC_INK_MUTE = rgb(0x8a / 255, 0x8a / 255, 0x8a / 255);
+// Hoban brand palette in pdf-lib rgb. Constant names retained for back-compat
+// with downstream callers; values map to Hoban Verdium Deep Forest + dark grays.
+const PWC_ORANGE = rgb(0x00 / 255, 0x63 / 255, 0x5b / 255); // Hoban primary
+const PWC_INK = rgb(0x1a / 255, 0x1a / 255, 0x1a / 255);
+const PWC_INK_SOFT = rgb(0x57 / 255, 0x55 / 255, 0x53 / 255); // Hoban Dark Gray
+const PWC_INK_MUTE = rgb(0x89 / 255, 0x89 / 255, 0x8a / 255); // Hoban Gray
 const PWC_BORDER = rgb(0xe5 / 255, 0xe0 / 255, 0xdc / 255);
 
 // A4 (pt) — 595 × 842.
@@ -490,7 +492,7 @@ export async function generateSessionPdf(
     color: PWC_ORANGE,
   });
   let cursor: DrawCursor = { page, y: PAGE_H - MARGIN_Y - 20 };
-  cursor = drawText(doc, cursor, "Safety Vision · TBM 보고서", {
+  cursor = drawText(doc, cursor, `${tenantConfig.appName} · TBM 보고서`, {
     font,
     size: 22,
     color: PWC_INK,
@@ -656,7 +658,7 @@ export async function generateSessionPdf(
   const pages = doc.getPages();
   for (let i = 0; i < pages.length; i += 1) {
     const p = pages[i];
-    p.drawText(`Safety Vision · ${i + 1} / ${pages.length}`, {
+    p.drawText(`${tenantConfig.appName} · ${i + 1} / ${pages.length}`, {
       x: MARGIN_X,
       y: 24,
       size: 8,
@@ -1109,7 +1111,7 @@ export async function generateBroadcastReportPdf(
   cursor.y -= 4;
   drawDivider(cursor.page, cursor.y, PWC_ORANGE);
   cursor.y -= 12;
-  cursor = drawKv(doc, cursor, "회사", "Safety Vision · LG Innotek", fonts);
+  cursor = drawKv(doc, cursor, "회사", `${tenantConfig.appName} · ${tenantConfig.companyName}`, fonts);
   cursor = drawKv(
     doc,
     cursor,
@@ -1240,7 +1242,7 @@ export async function generateBroadcastReportPdf(
   const pages = doc.getPages();
   for (let i = 0; i < pages.length; i += 1) {
     const p = pages[i];
-    p.drawText(`Safety Vision · TBM Broadcast Report · ${i + 1} / ${pages.length}`, {
+    p.drawText(`${tenantConfig.appName} · TBM Broadcast Report · ${i + 1} / ${pages.length}`, {
       x: MARGIN_X,
       y: 24,
       size: 8,

@@ -162,28 +162,28 @@ export function AttestationModal({
       aria-label="작업자 전파 확인"
     >
       <div
-        className="w-full sm:max-w-md bg-pwc-bg text-pwc-ink border-t sm:border sm:rounded-pwc-lg border-pwc-border shadow-pwc-card overflow-hidden max-h-[92vh] flex flex-col"
+        className="w-full sm:max-w-md bg-hoban-bg text-hoban-ink border-t sm:border sm:rounded-hoban-lg border-hoban-border shadow-hoban-card overflow-hidden max-h-[92vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 헤더 */}
-        <div className="px-5 py-4 border-b border-pwc-border bg-pwc-bg-card shrink-0">
-          <div className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold">
+        <div className="px-5 py-4 border-b border-hoban-border bg-hoban-bg-card shrink-0">
+          <div className="text-[11px] uppercase tracking-wider text-hoban-primary font-bold">
             전파 확인 · 리더 서명
           </div>
-          <div className="font-serif-display text-[20px] leading-tight mt-0.5 text-pwc-ink">
+          <div className="font-serif-display text-[20px] leading-tight mt-0.5 text-hoban-ink">
             작업자 전파 확인
           </div>
-          <div className="mt-1 text-[12px] text-pwc-ink-soft">{summary}</div>
+          <div className="mt-1 text-[12px] text-hoban-ink-soft">{summary}</div>
         </div>
 
         {/* 본문 — 스크롤 영역 */}
         <div className="px-5 py-4 overflow-y-auto flex-1 min-h-0">
           {hazardsSummary.length > 0 && (
-            <section className="mb-3 border-l-4 border-pwc-orange bg-pwc-orange-wash px-3 py-2">
-              <div className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold mb-1">
+            <section className="mb-3 border-l-4 border-hoban-primary bg-hoban-primary-wash px-3 py-2">
+              <div className="text-[11px] uppercase tracking-wider text-hoban-primary font-bold mb-1">
                 주요 위험 (전파 항목)
               </div>
-              <ul className="flex flex-col gap-1 text-[13px] text-pwc-ink">
+              <ul className="flex flex-col gap-1 text-[13px] text-hoban-ink">
                 {hazardsSummary.map((h, i) => (
                   <li key={`hz-${i}`} className="leading-snug">
                     · {h}
@@ -193,13 +193,13 @@ export function AttestationModal({
             </section>
           )}
 
-          <p className="text-[12px] text-pwc-ink-soft mb-2">
+          <p className="text-[12px] text-hoban-ink-soft mb-2">
             위험 전파를 마쳤음을 손가락 서명으로 확인해 주세요. 장갑 등으로
             서명이 어려우면 아래 본인 동의 체크로 대체할 수 있습니다.
           </p>
 
           {/* 캔버스 — HiDPI + touch-none */}
-          <div className="border border-pwc-border-strong rounded-pwc bg-pwc-bg-card overflow-hidden">
+          <div className="border border-hoban-border-strong rounded-hoban bg-hoban-bg-card overflow-hidden">
             <canvas
               ref={canvasRef}
               className="w-full block touch-none"
@@ -212,7 +212,7 @@ export function AttestationModal({
               type="button"
               onClick={handleClear}
               disabled={!hasStrokes || submitting}
-              className="px-3 py-2 rounded-pwc border border-pwc-border-strong text-sm hover:border-pwc-orange hover:text-pwc-orange disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-3 py-2 rounded-hoban border border-hoban-border-strong text-sm hover:border-hoban-primary hover:text-hoban-primary disabled:opacity-40 disabled:cursor-not-allowed"
             >
               지우기
             </button>
@@ -220,24 +220,24 @@ export function AttestationModal({
               type="button"
               onClick={handleConfirmCanvas}
               disabled={!hasStrokes || submitting}
-              className="ml-auto px-4 py-2 rounded-pwc bg-pwc-orange text-white text-sm font-semibold hover:bg-pwc-orange-deep disabled:opacity-40 disabled:cursor-not-allowed"
+              className="ml-auto px-4 py-2 rounded-hoban bg-hoban-primary text-white text-sm font-semibold hover:bg-hoban-primary-deep disabled:opacity-40 disabled:cursor-not-allowed"
             >
               서명 확인
             </button>
           </div>
 
           {/* 폴백 — 본인 동의 확인 체크박스 */}
-          <div className="mt-4 pt-3 border-t border-pwc-border">
-            <p className="text-[11px] text-pwc-ink-soft mb-2">
+          <div className="mt-4 pt-3 border-t border-hoban-border">
+            <p className="text-[11px] text-hoban-ink-soft mb-2">
               장갑 등으로 서명이 어려우면 본인 동의 확인으로 대체할 수 있습니다.
             </p>
-            <label className="flex items-center gap-2 cursor-pointer text-sm text-pwc-ink">
+            <label className="flex items-center gap-2 cursor-pointer text-sm text-hoban-ink">
               <input
                 type="checkbox"
                 checked={confirmFallback}
                 onChange={(e) => setConfirmFallback(e.target.checked)}
                 disabled={submitting}
-                className="accent-pwc-orange"
+                className="accent-hoban-primary"
               />
               <span>본인 동의 확인</span>
             </label>
@@ -245,7 +245,7 @@ export function AttestationModal({
               type="button"
               onClick={handleConfirmFallback}
               disabled={!confirmFallback || submitting}
-              className="mt-2 w-full px-4 py-2 rounded-pwc border border-pwc-orange text-pwc-orange text-sm font-semibold hover:bg-pwc-orange hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="mt-2 w-full px-4 py-2 rounded-hoban border border-hoban-primary text-hoban-primary text-sm font-semibold hover:bg-hoban-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
             >
               동의로 처리하고 닫기
             </button>
@@ -253,12 +253,12 @@ export function AttestationModal({
         </div>
 
         {/* 푸터 — 취소 */}
-        <div className="px-5 py-3 border-t border-pwc-border bg-pwc-bg-card flex justify-end shrink-0">
+        <div className="px-5 py-3 border-t border-hoban-border bg-hoban-bg-card flex justify-end shrink-0">
           <button
             type="button"
             onClick={onCancel}
             disabled={submitting}
-            className="px-4 py-2 rounded-pwc text-sm text-pwc-ink-soft hover:text-pwc-orange disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-hoban text-sm text-hoban-ink-soft hover:text-hoban-primary disabled:opacity-40 disabled:cursor-not-allowed"
           >
             취소
           </button>

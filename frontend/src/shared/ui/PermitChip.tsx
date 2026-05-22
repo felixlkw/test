@@ -6,7 +6,7 @@ interface PermitChipProps {
 export function PermitChip({ count }: PermitChipProps) {
   if (count <= 0) return null;
   return (
-    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-pwc-orange-wash border border-pwc-orange/30 text-pwc-orange uppercase tracking-wider">
+    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-hoban-primary-wash border border-hoban-primary/30 text-hoban-primary uppercase tracking-wider">
       허가서 {count}
     </span>
   );

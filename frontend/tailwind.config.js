@@ -1,3 +1,9 @@
+/** @type {import('tailwindcss').Config} */
+// Hoban Group SafeMate — design tokens
+// Primary: Hoban Verdium Deep Forest (#00635B) — WCAG AAA ~6.8:1 on white,
+// safe from KOSHA warning-color collision.
+// Secondary: Hoban Orange (#EE7500) — brand signature, used as accent only.
+// Tertiary: Hoban Dark Gray (#575553) — body text emphasis.
 module.exports = {
   content: [
     './index.html',
@@ -6,35 +12,50 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        pwc: {
-          orange: '#A50034',
-          'orange-deep': '#7A0026',
-          'orange-soft': '#FBE5EC',
-          'orange-wash': '#FAFAFA',
-          rose: '#7A0026',
-          ink: '#1E1E1E',
-          'ink-soft': '#6B6B6B',
-          'ink-mute': '#8A8A8A',
+        hoban: {
+          // Brand core
+          primary: '#00635B',
+          'primary-deep': '#00463F',
+          'primary-soft': '#E3F0EE',
+          'primary-wash': '#F4FAF9',
+          accent: '#EE7500',
+          'accent-deep': '#C95F00',
+          'accent-soft': '#FEEFE0',
+
+          // Text
+          ink: '#1A1A1A',
+          'ink-soft': '#575553',
+          'ink-mute': '#89898A',
+
+          // Surfaces
           bg: '#FFFFFF',
           'bg-soft': '#FAFAFA',
-          'bg-card': '#F5F5F5',
-          border: '#E5E5E5',
-          'border-strong': '#C8C8C8',
+          'bg-card': '#F5F7F6',
+
+          // Borders
+          border: '#E2E5E4',
+          'border-strong': '#C2C7C5',
+
+          // Semantic (KOSHA-aligned, AAA on white)
+          success: '#1B7F3A',
+          warning: '#B45309',
+          danger: '#B00020',
+          info: '#00567A',
         },
       },
       fontFamily: {
-        serif: ['Georgia', 'Charter', '"Source Serif Pro"', '"Times New Roman"', 'serif'],
-        sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'system-ui', '"Helvetica Neue"', 'Arial', 'sans-serif'],
+        serif: ['"Noto Serif KR"', 'Georgia', 'Charter', '"Source Serif Pro"', '"Times New Roman"', 'serif'],
+        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'system-ui', '"Helvetica Neue"', 'Arial', 'sans-serif'],
       },
       borderRadius: {
-        'pwc': '4px',
-        'pwc-lg': '8px',
+        'hoban': '6px',
+        'hoban-lg': '12px',
       },
       backgroundImage: {
-        'pwc-hero': 'linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%)',
+        'hoban-hero': 'linear-gradient(180deg, #FFFFFF 0%, #F4FAF9 100%)',
       },
       boxShadow: {
-        'pwc-card': '0 1px 2px rgba(30,30,30,0.04), 0 1px 1px rgba(30,30,30,0.03)',
+        'hoban-card': '0 1px 2px rgba(0,99,91,0.06), 0 1px 1px rgba(0,99,91,0.04)',
       },
     },
   },

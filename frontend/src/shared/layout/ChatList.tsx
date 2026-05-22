@@ -113,11 +113,11 @@ export function ChatList({
       style={{ scrollBehavior: "smooth" }}
     >
       {messages.length === 0 ? (
-        <div className="flex items-center justify-center h-full text-pwc-ink-mute">
+        <div className="flex items-center justify-center h-full text-hoban-ink-mute">
           <div className="text-center">
             {connecting ? (
               <>
-                <div className="inline-block w-8 h-8 border-2 border-pwc-orange border-t-transparent rounded-full animate-spin mb-3" />
+                <div className="inline-block w-8 h-8 border-2 border-hoban-primary border-t-transparent rounded-full animate-spin mb-3" />
                 <p className="text-sm">연결 중...</p>
               </>
             ) : sessionActive ? (
@@ -171,12 +171,12 @@ export function ChatList({
                     </div>
                   )}
                   <div
-                    className={`px-4 py-2 rounded-pwc-lg text-sm break-words leading-relaxed shadow-sm ${
+                    className={`px-4 py-2 rounded-hoban-lg text-sm break-words leading-relaxed shadow-sm ${
                       isWarning
-                        ? "bg-pwc-orange text-white border-l-4 border-pwc-orange-deep font-semibold"
+                        ? "bg-hoban-primary text-white border-l-4 border-hoban-primary-deep font-semibold"
                         : isAssistant
-                          ? "bg-pwc-bg-card text-pwc-ink border border-pwc-border"
-                          : "bg-pwc-orange-wash text-pwc-ink border border-pwc-orange/20"
+                          ? "bg-hoban-bg-card text-hoban-ink border border-hoban-border"
+                          : "bg-hoban-primary-wash text-hoban-ink border border-hoban-primary/20"
                     }`}
                   >
                     {msg.text}
@@ -190,10 +190,10 @@ export function ChatList({
                           key={act.id}
                           type="button"
                           onClick={() => onMessageAction?.(i, act.id)}
-                          className={`px-3 py-1.5 rounded-pwc text-xs font-semibold border transition-colors ${
+                          className={`px-3 py-1.5 rounded-hoban text-xs font-semibold border transition-colors ${
                             act.id === "retry_voice"
-                              ? "bg-pwc-orange text-white border-pwc-orange-deep hover:bg-pwc-orange-deep"
-                              : "bg-pwc-bg-card text-pwc-ink-mute border-pwc-border hover:text-pwc-orange hover:bg-pwc-orange-wash"
+                              ? "bg-hoban-primary text-white border-hoban-primary-deep hover:bg-hoban-primary-deep"
+                              : "bg-hoban-bg-card text-hoban-ink-mute border-hoban-border hover:text-hoban-primary hover:bg-hoban-primary-wash"
                           }`}
                         >
                           {act.label}
@@ -249,17 +249,17 @@ export function ChatList({
       {/* assistant typing indicator */}
       {talking === "assistant" && messages.length > 0 && (
         <div className="flex justify-start">
-          <div className="px-4 py-2 rounded-pwc-lg bg-pwc-bg-card border border-pwc-border inline-flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-pwc-orange animate-bounce" style={{ animationDelay: "0ms" }} />
-            <span className="w-1.5 h-1.5 rounded-full bg-pwc-orange animate-bounce" style={{ animationDelay: "150ms" }} />
-            <span className="w-1.5 h-1.5 rounded-full bg-pwc-orange animate-bounce" style={{ animationDelay: "300ms" }} />
+          <div className="px-4 py-2 rounded-hoban-lg bg-hoban-bg-card border border-hoban-border inline-flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-hoban-primary animate-bounce" style={{ animationDelay: "0ms" }} />
+            <span className="w-1.5 h-1.5 rounded-full bg-hoban-primary animate-bounce" style={{ animationDelay: "150ms" }} />
+            <span className="w-1.5 h-1.5 rounded-full bg-hoban-primary animate-bounce" style={{ animationDelay: "300ms" }} />
           </div>
         </div>
       )}
 
       {/* Cycle 3: cueMessage는 chat 안 system 메시지(작은 글씨, 가운데, 회색) */}
       {cueMessage && (
-        <div className="text-pwc-ink-mute text-xs italic text-center my-1.5 px-2">
+        <div className="text-hoban-ink-mute text-xs italic text-center my-1.5 px-2">
           {cueMessage}
         </div>
       )}
@@ -283,14 +283,14 @@ export function ChatList({
             }}
           >
             <div className="flex items-center justify-between mb-1.5 px-1">
-              <div className="text-[10px] uppercase tracking-wider text-pwc-ink-soft font-bold">
+              <div className="text-[10px] uppercase tracking-wider text-hoban-ink-soft font-bold">
                 추천 질문
               </div>
               {onRotateRecommended && (
                 <button
                   type="button"
                   onClick={onRotateRecommended}
-                  className="text-[10px] uppercase tracking-wider text-pwc-ink-soft hover:text-pwc-orange font-semibold transition px-1.5 py-0.5"
+                  className="text-[10px] uppercase tracking-wider text-hoban-ink-soft hover:text-hoban-primary font-semibold transition px-1.5 py-0.5"
                   aria-label="다른 추천 질문 보기"
                   title="다른 질문 보기"
                 >
@@ -305,7 +305,7 @@ export function ChatList({
                   type="button"
                   onClick={() => onClickRecommendedQuestion(q)}
                   disabled={idx === 0 && recommendedAnimatingOut}
-                  className={`w-full text-left px-3 py-2 rounded-pwc bg-pwc-bg-card text-pwc-ink text-xs leading-relaxed border border-pwc-border hover:border-pwc-orange hover:bg-pwc-orange-wash transition-all ${
+                  className={`w-full text-left px-3 py-2 rounded-hoban bg-hoban-bg-card text-hoban-ink text-xs leading-relaxed border border-hoban-border hover:border-hoban-primary hover:bg-hoban-primary-wash transition-all ${
                     idx === 0 && recommendedAnimatingOut ? "opacity-40 scale-95" : ""
                   }`}
                 >
@@ -359,17 +359,17 @@ function InlineCitations({
   const showPrevious = expandedAll && hiddenCount > 0;
 
   return (
-    <div className="bg-pwc-bg border border-pwc-border rounded-pwc-lg shadow-pwc-card p-3 text-left">
+    <div className="bg-hoban-bg border border-hoban-border rounded-hoban-lg shadow-hoban-card p-3 text-left">
       <div className="flex items-center gap-2 mb-2">
         <IconDoc size={14} />
-        <span className="text-[10px] uppercase tracking-wider text-pwc-orange font-bold">
+        <span className="text-[10px] uppercase tracking-wider text-hoban-primary font-bold">
           관련 문서
         </span>
         {total > 1 && (
-          <span className="text-[10px] text-pwc-ink-soft font-medium ml-1">{total}건</span>
+          <span className="text-[10px] text-hoban-ink-soft font-medium ml-1">{total}건</span>
         )}
         <button
-          className="ml-auto text-pwc-ink-soft hover:text-pwc-orange transition-colors p-0.5"
+          className="ml-auto text-hoban-ink-soft hover:text-hoban-primary transition-colors p-0.5"
           onClick={onClear}
           aria-label="Clear citations"
         >
@@ -377,7 +377,7 @@ function InlineCitations({
         </button>
       </div>
       {latest.context && (
-        <p className="text-pwc-ink-soft text-[11px] mb-2">{latest.context}</p>
+        <p className="text-hoban-ink-soft text-[11px] mb-2">{latest.context}</p>
       )}
       <div className="space-y-1.5">
         {latest.citations.map((c, i) => (
@@ -390,10 +390,10 @@ function InlineCitations({
         ))}
       </div>
       {hiddenCount > 0 && (
-        <div className="mt-2 pt-2 border-t border-pwc-border">
+        <div className="mt-2 pt-2 border-t border-hoban-border">
           <button
             type="button"
-            className="text-[10px] text-pwc-ink-soft hover:text-pwc-orange font-medium uppercase tracking-wider transition-colors"
+            className="text-[10px] text-hoban-ink-soft hover:text-hoban-primary font-medium uppercase tracking-wider transition-colors"
             onClick={() => setExpandedAll((v) => !v)}
             aria-expanded={expandedAll}
           >
@@ -407,7 +407,7 @@ function InlineCitations({
                 .map((entry, entryIdx) => (
                   <div key={`prev-${entry.timestamp}-${entryIdx}`}>
                     {entry.context && (
-                      <p className="text-pwc-ink-soft text-[10px] mb-1 leading-snug">
+                      <p className="text-hoban-ink-soft text-[10px] mb-1 leading-snug">
                         {entry.context}
                       </p>
                     )}

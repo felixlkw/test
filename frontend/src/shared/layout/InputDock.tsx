@@ -155,7 +155,7 @@ export function InputDock({
     <>
       <div
         // 2026-05-06 mobile fix — gap 모바일 1.5(sm:2), px 모바일 2(sm:3) — 360px에서 5요소 충돌 방어.
-        className="w-full flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-2 sm:py-3 bg-pwc-bg border-t border-pwc-border z-20 shrink-0"
+        className="w-full flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-2 sm:py-3 bg-hoban-bg border-t border-hoban-border z-20 shrink-0"
         style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
       >
         <button
@@ -164,14 +164,14 @@ export function InputDock({
           // 비대칭으로 돌아가 어색했음. 부드러운 pulse(버튼 자체 opacity 호흡)로 교체하고 micEnabled의
           // ping ring과 시각적으로 분리. 두 상태 모두 자연스럽고 명확.
           // Phase chat-PR3: chat 모드면 dashed 테두리 + 흐릿한 회색 + 클릭 시 음성 재시도.
-          className={`relative w-10 h-10 shrink-0 flex items-center justify-center rounded-pwc transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-pwc-orange disabled:cursor-not-allowed ${
+          className={`relative w-10 h-10 shrink-0 flex items-center justify-center rounded-hoban transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-hoban-primary disabled:cursor-not-allowed ${
             chatTransport
-              ? "bg-pwc-bg-card text-pwc-ink-mute border border-dashed border-pwc-border hover:text-pwc-orange hover:bg-pwc-orange-wash"
+              ? "bg-hoban-bg-card text-hoban-ink-mute border border-dashed border-hoban-border hover:text-hoban-primary hover:bg-hoban-primary-wash"
               : connecting
-                ? "bg-pwc-orange-wash text-pwc-orange-deep border border-pwc-orange animate-pulse"
+                ? "bg-hoban-primary-wash text-hoban-primary-deep border border-hoban-primary animate-pulse"
                 : micEnabled
-                  ? "bg-pwc-orange text-white border border-pwc-orange-deep"
-                  : "bg-pwc-bg-card text-pwc-ink-mute border border-pwc-border hover:text-pwc-orange hover:bg-pwc-orange-wash disabled:opacity-50"
+                  ? "bg-hoban-primary text-white border border-hoban-primary-deep"
+                  : "bg-hoban-bg-card text-hoban-ink-mute border border-hoban-border hover:text-hoban-primary hover:bg-hoban-primary-wash disabled:opacity-50"
           }`}
           onClick={onToggleMic}
           disabled={!canToggleMic}
@@ -200,13 +200,13 @@ export function InputDock({
         >
           <IconMic size={18} />
           {!chatTransport && !connecting && micEnabled && (
-            <span className="absolute inset-0 rounded-pwc border-2 border-pwc-orange animate-ping pointer-events-none" />
+            <span className="absolute inset-0 rounded-hoban border-2 border-hoban-primary animate-ping pointer-events-none" />
           )}
         </button>
         {cameraButtonVisible && (
           <button
             type="button"
-            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-pwc transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-pwc-orange bg-pwc-bg-card text-pwc-ink-mute border border-pwc-border hover:text-pwc-orange hover:bg-pwc-orange-wash"
+            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-hoban transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-hoban-primary bg-hoban-bg-card text-hoban-ink-mute border border-hoban-border hover:text-hoban-primary hover:bg-hoban-primary-wash"
             onClick={handleCameraClick}
             aria-label="현장 사진 촬영"
             title="현장 사진 촬영"
@@ -217,7 +217,7 @@ export function InputDock({
         {galleryButtonVisible && (
           <button
             type="button"
-            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-pwc transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-pwc-orange bg-pwc-bg-card text-pwc-ink-mute border border-pwc-border hover:text-pwc-orange hover:bg-pwc-orange-wash"
+            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-hoban transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-hoban-primary bg-hoban-bg-card text-hoban-ink-mute border border-hoban-border hover:text-hoban-primary hover:bg-hoban-primary-wash"
             onClick={handleGalleryClick}
             aria-label="앨범에서 사진 선택"
             title="앨범에서 사진 선택"
@@ -235,7 +235,7 @@ export function InputDock({
           onChange={handleGalleryChange}
         />
         <input
-          className="flex-1 min-w-0 px-4 py-2.5 rounded-pwc bg-white text-pwc-ink text-sm focus:outline-none focus:ring-2 focus:ring-pwc-orange border border-pwc-border placeholder-pwc-ink-mute"
+          className="flex-1 min-w-0 px-4 py-2.5 rounded-hoban bg-white text-hoban-ink text-sm focus:outline-none focus:ring-2 focus:ring-hoban-primary border border-hoban-border placeholder-hoban-ink-mute"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onFocus={() => setIsInputFocused(true)}
@@ -252,7 +252,7 @@ export function InputDock({
         />
         <button
           // 2026-05-06 mobile fix — px 모바일 3(sm:5) — 5요소 충돌 방어.
-          className="px-3 sm:px-5 py-2.5 rounded-pwc bg-pwc-orange hover:bg-pwc-orange-deep text-white font-bold text-sm transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+          className="px-3 sm:px-5 py-2.5 rounded-hoban bg-hoban-primary hover:bg-hoban-primary-deep text-white font-bold text-sm transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
           onClick={sendTextMessage}
           disabled={!input.trim()}
         >

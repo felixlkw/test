@@ -21,13 +21,13 @@ export function RecommendedQuestionsPanel({
           {questions.map((question, index) => (
             <button
               key={`${question}-${index}`}
-              className={`w-full text-left p-3 rounded-pwc bg-pwc-bg border border-pwc-border hover:border-pwc-orange hover:bg-pwc-orange-wash transition-all duration-300 shadow-pwc-card ${
+              className={`w-full text-left p-3 rounded-hoban bg-hoban-bg border border-hoban-border hover:border-hoban-primary hover:bg-hoban-primary-wash transition-all duration-300 shadow-hoban-card ${
                 index === 0 && animatingOut ? "opacity-40 transform scale-95" : ""
               }`}
               onClick={() => onClickQuestion(question)}
               disabled={index === 0 && animatingOut}
             >
-              <span className="text-pwc-ink text-sm leading-relaxed">{question}</span>
+              <span className="text-hoban-ink text-sm leading-relaxed">{question}</span>
             </button>
           ))}
         </div>

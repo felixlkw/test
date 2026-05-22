@@ -72,24 +72,24 @@ export function HazardResultCard({
       : `위험 ${hazardCount}건 감지`;
 
   return (
-    <div className="bg-pwc-bg border border-pwc-border rounded-pwc-lg shadow-pwc-card p-3 text-left">
+    <div className="bg-hoban-bg border border-hoban-border rounded-hoban-lg shadow-hoban-card p-3 text-left">
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
-        className="w-full flex items-center gap-2 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-pwc-orange rounded-pwc"
+        className="w-full flex items-center gap-2 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-hoban-primary rounded-hoban"
         aria-expanded={expanded}
       >
-        <span className="text-[10px] uppercase tracking-wider text-pwc-orange font-bold">
+        <span className="text-[10px] uppercase tracking-wider text-hoban-primary font-bold">
           사진 분석
         </span>
-        <span className="text-xs text-pwc-ink font-semibold">{headerText}</span>
-        <span className="ml-auto text-[10px] text-pwc-ink-soft">
+        <span className="text-xs text-hoban-ink font-semibold">{headerText}</span>
+        <span className="ml-auto text-[10px] text-hoban-ink-soft">
           {expanded ? "접기 ▲" : "펼치기 ▼"}
         </span>
       </button>
 
       {result.summary && (
-        <p className="mt-2 text-[12px] text-pwc-ink-soft leading-snug">
+        <p className="mt-2 text-[12px] text-hoban-ink-soft leading-snug">
           {result.summary}
         </p>
       )}
@@ -98,7 +98,7 @@ export function HazardResultCard({
         <>
           {/* bbox overlay 미리보기 — 작은 미리보기. */}
           {imageUrl && (
-            <div className="relative mt-2 rounded-pwc overflow-hidden border border-pwc-border-strong bg-black/5">
+            <div className="relative mt-2 rounded-hoban overflow-hidden border border-hoban-border-strong bg-black/5">
               <img
                 src={imageUrl}
                 alt={attachment.caption ?? "분석 사진"}

@@ -42,7 +42,7 @@ function EhsAutoRedirect() {
   }, [navigate]);
   if (error) {
     return (
-      <div className="min-h-screen bg-pwc-bg text-pwc-ink flex items-center justify-center p-6 text-sm">
+      <div className="min-h-screen bg-hoban-bg text-hoban-ink flex items-center justify-center p-6 text-sm">
         EHS 세션을 시작하지 못했습니다 — {error}
       </div>
     );

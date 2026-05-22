@@ -1,22 +1,22 @@
-// PwcMark — brand wordmark asset. Component name retained for backward
-// compatibility (referenced across screens); asset is the active brand logo.
+// HobanMark — brand wordmark. Filename retained for backward compat with
+// imports across screens; renders the official Hoban Group logo.
 interface PwcMarkProps {
   size?: number;
   className?: string;
-  /** Kept for backward compat. Both render the official asset. */
+  /** Kept for backward compat; both render the official asset. */
   variant?: "wordmark" | "accent";
 }
 
-// SVG viewBox: 0 0 420.271 77.241 → aspect ratio ≈ 5.441:1 (wide wordmark)
-const BRAND_ASPECT = 420.271 / 77.241;
+// hoban-logo.svg viewBox: 0 0 841.9 144.5 → aspect ratio ≈ 5.825:1 (wide wordmark)
+const BRAND_ASPECT = 841.9 / 144.5;
 
 export default function PwcMark({ size = 32, className = "" }: PwcMarkProps) {
   const h = size;
   const w = Math.round(size * BRAND_ASPECT);
   return (
     <img
-      src="/LG_Innotek_logo_(english).svg"
-      alt="LG Innotek"
+      src="/hoban-logo.svg"
+      alt="Hoban"
       width={w}
       height={h}
       className={className}

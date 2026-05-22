@@ -87,19 +87,19 @@ export function ReportPreviewModal({
       aria-label="TBM 전파 확인서 미리보기"
     >
       <div
-        className="w-full h-full sm:w-[92vw] sm:h-[92vh] sm:max-w-3xl bg-pwc-bg text-pwc-ink border border-pwc-border sm:rounded-pwc-lg shadow-pwc-card overflow-hidden flex flex-col"
+        className="w-full h-full sm:w-[92vw] sm:h-[92vh] sm:max-w-3xl bg-hoban-bg text-hoban-ink border border-hoban-border sm:rounded-hoban-lg shadow-hoban-card overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 헤더 */}
-        <div className="px-5 py-3 border-b border-pwc-border bg-pwc-bg-card shrink-0 flex items-center justify-between">
+        <div className="px-5 py-3 border-b border-hoban-border bg-hoban-bg-card shrink-0 flex items-center justify-between">
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold">
+            <div className="text-[11px] uppercase tracking-wider text-hoban-primary font-bold">
               PDF 미리보기
             </div>
-            <div className="font-serif-display text-[16px] leading-tight text-pwc-ink">
+            <div className="font-serif-display text-[16px] leading-tight text-hoban-ink">
               TBM 전파 확인서
             </div>
-            <div className="text-[11px] text-pwc-ink-soft truncate" title={filename}>
+            <div className="text-[11px] text-hoban-ink-soft truncate" title={filename}>
               {filename || "(파일명 생성 중)"}
             </div>
           </div>
@@ -107,7 +107,7 @@ export function ReportPreviewModal({
             type="button"
             onClick={onClose}
             disabled={downloading}
-            className="text-pwc-ink-soft hover:text-pwc-orange text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
+            className="text-hoban-ink-soft hover:text-hoban-primary text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
             aria-label="미리보기 닫기"
           >
             닫기
@@ -115,11 +115,11 @@ export function ReportPreviewModal({
         </div>
 
         {/* PDF 뷰어 */}
-        <div className="flex-1 min-h-0 bg-pwc-bg-soft overflow-hidden">
+        <div className="flex-1 min-h-0 bg-hoban-bg-soft overflow-hidden">
           {!pdfBlob || !blobUrl ? (
-            <div className="w-full h-full flex items-center justify-center text-pwc-ink-soft text-sm">
+            <div className="w-full h-full flex items-center justify-center text-hoban-ink-soft text-sm">
               <div className="flex items-center gap-2">
-                <span className="inline-block w-3 h-3 rounded-full bg-pwc-orange animate-pulse" />
+                <span className="inline-block w-3 h-3 rounded-full bg-hoban-primary animate-pulse" />
                 <span>PDF를 생성하는 중…</span>
               </div>
             </div>
@@ -131,7 +131,7 @@ export function ReportPreviewModal({
               aria-label="TBM 전파 확인서 PDF"
             >
               {/* iOS Safari 등 inline PDF 미지원 환경 fallback */}
-              <div className="w-full h-full flex items-center justify-center px-4 text-center text-pwc-ink-soft text-sm">
+              <div className="w-full h-full flex items-center justify-center px-4 text-center text-hoban-ink-soft text-sm">
                 <div>
                   <p className="mb-2">
                     이 브라우저에서는 PDF 미리보기가 표시되지 않을 수 있습니다.
@@ -144,12 +144,12 @@ export function ReportPreviewModal({
         </div>
 
         {/* 푸터 — 취소 + 다운로드 */}
-        <div className="px-5 py-3 border-t border-pwc-border bg-pwc-bg-card shrink-0 flex items-center justify-end gap-2">
+        <div className="px-5 py-3 border-t border-hoban-border bg-hoban-bg-card shrink-0 flex items-center justify-end gap-2">
           <button
             type="button"
             onClick={onClose}
             disabled={downloading}
-            className="px-4 py-2 rounded-pwc text-sm text-pwc-ink-soft hover:text-pwc-orange disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-hoban text-sm text-hoban-ink-soft hover:text-hoban-primary disabled:opacity-40 disabled:cursor-not-allowed"
           >
             취소
           </button>
@@ -157,7 +157,7 @@ export function ReportPreviewModal({
             type="button"
             onClick={() => void handleDownloadClick()}
             disabled={!pdfBlob || downloading}
-            className="px-4 py-2 rounded-pwc bg-pwc-orange text-white text-sm font-bold hover:bg-pwc-orange-deep disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="px-4 py-2 rounded-hoban bg-hoban-primary text-white text-sm font-bold hover:bg-hoban-primary-deep disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
             {downloading ? "처리 중…" : "다운로드"}
           </button>

@@ -44,7 +44,7 @@ function SourceChip({ source }: { source: HazardSource }) {
   if (source === "llm") {
     return (
       <span
-        className="inline-flex items-center px-1.5 py-0.5 rounded-pwc text-[10px] font-semibold bg-pwc-orange-wash text-pwc-orange-deep border border-pwc-orange/30"
+        className="inline-flex items-center px-1.5 py-0.5 rounded-hoban text-[10px] font-semibold bg-hoban-primary-wash text-hoban-primary-deep border border-hoban-primary/30"
         title="AI가 컨텍스트를 반영해 추가한 항목"
       >
         AI 보강
@@ -54,7 +54,7 @@ function SourceChip({ source }: { source: HazardSource }) {
   if (source === "vision") {
     return (
       <span
-        className="inline-flex items-center px-1.5 py-0.5 rounded-pwc text-[10px] font-semibold bg-pwc-orange text-white"
+        className="inline-flex items-center px-1.5 py-0.5 rounded-hoban text-[10px] font-semibold bg-hoban-primary text-white"
         title="사진 분석 결과"
       >
         사진
@@ -63,7 +63,7 @@ function SourceChip({ source }: { source: HazardSource }) {
   }
   return (
     <span
-      className="inline-flex items-center px-1.5 py-0.5 rounded-pwc text-[10px] font-semibold bg-pwc-bg-card text-pwc-ink-soft border border-pwc-border"
+      className="inline-flex items-center px-1.5 py-0.5 rounded-hoban text-[10px] font-semibold bg-hoban-bg-card text-hoban-ink-soft border border-hoban-border"
       title="정적 카탈로그(법규·표준 기반)"
     >
       카탈로그
@@ -81,14 +81,14 @@ function ConfidenceBar({
   const pct = Math.round(Math.max(0, Math.min(1, confidence)) * 100);
   return (
     <div className="flex items-center gap-2 w-[88px]">
-      <div className="flex-1 h-1.5 rounded-full bg-pwc-border overflow-hidden">
+      <div className="flex-1 h-1.5 rounded-full bg-hoban-border overflow-hidden">
         <div
-          className={`h-full ${autoBoosted ? "bg-pwc-orange" : "bg-pwc-orange/60"}`}
+          className={`h-full ${autoBoosted ? "bg-hoban-primary" : "bg-hoban-primary/60"}`}
           style={{ width: `${pct}%` }}
           aria-hidden="true"
         />
       </div>
-      <span className="text-[10px] text-pwc-ink-soft font-semibold tabular-nums shrink-0">
+      <span className="text-[10px] text-hoban-ink-soft font-semibold tabular-nums shrink-0">
         {pct}%
       </span>
     </div>
@@ -137,14 +137,14 @@ export function HazardCard({
   // footer — add/undo 액션. baselineLocked면 액션 비노출(자동 포함됨).
   const footer = baselineLocked ? undefined : added ? (
     <div className="flex items-center gap-2">
-      <span className="text-[10px] font-semibold text-pwc-orange-deep">
+      <span className="text-[10px] font-semibold text-hoban-primary-deep">
         ✓ 체크리스트에 추가됨
       </span>
       {onUndo && (
         <button
           type="button"
           onClick={onUndo}
-          className="text-[10px] uppercase tracking-wider text-pwc-ink-soft hover:text-pwc-orange-deep font-semibold transition"
+          className="text-[10px] uppercase tracking-wider text-hoban-ink-soft hover:text-hoban-primary-deep font-semibold transition"
         >
           되돌리기
         </button>
@@ -154,7 +154,7 @@ export function HazardCard({
     <button
       type="button"
       onClick={onAdd}
-      className="text-[10px] uppercase tracking-wider text-pwc-orange hover:text-pwc-orange-deep font-semibold transition"
+      className="text-[10px] uppercase tracking-wider text-hoban-primary hover:text-hoban-primary-deep font-semibold transition"
     >
       + 체크리스트에 추가
     </button>

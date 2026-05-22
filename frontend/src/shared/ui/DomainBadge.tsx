@@ -10,7 +10,7 @@ interface DomainBadgeProps {
 export function DomainBadge({ domain }: DomainBadgeProps) {
   if (!domain) return null;
   return (
-    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-pwc-bg-card border border-pwc-border text-pwc-ink-soft uppercase tracking-wider">
+    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-hoban-bg-card border border-hoban-border text-hoban-ink-soft uppercase tracking-wider">
       {domainLabel(domain)}
     </span>
   );

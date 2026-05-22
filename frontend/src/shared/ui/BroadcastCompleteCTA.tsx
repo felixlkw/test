@@ -54,15 +54,15 @@ function BroadcastCompleteCTAImpl(props: BroadcastCompleteCTAProps) {
 
   // 활성 base class — PwC orange.
   const activeClass =
-    "w-full flex items-center justify-center gap-2 bg-pwc-orange hover:bg-pwc-orange-deep text-white font-bold text-[14px] px-4 py-3 rounded-pwc-lg shadow-pwc transition focus:outline-none focus:ring-2 focus:ring-pwc-orange-deep focus:ring-offset-1";
+    "w-full flex items-center justify-center gap-2 bg-hoban-primary hover:bg-hoban-primary-deep text-white font-bold text-[14px] px-4 py-3 rounded-hoban-lg shadow-pwc transition focus:outline-none focus:ring-2 focus:ring-hoban-primary-deep focus:ring-offset-1";
   // 펄스 추가 — animate-pulse + ring.
-  const pulseClass = " animate-pulse ring-2 ring-pwc-orange-deep ring-offset-2";
+  const pulseClass = " animate-pulse ring-2 ring-hoban-primary-deep ring-offset-2";
   // 비활성 base — 회색.
   // alwaysClickable=false: cursor-not-allowed + disabled (구 동작).
   // alwaysClickable=true: clickable로 두고 hover만 살림 (SummaryDrawer 진입용).
   const inactiveClass = alwaysClickable
-    ? "w-full flex items-center justify-center gap-2 bg-pwc-bg-soft text-pwc-ink-soft font-bold text-[13px] px-4 py-3 rounded-pwc-lg border border-pwc-border-strong hover:bg-pwc-bg-card transition"
-    : "w-full flex items-center justify-center gap-2 bg-pwc-bg-soft text-pwc-ink-soft font-bold text-[13px] px-4 py-3 rounded-pwc-lg border border-pwc-border-strong cursor-not-allowed transition";
+    ? "w-full flex items-center justify-center gap-2 bg-hoban-bg-soft text-hoban-ink-soft font-bold text-[13px] px-4 py-3 rounded-hoban-lg border border-hoban-border-strong hover:bg-hoban-bg-card transition"
+    : "w-full flex items-center justify-center gap-2 bg-hoban-bg-soft text-hoban-ink-soft font-bold text-[13px] px-4 py-3 rounded-hoban-lg border border-hoban-border-strong cursor-not-allowed transition";
 
   if (!isReady) {
     const missingLabel = buildMissingLabel(readiness);

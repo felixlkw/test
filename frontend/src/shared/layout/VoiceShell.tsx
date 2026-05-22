@@ -1579,7 +1579,7 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
 
   return (
     <div
-      className="w-full h-full flex flex-col bg-pwc-bg-soft text-pwc-ink p-0 overflow-hidden"
+      className="w-full h-full flex flex-col bg-hoban-bg-soft text-hoban-ink p-0 overflow-hidden"
       style={{ height: "100dvh", width: "100vw", position: "fixed", top: 0, left: 0 }}
     >
       <audio ref={audioRef} autoPlay hidden />
@@ -1704,7 +1704,7 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
                     }
                     navigate(`/tbm/${sessionId}/finish`);
                   }}
-                  className="flex items-center gap-2 bg-pwc-orange text-white px-2 sm:px-3 py-1.5 rounded-pwc text-[11px] font-bold uppercase tracking-wider border border-pwc-orange hover:bg-pwc-orange-deep transition whitespace-nowrap"
+                  className="flex items-center gap-2 bg-hoban-primary text-white px-2 sm:px-3 py-1.5 rounded-hoban text-[11px] font-bold uppercase tracking-wider border border-hoban-primary hover:bg-hoban-primary-deep transition whitespace-nowrap"
                   aria-label="TBM 종료 화면으로"
                   title="TBM 종료 — 참석자·서명·리포트"
                 >
@@ -1726,7 +1726,7 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
                   }
                   navigate("/");
                 }}
-                className="flex items-center gap-2 bg-pwc-orange text-white px-2 sm:px-3 py-1.5 rounded-pwc text-[11px] font-bold uppercase tracking-wider border border-pwc-orange hover:bg-pwc-orange-deep transition whitespace-nowrap"
+                className="flex items-center gap-2 bg-hoban-primary text-white px-2 sm:px-3 py-1.5 rounded-hoban text-[11px] font-bold uppercase tracking-wider border border-hoban-primary hover:bg-hoban-primary-deep transition whitespace-nowrap"
                 aria-label="EHS 종료 — 홈으로"
                 title="EHS 안전 질문하기 종료 — 홈 화면으로 돌아갑니다"
               >
@@ -1822,7 +1822,7 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
           <div
             role="status"
             aria-live="polite"
-            className="flex items-start gap-2 px-3 py-2 rounded-pwc bg-pwc-orange-wash border border-pwc-orange/30 text-[12px] text-pwc-ink"
+            className="flex items-start gap-2 px-3 py-2 rounded-hoban bg-hoban-primary-wash border border-hoban-primary/30 text-[12px] text-hoban-ink"
           >
             <span aria-hidden="true" className="shrink-0">🎙️</span>
             <div className="flex-1 leading-snug">
@@ -1832,7 +1832,7 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
             <button
               type="button"
               onClick={dismissMicHint}
-              className="shrink-0 text-pwc-ink-soft hover:text-pwc-orange-deep text-[11px] font-semibold px-1"
+              className="shrink-0 text-hoban-ink-soft hover:text-hoban-primary-deep text-[11px] font-semibold px-1"
               aria-label="마이크 안내 닫기"
             >
               닫기
@@ -1984,7 +1984,7 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
       {reportError && reportPreviewOpen && (
         <Portal>
           <div
-            className="fixed left-1/2 -translate-x-1/2 px-4 py-2 rounded-pwc bg-pwc-orange text-white text-sm font-semibold shadow-pwc"
+            className="fixed left-1/2 -translate-x-1/2 px-4 py-2 rounded-hoban bg-hoban-primary text-white text-sm font-semibold shadow-pwc"
             style={{ zIndex: 31, top: "12vh" }}
             role="alert"
           >

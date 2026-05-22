@@ -84,13 +84,13 @@ export function VoiceTopBar({
     <div
       // 2026-05-06 mobile fix — h-10 sm:h-12 (모바일 컴팩트). px-2 sm:px-4 (좌우 여백 축소).
       // 칩들 사이 mr-* 대신 gap-2 sm:gap-3 wrapper로 통일 — 좁은 폭에서 일관된 간격.
-      className="w-full flex items-center bg-pwc-bg h-10 sm:h-12 justify-between relative z-20 border-b border-pwc-border px-2 sm:px-4 gap-2 sm:gap-3 shrink-0"
+      className="w-full flex items-center bg-hoban-bg h-10 sm:h-12 justify-between relative z-20 border-b border-hoban-border px-2 sm:px-4 gap-2 sm:gap-3 shrink-0"
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
       <button
         type="button"
         onClick={handleHomeClick}
-        className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-pwc-ink hover:text-pwc-orange active:scale-95 transition shrink-0"
+        className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-hoban-ink hover:text-hoban-primary active:scale-95 transition shrink-0"
         aria-label="홈으로"
       >
         <IconHome size={20} />
@@ -129,24 +129,24 @@ export function VoiceTopBar({
         priorTotal !== undefined &&
         checklistTotal !== undefined && (
           <span
-            className="hidden sm:inline-flex shrink-0 items-center gap-1 px-2 py-0.5 rounded-pwc text-[10px] sm:text-[11px] bg-pwc-bg-card text-pwc-ink-soft border border-pwc-border whitespace-nowrap"
+            className="hidden sm:inline-flex shrink-0 items-center gap-1 px-2 py-0.5 rounded-hoban text-[10px] sm:text-[11px] bg-hoban-bg-card text-hoban-ink-soft border border-hoban-border whitespace-nowrap"
             title="사전정보 슬롯 · 체크리스트 진행"
             aria-label={`사전정보 ${priorFilled ?? 0} / ${priorTotal} 채움, 체크리스트 ${checklistCompleted ?? 0} / ${checklistTotal} 완료`}
           >
-            <span className="text-pwc-ink-mute">사전</span>
-            <span className="font-semibold text-pwc-ink">
+            <span className="text-hoban-ink-mute">사전</span>
+            <span className="font-semibold text-hoban-ink">
               {priorFilled ?? 0}/{priorTotal}
             </span>
-            <span aria-hidden="true" className="text-pwc-border-strong">·</span>
-            <span className="text-pwc-ink-mute">체크</span>
-            <span className="font-semibold text-pwc-ink">
+            <span aria-hidden="true" className="text-hoban-border-strong">·</span>
+            <span className="text-hoban-ink-mute">체크</span>
+            <span className="font-semibold text-hoban-ink">
               {checklistCompleted ?? 0}/{checklistTotal}
             </span>
           </span>
         )}
       {transport === "chat" && (
         <span
-          className="shrink-0 px-2 py-0.5 rounded-pwc text-[10px] sm:text-xs bg-pwc-bg-card text-pwc-ink-mute border border-pwc-border"
+          className="shrink-0 px-2 py-0.5 rounded-hoban text-[10px] sm:text-xs bg-hoban-bg-card text-hoban-ink-mute border border-hoban-border"
           title={getChatModeChip(currentLanguage)}
         >
           {getChatModeChip(currentLanguage)}

@@ -21,20 +21,20 @@ export function CitationsPanel({ citations, onClear }: CitationsPanelProps) {
   const showPrevious = expandedAll && hiddenCount > 0;
 
   return (
-    <div className="absolute left-4 right-4 bottom-20 max-h-[60vh] overflow-y-auto bg-pwc-bg border border-pwc-border rounded-pwc-lg shadow-pwc-card z-10">
+    <div className="absolute left-4 right-4 bottom-20 max-h-[60vh] overflow-y-auto bg-hoban-bg border border-hoban-border rounded-hoban-lg shadow-hoban-card z-10">
       <div className="p-4">
         <div className="flex items-center gap-2 mb-3">
           <IconDoc size={16} />
-          <span className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold">
+          <span className="text-[11px] uppercase tracking-wider text-hoban-primary font-bold">
             관련 문서
           </span>
           {total > 1 && (
-            <span className="text-[10px] text-pwc-ink-soft font-medium ml-1">
+            <span className="text-[10px] text-hoban-ink-soft font-medium ml-1">
               {total}건
             </span>
           )}
           <button
-            className="ml-auto text-pwc-ink-soft hover:text-pwc-orange transition-colors p-1"
+            className="ml-auto text-hoban-ink-soft hover:text-hoban-primary transition-colors p-1"
             onClick={onClear}
             aria-label="Clear citations"
           >
@@ -44,33 +44,33 @@ export function CitationsPanel({ citations, onClear }: CitationsPanelProps) {
 
         {/* 최신 1건 — 펼친 상태 */}
         {latest.context && (
-          <p className="text-pwc-ink-soft text-xs mb-3">{latest.context}</p>
+          <p className="text-hoban-ink-soft text-xs mb-3">{latest.context}</p>
         )}
         <div className="space-y-2">
           {latest.citations.map((citation, index) => (
             <div
               key={`latest-${index}`}
-              className="p-3 bg-pwc-bg-card border-l-2 border-pwc-orange"
+              className="p-3 bg-hoban-bg-card border-l-2 border-hoban-primary"
             >
               <a
                 href={citation.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-pwc-ink hover:text-pwc-orange font-semibold text-sm transition-colors duration-200 block mb-1"
+                className="text-hoban-ink hover:text-hoban-primary font-semibold text-sm transition-colors duration-200 block mb-1"
               >
                 {citation.title}
               </a>
-              <p className="text-pwc-ink-soft text-xs leading-relaxed">{citation.summary}</p>
+              <p className="text-hoban-ink-soft text-xs leading-relaxed">{citation.summary}</p>
             </div>
           ))}
         </div>
 
         {/* 이전 항목들 — 컴팩트 스택 + 토글 */}
         {hiddenCount > 0 && (
-          <div className="mt-3 pt-3 border-t border-pwc-border">
+          <div className="mt-3 pt-3 border-t border-hoban-border">
             <button
               type="button"
-              className="text-[11px] text-pwc-ink-soft hover:text-pwc-orange font-medium uppercase tracking-wider transition-colors"
+              className="text-[11px] text-hoban-ink-soft hover:text-hoban-primary font-medium uppercase tracking-wider transition-colors"
               onClick={() => setExpandedAll((v) => !v)}
               aria-expanded={expandedAll}
             >
@@ -85,10 +85,10 @@ export function CitationsPanel({ citations, onClear }: CitationsPanelProps) {
                   .map((entry, entryIdx) => (
                     <div
                       key={`prev-${entry.timestamp}-${entryIdx}`}
-                      className="p-2 bg-pwc-bg-card/60 border-l border-pwc-border-strong"
+                      className="p-2 bg-hoban-bg-card/60 border-l border-hoban-border-strong"
                     >
                       {entry.context && (
-                        <p className="text-pwc-ink-soft text-[11px] mb-1.5 leading-snug">
+                        <p className="text-hoban-ink-soft text-[11px] mb-1.5 leading-snug">
                           {entry.context}
                         </p>
                       )}
@@ -99,7 +99,7 @@ export function CitationsPanel({ citations, onClear }: CitationsPanelProps) {
                               href={c.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-pwc-ink hover:text-pwc-orange font-medium"
+                              className="text-hoban-ink hover:text-hoban-primary font-medium"
                             >
                               {c.title}
                             </a>

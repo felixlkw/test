@@ -25,14 +25,14 @@ export function CameraConsentModal({
       aria-modal="true"
       aria-labelledby="cameraConsentTitle"
     >
-      <div className="w-full max-w-md bg-white rounded-pwc-lg shadow-pwc-card p-5">
+      <div className="w-full max-w-md bg-white rounded-hoban-lg shadow-hoban-card p-5">
         <h3
           id="cameraConsentTitle"
-          className="font-serif-display text-[18px] text-pwc-ink mb-3"
+          className="font-serif-display text-[18px] text-hoban-ink mb-3"
         >
           카메라 사용 동의
         </h3>
-        <div className="text-[13px] leading-relaxed text-pwc-ink space-y-2 mb-5">
+        <div className="text-[13px] leading-relaxed text-hoban-ink space-y-2 mb-5">
           <p>
             촬영한 사진은 안전 위험 분석을 위해 OpenAI API에 전송됩니다.
           </p>
@@ -41,7 +41,7 @@ export function CameraConsentModal({
             않습니다. 사진은 분석 후 즉시 폐기됩니다.
           </p>
           <p>
-            <span className="font-semibold text-pwc-orange-deep">
+            <span className="font-semibold text-hoban-primary-deep">
               노동자 동의를 확인
             </span>
             한 후 진행해주세요. 얼굴이 포함된 사진은 가급적 피하시거나, 추후
@@ -52,14 +52,14 @@ export function CameraConsentModal({
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 px-4 py-2.5 rounded-pwc bg-white text-pwc-ink-soft border border-pwc-border hover:border-pwc-orange hover:text-pwc-orange text-sm font-semibold transition"
+            className="flex-1 px-4 py-2.5 rounded-hoban bg-white text-hoban-ink-soft border border-hoban-border hover:border-hoban-primary hover:text-hoban-primary text-sm font-semibold transition"
           >
             취소
           </button>
           <button
             type="button"
             onClick={onConsent}
-            className="flex-1 px-4 py-2.5 rounded-pwc bg-pwc-orange hover:bg-pwc-orange-deep text-white text-sm font-bold transition"
+            className="flex-1 px-4 py-2.5 rounded-hoban bg-hoban-primary hover:bg-hoban-primary-deep text-white text-sm font-bold transition"
           >
             동의 · 계속
           </button>

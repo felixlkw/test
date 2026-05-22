@@ -91,29 +91,29 @@ export function SignaturePad({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md bg-white rounded-pwc-lg shadow-pwc-card p-4"
+        className="w-full max-w-md bg-white rounded-hoban-lg shadow-hoban-card p-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-2">
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold">
+            <div className="text-[11px] uppercase tracking-wider text-hoban-primary font-bold">
               참석자 서명
             </div>
-            <div className="font-serif-display text-[18px] text-pwc-ink leading-tight">
+            <div className="font-serif-display text-[18px] text-hoban-ink leading-tight">
               {attendeeName || "—"}
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-pwc-ink-soft hover:text-pwc-orange text-sm font-semibold"
+            className="text-hoban-ink-soft hover:text-hoban-primary text-sm font-semibold"
           >
             닫기
           </button>
         </div>
 
         <div className="mt-2">
-          <div className="border border-pwc-border-strong rounded-pwc bg-pwc-bg-card overflow-hidden">
+          <div className="border border-hoban-border-strong rounded-hoban bg-hoban-bg-card overflow-hidden">
             <canvas
               ref={canvasRef}
               className="w-full block touch-none"
@@ -121,7 +121,7 @@ export function SignaturePad({
               aria-label="서명 입력 영역"
             />
           </div>
-          <p className="mt-1 text-[11px] text-pwc-ink-mute">
+          <p className="mt-1 text-[11px] text-hoban-ink-mute">
             손가락 또는 스타일러스로 서명하세요.
           </p>
         </div>
@@ -131,7 +131,7 @@ export function SignaturePad({
             type="button"
             onClick={handleClear}
             disabled={!hasStrokes}
-            className="px-3 py-2 rounded-pwc border border-pwc-border-strong text-sm hover:border-pwc-orange hover:text-pwc-orange disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-3 py-2 rounded-hoban border border-hoban-border-strong text-sm hover:border-hoban-primary hover:text-hoban-primary disabled:opacity-40 disabled:cursor-not-allowed"
           >
             지우기
           </button>
@@ -139,22 +139,22 @@ export function SignaturePad({
             type="button"
             onClick={handleConfirm}
             disabled={!hasStrokes}
-            className="ml-auto px-4 py-2 rounded-pwc bg-pwc-orange text-white text-sm font-semibold hover:bg-pwc-orange-deep disabled:opacity-40 disabled:cursor-not-allowed"
+            className="ml-auto px-4 py-2 rounded-hoban bg-hoban-primary text-white text-sm font-semibold hover:bg-hoban-primary-deep disabled:opacity-40 disabled:cursor-not-allowed"
           >
             서명 확인
           </button>
         </div>
 
-        <div className="mt-4 pt-3 border-t border-pwc-border">
-          <p className="text-[11px] text-pwc-ink-soft mb-2">
+        <div className="mt-4 pt-3 border-t border-hoban-border">
+          <p className="text-[11px] text-hoban-ink-soft mb-2">
             장갑 등으로 서명이 어려우면 본인 동의 확인으로 대체할 수 있습니다.
           </p>
-          <label className="flex items-center gap-2 cursor-pointer text-sm text-pwc-ink">
+          <label className="flex items-center gap-2 cursor-pointer text-sm text-hoban-ink">
             <input
               type="checkbox"
               checked={confirmFallback}
               onChange={(e) => setConfirmFallback(e.target.checked)}
-              className="accent-pwc-orange"
+              className="accent-hoban-primary"
             />
             <span>본인 동의 확인</span>
           </label>
@@ -162,7 +162,7 @@ export function SignaturePad({
             type="button"
             onClick={handleConfirmFallback}
             disabled={!confirmFallback}
-            className="mt-2 w-full px-4 py-2 rounded-pwc border border-pwc-orange text-pwc-orange text-sm font-semibold hover:bg-pwc-orange hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="mt-2 w-full px-4 py-2 rounded-hoban border border-hoban-primary text-hoban-primary text-sm font-semibold hover:bg-hoban-primary hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
             동의로 처리하고 닫기
           </button>

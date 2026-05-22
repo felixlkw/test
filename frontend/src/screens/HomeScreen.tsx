@@ -43,10 +43,10 @@ const DOMAIN_HINTS_BY_TENANT: Record<string, Partial<Record<SessionDomain, strin
     heavy_industry: "조선·해양·철강·중장비",
     semiconductor: "FAB·후공정·가스/화학",
   },
-  lg_innotek: {
-    manufacturing: "광학·패키지·모빌리티 양산 라인",
-    construction: "팹/라인 신축·증설·클린룸 시공",
-    heavy_industry: "클린룸 장비·노광/검사·도금 PM",
+  hoban: {
+    manufacturing: "대한전선 동조괴·압출·시즈·HV시험",
+    construction: "호반건설 아파트·토목·리조트 + 대한전선 케이블 EPC·변전소",
+    heavy_industry: "",
     semiconductor: "",
   },
 };
@@ -142,19 +142,19 @@ export default function HomeScreen() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-pwc-bg text-pwc-ink flex flex-col">
+    <div className="w-full min-h-screen bg-hoban-bg text-hoban-ink flex flex-col">
       {/* Brand bar */}
       <header className="flex items-center justify-between px-5 pt-5 pb-3">
         <div className="flex items-center gap-3">
           <PwcMark size={22} />
-          <span className="h-4 w-px bg-pwc-border" aria-hidden="true" />
-          <span className="text-[13px] font-bold tracking-wide uppercase text-pwc-ink">
-            Safety Vision
+          <span className="h-4 w-px bg-hoban-border" aria-hidden="true" />
+          <span className="text-[13px] font-bold tracking-wide uppercase text-hoban-ink">
+            {tenant.appName}
           </span>
         </div>
         <button
           onClick={() => navigate("/settings")}
-          className="w-9 h-9 flex items-center justify-center text-pwc-ink hover:text-pwc-orange"
+          className="w-9 h-9 flex items-center justify-center text-hoban-ink hover:text-hoban-primary"
           aria-label="설정"
         >
           <IconSettings size={20} />
@@ -162,12 +162,12 @@ export default function HomeScreen() {
       </header>
 
       {/* Hero */}
-      <section className="bg-pwc-hero px-6 pt-10 pb-12 relative overflow-hidden">
+      <section className="bg-hoban-hero px-6 pt-10 pb-12 relative overflow-hidden">
         <div className="max-w-xl">
-          <h1 className="font-serif-display text-[34px] leading-[1.08] text-pwc-ink">
+          <h1 className="font-serif-display text-[34px] leading-[1.08] text-hoban-ink">
             현장의 안전을,<br />대화로 정리합니다
           </h1>
-          <p className="mt-3 text-sm text-pwc-ink-soft max-w-sm">
+          <p className="mt-3 text-sm text-hoban-ink-soft max-w-sm">
             작업 전 위험요인을 빠르게 확인하고, 오늘의 TBM을 완성하세요.
           </p>
         </div>
@@ -181,11 +181,11 @@ export default function HomeScreen() {
         <section className="px-6 pt-6">
           <button
             onClick={resumeDraft}
-            className="w-full text-left bg-white border border-pwc-border rounded-pwc-lg shadow-pwc-card p-4 flex items-center justify-between hover:border-pwc-orange transition"
+            className="w-full text-left bg-white border border-hoban-border rounded-hoban-lg shadow-hoban-card p-4 flex items-center justify-between hover:border-hoban-primary transition"
           >
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold">
+                <span className="text-[11px] uppercase tracking-wider text-hoban-primary font-bold">
                   진행 중
                 </span>
                 {/* PR B+ Q9 (OLD-M15 / NEW-M3) — Resume Card 도메인 배지.
@@ -195,11 +195,11 @@ export default function HomeScreen() {
               <div className="text-base font-semibold truncate mt-0.5">
                 {draft.work_type || "TBM 세션"}
               </div>
-              <div className="text-xs text-pwc-ink-mute mt-1">
+              <div className="text-xs text-hoban-ink-mute mt-1">
                 {new Date(draft.updated_at).toLocaleString("ko-KR")} · 이어서 하기
               </div>
             </div>
-            <span className="text-pwc-orange shrink-0">
+            <span className="text-hoban-primary shrink-0">
               <IconArrowRight size={22} />
             </span>
           </button>
@@ -209,13 +209,13 @@ export default function HomeScreen() {
             <button
               type="button"
               onClick={() => navigate("/history?filter=draft")}
-              className="mt-2 w-full flex items-center justify-between text-left bg-pwc-orange-wash border border-pwc-orange/30 hover:border-pwc-orange rounded-pwc px-3 py-2 transition"
+              className="mt-2 w-full flex items-center justify-between text-left bg-hoban-primary-wash border border-hoban-primary/30 hover:border-hoban-primary rounded-hoban px-3 py-2 transition"
               aria-label={getDraftCountBadgeLabel("korean", draftCount)}
             >
-              <span className="text-[12px] font-semibold text-pwc-orange">
+              <span className="text-[12px] font-semibold text-hoban-primary">
                 {getDraftCountBadgeLabel("korean", draftCount)}
               </span>
-              <IconChevronRight size={14} className="text-pwc-orange" />
+              <IconChevronRight size={14} className="text-hoban-primary" />
             </button>
           )}
         </section>
@@ -239,15 +239,15 @@ export default function HomeScreen() {
       <section className="px-6 pt-4 pb-10">
         <h2 className="text-[16px] font-bold">도구</h2>
         <RuleLine className="mt-2 mb-4" />
-        <ul className="divide-y divide-pwc-border border-t border-pwc-border">
+        <ul className="divide-y divide-hoban-border border-t border-hoban-border">
           <li>
             <button
               onClick={() => navigate("/history")}
-              className="w-full flex items-center justify-between py-4 text-left hover:text-pwc-orange"
+              className="w-full flex items-center justify-between py-4 text-left hover:text-hoban-primary"
             >
               <div>
                 <div className="text-sm font-semibold">과거 TBM 기록</div>
-                <div className="text-xs text-pwc-ink-mute mt-0.5">이전 세션 열람 · 편집 · 삭제</div>
+                <div className="text-xs text-hoban-ink-mute mt-0.5">이전 세션 열람 · 편집 · 삭제</div>
               </div>
               <IconChevronRight size={18} />
             </button>
@@ -255,11 +255,11 @@ export default function HomeScreen() {
           <li>
             <button
               onClick={() => navigate("/settings")}
-              className="w-full flex items-center justify-between py-4 text-left hover:text-pwc-orange"
+              className="w-full flex items-center justify-between py-4 text-left hover:text-hoban-primary"
             >
               <div>
                 <div className="text-sm font-semibold">설정</div>
-                <div className="text-xs text-pwc-ink-mute mt-0.5">앱 정보 · 데이터 관리</div>
+                <div className="text-xs text-hoban-ink-mute mt-0.5">앱 정보 · 데이터 관리</div>
               </div>
               <IconChevronRight size={18} />
             </button>
@@ -267,8 +267,8 @@ export default function HomeScreen() {
         </ul>
       </section>
 
-      <footer className="mt-auto px-6 pb-6 text-[11px] text-pwc-ink-mute">
-        Safety Vision · LG Innotek Industrial Safety PoC
+      <footer className="mt-auto px-6 pb-6 text-[11px] text-hoban-ink-mute">
+        {tenant.appName} · {tenant.companyName} Industrial Safety
       </footer>
 
       {showDomainSheet && (
@@ -277,7 +277,7 @@ export default function HomeScreen() {
           onClick={() => setShowDomainSheet(false)}
         >
           <div
-            className="w-full max-w-xl bg-white rounded-t-pwc-lg p-5 shadow-pwc-card"
+            className="w-full max-w-xl bg-white rounded-t-hoban-lg p-5 shadow-hoban-card"
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
@@ -287,13 +287,13 @@ export default function HomeScreen() {
               <h3 className="text-[17px] font-bold">산업 도메인 선택</h3>
               <button
                 onClick={() => setShowDomainSheet(false)}
-                className="text-pwc-ink-mute text-sm"
+                className="text-hoban-ink-mute text-sm"
                 aria-label="닫기"
               >
                 닫기
               </button>
             </div>
-            <p className="text-xs text-pwc-ink-mute mb-4">
+            <p className="text-xs text-hoban-ink-mute mb-4">
               작업 현장의 특성에 맞는 안전 체크리스트와 허가서 흐름이 적용됩니다.
             </p>
             <div className="grid grid-cols-2 gap-3">
@@ -301,16 +301,16 @@ export default function HomeScreen() {
                 <button
                   key={opt.value}
                   onClick={() => confirmDomain(opt.value)}
-                  className="text-left rounded-pwc border border-pwc-border hover:border-pwc-orange p-4 transition"
+                  className="text-left rounded-hoban border border-hoban-border hover:border-hoban-primary p-4 transition"
                 >
                   <div className="text-sm font-semibold">{opt.label}</div>
-                  <div className="text-[11px] text-pwc-ink-mute mt-1">{opt.hint}</div>
+                  <div className="text-[11px] text-hoban-ink-mute mt-1">{opt.hint}</div>
                 </button>
               ))}
             </div>
             <button
               onClick={() => confirmDomain(undefined)}
-              className="mt-4 w-full text-xs text-pwc-ink-soft py-2 hover:text-pwc-orange"
+              className="mt-4 w-full text-xs text-hoban-ink-soft py-2 hover:text-hoban-primary"
             >
               도메인 지정 없이 일반 TBM 시작 →
             </button>

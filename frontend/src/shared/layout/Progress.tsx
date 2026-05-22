@@ -7,9 +7,9 @@ interface ProgressProps {
 
 export function Progress({ percent }: ProgressProps) {
   return (
-    <div className="w-full h-1.5 bg-pwc-border overflow-hidden">
+    <div className="w-full h-1.5 bg-hoban-border overflow-hidden">
       <div
-        className="h-full bg-pwc-orange transition-all duration-300"
+        className="h-full bg-hoban-primary transition-all duration-300"
         style={{ width: `${percent}%` }}
       />
     </div>

@@ -15,7 +15,7 @@ interface IconProps extends Omit<SVGProps<SVGSVGElement>, "children"> {
   gradient?: boolean;
 }
 
-const GRAD_ID = "pwc-icon-grad";
+const GRAD_ID = "hoban-icon-grad";
 
 function IconShell({
   size = 24,

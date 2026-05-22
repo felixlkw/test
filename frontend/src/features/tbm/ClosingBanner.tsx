@@ -32,12 +32,12 @@ export function ClosingBanner({
     <div
       role="status"
       aria-live="polite"
-      className="w-full bg-pwc-orange-wash border-b border-pwc-orange/40 px-3 py-1.5 flex items-center gap-2 shrink-0"
+      className="w-full bg-hoban-primary-wash border-b border-hoban-primary/40 px-3 py-1.5 flex items-center gap-2 shrink-0"
     >
-      <span aria-hidden="true" className="shrink-0 text-pwc-orange-deep">
+      <span aria-hidden="true" className="shrink-0 text-hoban-primary-deep">
         ⏱
       </span>
-      <div className="flex-1 min-w-0 text-[12px] text-pwc-ink leading-snug">
+      <div className="flex-1 min-w-0 text-[12px] text-hoban-ink leading-snug">
         <span className="font-semibold">마무리 임박</span>
         {missingCount > 0 ? ` — 미기입 ${missingCount}개` : " — 모두 정리됨"}
       </div>
@@ -45,7 +45,7 @@ export function ClosingBanner({
         <button
           type="button"
           onClick={onOpenDetails}
-          className="shrink-0 text-[11px] font-bold uppercase tracking-wider text-pwc-orange-deep hover:text-pwc-orange-deep underline decoration-pwc-orange/40 hover:decoration-pwc-orange transition px-1"
+          className="shrink-0 text-[11px] font-bold uppercase tracking-wider text-hoban-primary-deep hover:text-hoban-primary-deep underline decoration-hoban-primary/40 hover:decoration-hoban-primary transition px-1"
         >
           자세히 보기
         </button>
@@ -54,7 +54,7 @@ export function ClosingBanner({
         type="button"
         onClick={onDismiss}
         aria-label="마무리 임박 안내 닫기"
-        className="shrink-0 text-pwc-ink-mute hover:text-pwc-orange-deep transition p-1"
+        className="shrink-0 text-hoban-ink-mute hover:text-hoban-primary-deep transition p-1"
       >
         <IconClose size={14} />
       </button>

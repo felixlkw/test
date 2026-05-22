@@ -92,22 +92,22 @@ export function ChecklistPanel({
       aria-modal="true"
     >
       <div
-        className="w-full max-w-xl bg-pwc-bg border border-pwc-border rounded-b-pwc-lg shadow-pwc-card overflow-hidden flex flex-col"
+        className="w-full max-w-xl bg-hoban-bg border border-hoban-border rounded-b-hoban-lg shadow-hoban-card overflow-hidden flex flex-col"
         style={{ maxHeight: "85vh", marginTop: "0" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-5 py-4 border-b border-pwc-border bg-pwc-bg flex items-center justify-between">
+        <div className="px-5 py-4 border-b border-hoban-border bg-hoban-bg flex items-center justify-between">
           <div className="flex items-center gap-3">
             <IconShield size={20} gradient />
             <div>
-              <div className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold">
+              <div className="text-[11px] uppercase tracking-wider text-hoban-primary font-bold">
                 TBM
               </div>
               <div className="font-serif-display text-[18px] leading-tight">작업 현황</div>
             </div>
           </div>
           <button
-            className="text-pwc-ink-soft hover:text-pwc-orange transition-colors p-2"
+            className="text-hoban-ink-soft hover:text-hoban-primary transition-colors p-2"
             onClick={onClose}
             aria-label="Close checklist panel"
           >
@@ -117,10 +117,10 @@ export function ChecklistPanel({
 
         <div className="flex-1 overflow-y-auto" style={{ scrollBehavior: "smooth" }}>
           {/* Prior Information Section */}
-          <div className="px-6 py-4 border-b border-pwc-border">
+          <div className="px-6 py-4 border-b border-hoban-border">
             <div className="flex items-center gap-2 mb-3">
               <svg
-                className="w-5 h-5 text-pwc-orange"
+                className="w-5 h-5 text-hoban-primary"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -132,7 +132,7 @@ export function ChecklistPanel({
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <h3 className="font-semibold text-pwc-orange text-lg">사전 정보</h3>
+              <h3 className="font-semibold text-hoban-primary text-lg">사전 정보</h3>
             </div>
             <div className="grid grid-cols-1 gap-3">
               {/* PR-feedback-5 (v0.2.9) — worker_count 1건만 fallback. 0은 양쪽 모두
@@ -165,7 +165,7 @@ export function ChecklistPanel({
           <div className="px-6 py-4">
             <div className="flex items-center gap-2 mb-4">
               <svg
-                className="w-5 h-5 text-pwc-orange"
+                className="w-5 h-5 text-hoban-primary"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -177,19 +177,19 @@ export function ChecklistPanel({
                   d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                 />
               </svg>
-              <h3 className="font-semibold text-pwc-orange text-lg">
+              <h3 className="font-semibold text-hoban-primary text-lg">
                 안전 체크리스트
                 {missingOnly && (
-                  <span className="ml-2 text-[10px] uppercase tracking-wider text-pwc-orange-deep bg-pwc-orange/15 px-1.5 py-0.5 rounded-full border border-pwc-orange/30 font-bold align-middle">
+                  <span className="ml-2 text-[10px] uppercase tracking-wider text-hoban-primary-deep bg-hoban-primary/15 px-1.5 py-0.5 rounded-full border border-hoban-primary/30 font-bold align-middle">
                     미기입만
                   </span>
                 )}
               </h3>
-              <div className="ml-auto bg-pwc-orange/20 px-3 py-1 rounded-full border border-pwc-orange/30">
-                <span className="text-xs font-semibold text-pwc-ink">
+              <div className="ml-auto bg-hoban-primary/20 px-3 py-1 rounded-full border border-hoban-primary/30">
+                <span className="text-xs font-semibold text-hoban-ink">
                   {completedCount}/{checklist.length} 완료
                   {skippedCount > 0 && (
-                    <span className="ml-1 text-pwc-ink-mute font-normal">
+                    <span className="ml-1 text-hoban-ink-mute font-normal">
                       · 건너뜀 {skippedCount}
                     </span>
                   )}
@@ -197,7 +197,7 @@ export function ChecklistPanel({
               </div>
             </div>
             {missingOnly && visibleItems.length === 0 && (
-              <p className="text-xs text-pwc-ink-mute italic py-3">
+              <p className="text-xs text-hoban-ink-mute italic py-3">
                 미기입 항목이 없습니다.
               </p>
             )}
@@ -207,10 +207,10 @@ export function ChecklistPanel({
                   key={item.index}
                   className={`p-4 rounded-xl border transition-all duration-200 cursor-pointer select-none ${
                     item.skipped
-                      ? "bg-pwc-bg-card/60 border-pwc-border opacity-60 hover:opacity-80"
+                      ? "bg-hoban-bg-card/60 border-hoban-border opacity-60 hover:opacity-80"
                       : item.completed
-                        ? "bg-pwc-orange/10 border-pwc-orange/30 shadow-lg shadow-pwc-orange/5 hover:bg-pwc-orange/15"
-                        : "bg-pwc-bg-card border-pwc-border hover:border-pwc-orange/50 hover:bg-pwc-orange-wash"
+                        ? "bg-hoban-primary/10 border-hoban-primary/30 shadow-lg shadow-hoban-primary/5 hover:bg-hoban-primary/15"
+                        : "bg-hoban-bg-card border-hoban-border hover:border-hoban-primary/50 hover:bg-hoban-primary-wash"
                   }`}
                   onClick={(e) => {
                     e.preventDefault();
@@ -222,10 +222,10 @@ export function ChecklistPanel({
                     <div
                       className={`mt-0.5 w-7 h-7 flex items-center justify-center rounded-full border-2 transition-all ${
                         item.skipped
-                          ? "bg-pwc-bg-card border-pwc-border-strong text-pwc-ink-mute"
+                          ? "bg-hoban-bg-card border-hoban-border-strong text-hoban-ink-mute"
                           : item.completed
-                            ? "bg-pwc-orange border-pwc-orange text-white"
-                            : "bg-transparent border-pwc-border text-pwc-ink-mute hover:border-pwc-orange/50 hover:bg-pwc-orange/10"
+                            ? "bg-hoban-primary border-hoban-primary text-white"
+                            : "bg-transparent border-hoban-border text-hoban-ink-mute hover:border-hoban-primary/50 hover:bg-hoban-primary/10"
                       }`}
                     >
                       {item.skipped ? (
@@ -251,17 +251,17 @@ export function ChecklistPanel({
                         <span
                           className={`font-medium block ${
                             item.skipped
-                              ? "text-pwc-ink-mute italic"
+                              ? "text-hoban-ink-mute italic"
                               : item.completed
-                                ? "text-pwc-ink"
-                                : "text-pwc-ink-soft"
+                                ? "text-hoban-ink"
+                                : "text-hoban-ink-soft"
                           }`}
                         >
                           {item.content}
                         </span>
                         {item.skipped && (
                           <span
-                            className="inline-flex items-center gap-1 shrink-0 mt-[2px] px-1.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold bg-pwc-bg-card text-pwc-ink-mute border border-pwc-border-strong"
+                            className="inline-flex items-center gap-1 shrink-0 mt-[2px] px-1.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold bg-hoban-bg-card text-hoban-ink-mute border border-hoban-border-strong"
                             title="사용자가 명시적으로 건너뛴 항목 — 리포트에 표기됨"
                             aria-label="건너뜀"
                           >
@@ -270,7 +270,7 @@ export function ChecklistPanel({
                         )}
                         {item.is_baseline && (
                           <span
-                            className="inline-flex items-center gap-1 shrink-0 mt-[2px] px-1.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold bg-pwc-orange/15 text-pwc-orange-deep border border-pwc-orange/30"
+                            className="inline-flex items-center gap-1 shrink-0 mt-[2px] px-1.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold bg-hoban-primary/15 text-hoban-primary-deep border border-hoban-primary/30"
                             title="준비 단계에서 자동 포함된 필수 점검 항목"
                             aria-label="필수 항목"
                           >
@@ -280,20 +280,20 @@ export function ChecklistPanel({
                         )}
                       </div>
                       {item.is_baseline && item.regulation && (
-                        <div className="text-[11px] text-pwc-ink-mute mt-1">
+                        <div className="text-[11px] text-hoban-ink-mute mt-1">
                           {item.regulation}
                         </div>
                       )}
                       {item.completed && item.utterance && (
-                        <div className="mt-2 p-2 bg-pwc-bg-card rounded border-l-2 border-pwc-orange">
-                          <div className="text-[10px] uppercase tracking-wider text-pwc-orange font-bold mb-1">
+                        <div className="mt-2 p-2 bg-hoban-bg-card rounded border-l-2 border-hoban-primary">
+                          <div className="text-[10px] uppercase tracking-wider text-hoban-primary font-bold mb-1">
                             응답
                           </div>
-                          <div className="text-sm text-pwc-ink">"{item.utterance}"</div>
+                          <div className="text-sm text-hoban-ink">"{item.utterance}"</div>
                         </div>
                       )}
                       {item.completed && item.checkedAt && (
-                        <div className="text-xs text-pwc-ink-mute mt-2 flex items-center gap-1">
+                        <div className="text-xs text-hoban-ink-mute mt-2 flex items-center gap-1">
                           <svg
                             className="w-3 h-3"
                             fill="none"
@@ -347,18 +347,18 @@ function PriorRow({ label, value }: { label: string; value?: string }) {
       className={`p-3 rounded-xl border transition-colors ${
         pulseKey > 0 && filled ? "animate-slot-pulse animate-slot-slide-in " : ""
       }${
-        filled ? "bg-pwc-orange/10 border-pwc-orange/30" : "bg-pwc-bg-card border-pwc-border"
+        filled ? "bg-hoban-primary/10 border-hoban-primary/30" : "bg-hoban-bg-card border-hoban-border"
       }`}
     >
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-pwc-ink-soft">{label}</span>
+        <span className="text-sm font-medium text-hoban-ink-soft">{label}</span>
         <span
           className={`w-2 h-2 rounded-full ${
-            filled ? "bg-pwc-orange" : "bg-pwc-border-strong"
+            filled ? "bg-hoban-primary" : "bg-hoban-border-strong"
           }`}
         ></span>
       </div>
-      <div className={`mt-1 text-sm ${filled ? "text-pwc-ink" : "text-pwc-ink-mute"}`}>
+      <div className={`mt-1 text-sm ${filled ? "text-hoban-ink" : "text-hoban-ink-mute"}`}>
         {value ?? "미입력"}
       </div>
     </div>

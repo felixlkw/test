@@ -586,9 +586,9 @@ export default function PrepareScreen() {
   // ── render ───────────────────────────────────────────────
   if (loadState === "loading") {
     return (
-      <div className="min-h-screen bg-pwc-bg text-pwc-ink">
+      <div className="min-h-screen bg-hoban-bg text-hoban-ink">
         <TopBar title="준비" backTo="/" />
-        <div className="px-5 py-10 text-sm text-pwc-ink-mute" role="status">
+        <div className="px-5 py-10 text-sm text-hoban-ink-mute" role="status">
           세션을 불러오는 중…
         </div>
       </div>
@@ -596,10 +596,10 @@ export default function PrepareScreen() {
   }
   if (loadState === "error") {
     return (
-      <div className="min-h-screen bg-pwc-bg text-pwc-ink">
+      <div className="min-h-screen bg-hoban-bg text-hoban-ink">
         <TopBar title="준비" backTo="/" />
         <div className="px-5 py-10" role="alert">
-          <p className="text-sm text-pwc-orange-deep">
+          <p className="text-sm text-hoban-primary-deep">
             {loadError ?? "세션을 불러오지 못했습니다."}
           </p>
           <CTAButton
@@ -617,7 +617,7 @@ export default function PrepareScreen() {
   }
 
   return (
-    <div className="min-h-screen bg-pwc-bg text-pwc-ink">
+    <div className="min-h-screen bg-hoban-bg text-hoban-ink">
       <TopBar title="준비" backTo="/" />
 
       <main className="px-5 py-5 space-y-7 max-w-2xl mx-auto">
@@ -625,7 +625,7 @@ export default function PrepareScreen() {
         <section aria-labelledby="prep-domain">
           <h2
             id="prep-domain"
-            className="text-[13px] uppercase tracking-wider font-bold text-pwc-orange"
+            className="text-[13px] uppercase tracking-wider font-bold text-hoban-primary"
           >
             도메인
           </h2>
@@ -635,10 +635,10 @@ export default function PrepareScreen() {
 
         {/* work type catalog */}
         <section aria-labelledby="prep-worktype">
-          <h2 id="prep-worktype" className="font-serif-display text-[20px] text-pwc-ink">
+          <h2 id="prep-worktype" className="font-serif-display text-[20px] text-hoban-ink">
             작업 선택
           </h2>
-          <p className="text-xs text-pwc-ink-mute mt-1">
+          <p className="text-xs text-hoban-ink-mute mt-1">
             오늘 진행하는 작업을 하나 고르세요. 선택하면 AI가 필수 점검 항목과
             조건부 점검을 제안합니다.
           </p>
@@ -661,7 +661,7 @@ export default function PrepareScreen() {
               현장 컨텍스트
             </h2>
             {aiContextEnabled && (
-              <p className="text-[11px] text-pwc-ink-soft mb-2 leading-relaxed">
+              <p className="text-[11px] text-hoban-ink-soft mb-2 leading-relaxed">
                 현장 상황을 입력하면 AI가 더 정확한 위험을 제안합니다 (선택).
               </p>
             )}
@@ -673,7 +673,7 @@ export default function PrepareScreen() {
               language={language}
             />
             {!aiContextEnabled && (
-              <p className="text-[11px] text-pwc-ink-mute mt-2">
+              <p className="text-[11px] text-hoban-ink-mute mt-2">
                 반도체 도메인은 영업비밀 보호를 위해 컨텍스트 활용이 기본
                 비활성화되어 있습니다. Settings → "AI 컨텍스트 활용"에서
                 활성화하면 입력 가능합니다.
@@ -686,7 +686,7 @@ export default function PrepareScreen() {
         {selectedWorkTypeId && (
           <section aria-labelledby="prep-hazards">
             <div className="flex items-center justify-between gap-2">
-              <h2 id="prep-hazards" className="font-serif-display text-[20px] text-pwc-ink">
+              <h2 id="prep-hazards" className="font-serif-display text-[20px] text-hoban-ink">
                 위험 추천
               </h2>
               {/* PR-feedback-2 — "다시 받기"는 2단 보강 호출(debounce 우회).
@@ -697,7 +697,7 @@ export default function PrepareScreen() {
                 type="button"
                 onClick={handleRefresh}
                 disabled={augmenting || refreshCooldownActive || !recommend}
-                className="inline-flex items-center gap-1 text-[12px] text-pwc-ink-soft hover:text-pwc-orange disabled:opacity-50 disabled:cursor-not-allowed transition-colors px-2 py-1 rounded-pwc"
+                className="inline-flex items-center gap-1 text-[12px] text-hoban-ink-soft hover:text-hoban-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors px-2 py-1 rounded-hoban"
                 aria-label={
                   refreshCooldownActive
                     ? `위험 추천 다시 받기 — ${cooldownRemaining}초 후 가능`
@@ -723,7 +723,7 @@ export default function PrepareScreen() {
                 </span>
               </button>
             </div>
-            <p className="text-xs text-pwc-ink-mute mt-1">
+            <p className="text-xs text-hoban-ink-mute mt-1">
               필수 항목은 TBM 진행 중 자동으로 체크리스트에 포함됩니다.
             </p>
             <RuleLine className="mt-2 mb-3" />
@@ -732,13 +732,13 @@ export default function PrepareScreen() {
                 호출 시간만 노출. recommend가 들어오면 augmenting 동안에도
                 카드는 그대로 노출하고 우상단 spinner로 보강 중임을 표시. */}
             {recommendLoading && !recommend && (
-              <div className="text-sm text-pwc-ink-mute py-3" role="status">
+              <div className="text-sm text-hoban-ink-mute py-3" role="status">
                 위험 추천 불러오는 중…
               </div>
             )}
             {recommendError && !recommend && (
               <div
-                className="text-sm text-pwc-orange-deep border border-pwc-orange-deep/40 rounded-pwc px-3 py-2"
+                className="text-sm text-hoban-primary-deep border border-hoban-primary-deep/40 rounded-hoban px-3 py-2"
                 role="alert"
               >
                 위험 추천을 불러오지 못했습니다 — {recommendError}
@@ -748,7 +748,7 @@ export default function PrepareScreen() {
               <>
                 {recommendError && augmenting === false && (
                   <div
-                    className="text-[11px] text-pwc-orange-deep mb-2"
+                    className="text-[11px] text-hoban-primary-deep mb-2"
                     role="status"
                   >
                     AI 보강에 실패했습니다 — 카탈로그 카드는 그대로 사용 가능합니다.
@@ -761,7 +761,7 @@ export default function PrepareScreen() {
                     즉 비-한국어 + 모든 항목이 ko 폴백일 때만. backend 보강
                     (`augmenting`) 진행 중에는 표기 회피. */}
                 {recommend.content_only_ko_fallback === true && !augmenting && (
-                  <p className="text-[11px] text-pwc-ink-mute mb-2 italic">
+                  <p className="text-[11px] text-hoban-ink-mute mb-2 italic">
                     {nonKoFallbackMicrocopy}
                   </p>
                 )}
@@ -779,10 +779,10 @@ export default function PrepareScreen() {
         {/* suggested questions */}
         {recommend && recommend.suggested_questions.length > 0 && (
           <section aria-labelledby="prep-questions">
-            <h2 id="prep-questions" className="font-serif-display text-[20px] text-pwc-ink">
+            <h2 id="prep-questions" className="font-serif-display text-[20px] text-hoban-ink">
               추천 질문
             </h2>
-            <p className="text-xs text-pwc-ink-mute mt-1">
+            <p className="text-xs text-hoban-ink-mute mt-1">
               TBM 진행 중 작업자에게 확인할 만한 질문 예시입니다.
             </p>
             <RuleLine className="mt-2 mb-3" />
@@ -800,7 +800,7 @@ export default function PrepareScreen() {
             {saving ? "저장 중…" : "TBM 시작"}
           </CTAButton>
           {!selectedWorkTypeId && (
-            <p className="text-[11px] text-pwc-ink-mute mt-2">
+            <p className="text-[11px] text-hoban-ink-mute mt-2">
               작업유형을 선택하면 TBM을 시작할 수 있습니다.
             </p>
           )}

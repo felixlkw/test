@@ -52,11 +52,11 @@ export function FinalizeConfirmModal({
       aria-labelledby="finalize-confirm-title"
     >
       <div
-        className="w-full max-w-md mx-4 bg-pwc-bg border border-pwc-border rounded-pwc-lg shadow-pwc-card overflow-hidden flex flex-col"
+        className="w-full max-w-md mx-4 bg-hoban-bg border border-hoban-border rounded-hoban-lg shadow-hoban-card overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-5 py-4 border-b border-pwc-border bg-pwc-bg">
-          <div className="text-[11px] uppercase tracking-wider text-pwc-orange font-bold">
+        <div className="px-5 py-4 border-b border-hoban-border bg-hoban-bg">
+          <div className="text-[11px] uppercase tracking-wider text-hoban-primary font-bold">
             TBM
           </div>
           <h2
@@ -67,7 +67,7 @@ export function FinalizeConfirmModal({
           </h2>
         </div>
 
-        <div className="px-5 py-4 flex-1 text-sm text-pwc-ink leading-relaxed">
+        <div className="px-5 py-4 flex-1 text-sm text-hoban-ink leading-relaxed">
           <p className="mb-3">
             아직 다음 항목들이 정리되지 않았습니다 (총 {totalIncomplete}건).
             그래도 마치겠습니까?
@@ -75,7 +75,7 @@ export function FinalizeConfirmModal({
           <ul className="space-y-1.5 text-[13px]">
             {missingSlots > 0 && (
               <li className="flex items-start gap-2">
-                <span className="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-pwc-orange/15 text-pwc-orange-deep border border-pwc-orange/30 text-[11px] font-bold">
+                <span className="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-hoban-primary/15 text-hoban-primary-deep border border-hoban-primary/30 text-[11px] font-bold">
                   {missingSlots}
                 </span>
                 <span>사전정보 슬롯 미기입</span>
@@ -83,7 +83,7 @@ export function FinalizeConfirmModal({
             )}
             {missingChecklist > 0 && (
               <li className="flex items-start gap-2">
-                <span className="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-pwc-orange/15 text-pwc-orange-deep border border-pwc-orange/30 text-[11px] font-bold">
+                <span className="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-hoban-primary/15 text-hoban-primary-deep border border-hoban-primary/30 text-[11px] font-bold">
                   {missingChecklist}
                 </span>
                 <span>체크리스트 미점검</span>
@@ -92,7 +92,7 @@ export function FinalizeConfirmModal({
             {skippedChecklist > 0 && (
               <li className="flex items-start gap-2">
                 <span
-                  className="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-pwc-bg-card text-pwc-ink-mute border border-pwc-border-strong text-[11px] font-bold"
+                  className="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full bg-hoban-bg-card text-hoban-ink-mute border border-hoban-border-strong text-[11px] font-bold"
                   title="사용자가 명시적으로 건너뛴 항목"
                 >
                   {skippedChecklist}
@@ -101,24 +101,24 @@ export function FinalizeConfirmModal({
               </li>
             )}
           </ul>
-          <p className="mt-3 text-[12px] text-pwc-ink-mute leading-snug">
+          <p className="mt-3 text-[12px] text-hoban-ink-mute leading-snug">
             리포트에는 미기입 / 건너뜀이 그대로 표기됩니다. 감사 무결성을 위해
             "안 한 걸 했다고" 처리하지 않습니다.
           </p>
         </div>
 
-        <div className="px-5 py-3 border-t border-pwc-border bg-pwc-bg-card flex items-center gap-2">
+        <div className="px-5 py-3 border-t border-hoban-border bg-hoban-bg-card flex items-center gap-2">
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 px-3 py-2 rounded-pwc text-[13px] font-bold uppercase tracking-wider border border-pwc-border-strong bg-white text-pwc-ink hover:border-pwc-orange hover:text-pwc-orange transition"
+            className="flex-1 px-3 py-2 rounded-hoban text-[13px] font-bold uppercase tracking-wider border border-hoban-border-strong bg-white text-hoban-ink hover:border-hoban-primary hover:text-hoban-primary transition"
           >
             보강하기
           </button>
           <button
             type="button"
             onClick={onConfirm}
-            className="flex-1 px-3 py-2 rounded-pwc text-[13px] font-bold uppercase tracking-wider border border-pwc-orange bg-pwc-orange text-white hover:bg-pwc-orange-deep transition"
+            className="flex-1 px-3 py-2 rounded-hoban text-[13px] font-bold uppercase tracking-wider border border-hoban-primary bg-hoban-primary text-white hover:bg-hoban-primary-deep transition"
           >
             예 — 마치겠습니다
           </button>

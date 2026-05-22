@@ -1,880 +1,279 @@
 {
   "domain": "manufacturing",
-  "version": "0.4.0-lg_innotek",
-  "note": "LG이노텍 PoC tenant 카탈로그 — 광학솔루션(카메라모듈/3D센싱), 패키지솔루션(FC-BGA/포토마스크/OLED 마스크), 모빌리티솔루션(자율주행 센서/EV 파워모듈) 양산 라인 안전관리. SafeMate 본체 manufacturing.json을 LG 사업 맥락으로 교체. 클린룸 화학물질 폭로, SMT 솔더 흄, 자동화 협착, 광학장비 레이저, 진공 흡착, ESD 충격, 분진(마스크 가공)을 핵심 위험으로 다룸. 5 work_types × baseline 3~5개. regulation은 산업안전보건기준규칙·화학물질관리법·KOSHA GUIDE 인용 기반(felix 검수 권장).",
+  "version": "0.5.0-hoban",
+  "note": "대한전선(Taihan Cable & Solution) 케이블 제조 카탈로그 — 호반그룹 자회사. 공장: 안양(R&D, HV/EHV 시험장), 당진(EHV 전력케이블, 해저케이블 수직 압출), 베트남(동조괴, MV/LV 케이블). 핵심 공정: 동조괴 연속주조 → 도체 연신 → XLPE 절연 압출 → 시즈·연합 → 차폐 편조 → 권취·재단 → HV 시험. 외국인 작업자 비중 높음 (베트남 공장 전체, 국내 일부) — 다국어 SOP 필수. 사용자 face label 은 '케이블 제조'. regulation 인용은 산업안전보건기준규칙·KOSHA·KEC·IEC 우선이며 현장 안전관리자 검수 필요.",
   "work_types": {
-    "OPTICAL_MODULE_ASSEMBLY": {
-      "label_ko": "카메라모듈 조립 라인",
-      "label_en": "Camera Module Assembly Line",
-      "label_vi": "Dây chuyền lắp ráp mô-đun camera",
-      "label_th": "สายการประกอบโมดูลกล้อง",
-      "label_id": "Lini Perakitan Modul Kamera",
+    "COPPER_ROD_CASTING": {
+      "label_ko": "동조괴 연속주조",
+      "label_en": "Copper Rod Continuous Casting",
+      "label_vi": "Đúc liên tục thanh đồng",
+      "label_th": "หล่อต่อเนื่องแท่งทองแดง",
+      "label_id": "Pengecoran kontinu copper rod",
       "baseline": [
         {
-          "id": "OMA-01",
-          "content": "UV 경화 접착제·디스펜서 작업 시 광원 차폐 및 화학물질 노출 통제",
-          "content_en": "UV cure adhesive dispenser — verify light shielding and chemical exposure control",
-          "content_vi": "Khi dùng keo cứng UV và máy nhỏ giọt — kiểm tra che chắn nguồn sáng UV và kiểm soát phơi nhiễm hóa chất",
-          "content_th": "งานกาว UV cure และเครื่อง dispenser — ตรวจสอบการกั้นแสง UV และการควบคุมการสัมผัสสารเคมี",
-          "content_id": "Saat menggunakan perekat UV cure dan dispenser — verifikasi pelindung sumber cahaya UV dan kontrol paparan bahan kimia",
-          "regulation": "산업안전보건기준규칙 §452 (관리대상 유해물질), KOSHA GUIDE W-15-2017 (자외선 노출)",
-          "evidence_required": "photo|verbal",
+          "id": "CCAST-01",
+          "content": "용탕 비산 방지 — 차폐벽·이송로 격리·작업자 안전거리 5m + 비상정지 도달성",
+          "content_en": "Molten splash prevention — shield walls, transfer-path isolation, 5m worker clearance, e-stop reachability",
+          "content_vi": "Chống bắn kim loại lỏng — tường chắn, cách ly đường vận chuyển, công nhân cách 5m, nút dừng khẩn dễ với",
+          "content_th": "ป้องกันการกระเด็นของโลหะหลอม — กำแพงกั้น แยกเส้นทางลำเลียง คนงานห่าง 5 ม. ปุ่มหยุดฉุกเฉินเข้าถึงได้",
+          "content_id": "Cegah cipratan logam cair — dinding pelindung, isolasi jalur transfer, jarak pekerja 5m, e-stop terjangkau",
+          "regulation": "산업안전보건기준규칙 §239~245 (화기작업)",
+          "evidence_required": "photo",
           "scenarios": [
             {
-              "id": "OMA-01-SC-1",
-              "content": "UV 광원 직접 노출로 작업자 결막염·각막 화상 발생",
-              "content_en": "Direct UV light exposure causes conjunctivitis / corneal burn to worker",
-              "content_vi": "Phơi nhiễm trực tiếp tia UV gây viêm kết mạc / bỏng giác mạc cho công nhân",
-              "content_th": "การสัมผัสแสง UV โดยตรงทำให้พนักงานเกิดเยื่อบุตาอักเสบ / กระจกตาไหม้",
-              "content_id": "Paparan langsung sinar UV menyebabkan konjungtivitis / luka bakar kornea pekerja"
+              "id": "CCAST-01-SC-1",
+              "content": "수분 잔류 도가니에 용탕 주입 시 수증기 폭발",
+              "content_en": "Moisture in crucible causes steam explosion when molten copper is poured",
+              "content_vi": "Ẩm còn trong nồi nấu gây nổ hơi nước khi đổ đồng nóng chảy",
+              "content_th": "ความชื้นในเบ้าหลอมทำให้เกิดระเบิดไอน้ำเมื่อเทโลหะหลอม",
+              "content_id": "Sisa air dalam crucible memicu ledakan uap saat tuang tembaga cair"
             },
             {
-              "id": "OMA-01-SC-2",
-              "content": "에폭시 접착제 미경화 잔류물 피부 접촉 → 알레르기성 접촉피부염",
-              "content_en": "Skin contact with uncured epoxy residue → allergic contact dermatitis",
-              "content_vi": "Da tiếp xúc với keo epoxy chưa cứng → viêm da tiếp xúc dị ứng",
-              "content_th": "ผิวหนังสัมผัสกับสารเอพ็อกซีที่ยังไม่แข็งตัว → ผิวหนังอักเสบจากการสัมผัสแบบแพ้",
-              "content_id": "Kontak kulit dengan residu epoksi belum mengeras → dermatitis kontak alergi"
+              "id": "CCAST-01-SC-2",
+              "content": "베트남 신규 작업자가 차폐벽 없는 통로 횡단 중 슬래그 비산 화상",
+              "content_en": "New foreign worker crosses unshielded path; slag splash causes burn",
+              "content_vi": "Công nhân nước ngoài mới đi qua lối không che chắn; bị bỏng do xỉ bắn",
+              "content_th": "คนงานต่างชาติใหม่ข้ามทางที่ไม่มีกำแพงกั้น โดนสแลกกระเด็นไหม้",
+              "content_id": "Pekerja asing baru lewat tanpa pelindung; terkena cipratan slag"
             }
           ],
           "mitigations": [
             {
-              "id": "OMA-01-MIT-1",
-              "content": "UV 챔버 인터록·차광 윈도우 정상 작동 확인, 작업자 위치에서 럭스 측정 기록",
-              "content_en": "Verify UV chamber interlock and shielding window; log lux readings at worker position",
-              "content_vi": "Kiểm tra interlock buồng UV và cửa sổ che sáng; ghi nhận giá trị lux tại vị trí công nhân",
-              "content_th": "ตรวจสอบ interlock ของ UV chamber และหน้าต่างกั้นแสง; บันทึกค่า lux ที่ตำแหน่งพนักงาน",
-              "content_id": "Verifikasi interlock UV chamber dan jendela pelindung; catat pembacaan lux di posisi pekerja"
+              "id": "CCAST-01-MIT-1",
+              "content": "용탕 주입 전 도가니 수분 확인(적외선 온도계 ≥150°C 유지) + 책임자 사인",
+              "content_en": "Pre-pour crucible moisture check (IR thermometer ≥150°C) + supervisor sign-off",
+              "content_vi": "Trước khi đổ kiểm tra độ ẩm nồi (IR ≥150°C) + ký xác nhận của giám sát",
+              "content_th": "ก่อนเท ตรวจความชื้นเบ้าหลอม (IR ≥150°C) + ผู้ดูแลเซ็นรับ",
+              "content_id": "Cek kelembapan crucible (IR ≥150°C) + tanda tangan supervisor sebelum tuang"
             },
             {
-              "id": "OMA-01-MIT-2",
-              "content": "MSDS 기반 국소배기 풍속 0.5 m/s 이상 확인 + 니트릴 장갑 착용",
-              "content_en": "Per MSDS — verify local exhaust face velocity ≥ 0.5 m/s and wear nitrile gloves",
-              "content_vi": "Theo MSDS — kiểm tra vận tốc hút cục bộ ≥ 0,5 m/s và mang găng tay nitrile",
-              "content_th": "ตาม MSDS — ตรวจสอบความเร็วลมดูดเฉพาะที่ ≥ 0.5 m/s และสวมถุงมือไนไตรล์",
-              "content_id": "Sesuai MSDS — verifikasi kecepatan hisap lokal ≥ 0,5 m/s dan kenakan sarung tangan nitril"
+              "id": "CCAST-01-MIT-2",
+              "content": "출입통제 라인 + 픽토그램 + 신규 작업자 본격 투입 전 1주 OJT (모국어)",
+              "content_en": "Restricted-access line + pictograms + 1-week OJT in mother tongue before solo work",
+              "content_vi": "Vạch cấm + pictogram + 1 tuần OJT bằng tiếng mẹ đẻ trước khi làm độc lập",
+              "content_th": "เส้นจำกัดทาง + พิกโตแกรม + OJT 1 สัปดาห์ภาษาแม่ก่อนทำงานเดี่ยว",
+              "content_id": "Garis pembatas + piktogram + OJT 1 minggu bahasa ibu sebelum kerja mandiri"
             }
           ],
           "ppe": [
             {
-              "id": "OMA-01-PPE-1",
-              "content": "UV 차단 보안경 (UV-A/B 차단율 99% 이상)",
-              "content_en": "UV-blocking safety glasses (≥ 99% UV-A/B blocking)",
-              "content_vi": "Kính bảo hộ chặn UV (chặn UV-A/B ≥ 99%)",
-              "content_th": "แว่นนิรภัยกัน UV (กัน UV-A/B ≥ 99%)",
-              "content_id": "Kacamata pengaman penghalang UV (penghalang UV-A/B ≥ 99%)"
-            },
-            {
-              "id": "OMA-01-PPE-2",
-              "content": "니트릴 장갑 + 화학물질 저항 앞치마",
-              "content_en": "Nitrile gloves + chemical-resistant apron",
-              "content_vi": "Găng tay nitrile + tạp dề chống hóa chất",
-              "content_th": "ถุงมือไนไตรล์ + ผ้ากันเปื้อนทนสารเคมี",
-              "content_id": "Sarung tangan nitril + celemek tahan bahan kimia"
-            }
-          ]
-        },
-        {
-          "id": "OMA-02",
-          "content": "AOI(자동광학검사) 장비 레이저 광원 차폐 및 인터록 상태",
-          "content_en": "AOI (Automated Optical Inspection) — laser source shielding and interlock status",
-          "content_vi": "Thiết bị AOI (kiểm tra quang học tự động) — che chắn nguồn laser và trạng thái interlock",
-          "content_th": "เครื่อง AOI (การตรวจสอบทางแสงอัตโนมัติ) — การกั้นแสงเลเซอร์และสถานะ interlock",
-          "content_id": "Peralatan AOI (Inspeksi Optik Otomatis) — pelindung sumber laser dan status interlock",
-          "regulation": "산업안전보건기준규칙 §86 (광학장해), IEC 60825-1 Class 1/2 laser product",
-          "evidence_required": "photo|verbal",
-          "scenarios": [
-            {
-              "id": "OMA-02-SC-1",
-              "content": "AOI 도어 인터록 해제 상태로 가동 → 클래스 3B 레이저 직접 노출, 망막 손상",
-              "content_en": "AOI runs with door interlock defeated → Class 3B laser direct exposure, retinal damage",
-              "content_vi": "AOI vận hành khi interlock cửa bị vô hiệu → phơi nhiễm trực tiếp laser Class 3B, tổn thương võng mạc",
-              "content_th": "AOI ทำงานโดย interlock ประตูถูกปลด → สัมผัสเลเซอร์ Class 3B โดยตรง ความเสียหายของจอประสาทตา",
-              "content_id": "AOI berjalan dengan interlock pintu dilumpuhkan → paparan langsung laser Class 3B, kerusakan retina"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "OMA-02-MIT-1",
-              "content": "교대 시작 시 인터록 작동 테스트 + 임의 우회 흔적(테이프·자석) 확인 후 기록",
-              "content_en": "At shift start — test interlock action and inspect for bypass evidence (tape, magnet), then log",
-              "content_vi": "Đầu ca — thử nghiệm hoạt động interlock và kiểm tra dấu vết bỏ qua (băng dính, nam châm), sau đó ghi nhận",
-              "content_th": "ต้นกะ — ทดสอบการทำงาน interlock และตรวจสอบร่องรอยการข้าม (เทป แม่เหล็ก) จากนั้นบันทึก",
-              "content_id": "Di awal shift — uji aksi interlock dan periksa bukti bypass (selotip, magnet), lalu catat"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "OMA-02-PPE-1",
-              "content": "레이저 보안경 (해당 파장 OD ≥ 3, AOI 장비 명판 확인)",
-              "content_en": "Laser safety goggles (OD ≥ 3 for the wavelength, refer to AOI nameplate)",
-              "content_vi": "Kính bảo hộ laser (OD ≥ 3 cho bước sóng tương ứng, tham khảo nhãn AOI)",
-              "content_th": "แว่นนิรภัยกันเลเซอร์ (OD ≥ 3 สำหรับความยาวคลื่นที่เกี่ยวข้อง อ้างอิงป้ายเครื่อง AOI)",
-              "content_id": "Kacamata pengaman laser (OD ≥ 3 untuk panjang gelombang terkait, lihat papan nama AOI)"
-            }
-          ]
-        },
-        {
-          "id": "OMA-03",
-          "content": "진공 흡착 픽업 노즐 작동 중 손가락 끼임 방지 — 라이트커튼 및 양손 조작 점검",
-          "content_en": "Vacuum suction pickup nozzle — light curtain and two-hand control to prevent finger pinch",
-          "content_vi": "Vòi hút chân không pickup — rèm sáng và điều khiển hai tay để ngăn kẹp ngón tay",
-          "content_th": "หัวดูดสุญญากาศ pickup — light curtain และการควบคุมสองมือเพื่อป้องกันการหนีบนิ้ว",
-          "content_id": "Nozel pickup hisap vakum — light curtain dan kontrol dua tangan untuk mencegah jepitan jari",
-          "regulation": "산업안전보건기준규칙 §94 (사출성형기 등), §99 (양수조작식 안전장치)",
-          "evidence_required": "photo|verbal",
-          "scenarios": [
-            {
-              "id": "OMA-03-SC-1",
-              "content": "픽업 헤드 하강 중 자재 정렬을 위해 손 진입 → 손가락 협착",
-              "content_en": "Hand enters during pickup head descent to align part → finger crush",
-              "content_vi": "Tay đưa vào trong khi đầu pickup hạ xuống để chỉnh chi tiết → kẹp ngón tay",
-              "content_th": "มือเข้าไประหว่างหัว pickup กำลังลงเพื่อจัดวางชิ้นงาน → นิ้วถูกหนีบ",
-              "content_id": "Tangan masuk saat kepala pickup turun untuk meluruskan part → jari terjepit"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "OMA-03-MIT-1",
-              "content": "라이트커튼 테스트 막대로 차단 동작 확인 + 정렬 작업은 반드시 정지 후 수행 (LOTO)",
-              "content_en": "Verify light curtain blocking with test rod; alignment work must be done after stop (LOTO)",
-              "content_vi": "Kiểm tra rèm sáng bằng thanh thử; công việc căn chỉnh phải thực hiện sau khi dừng máy (LOTO)",
-              "content_th": "ตรวจสอบ light curtain ด้วยแท่งทดสอบ; งานจัดวางต้องทำหลังหยุดเครื่อง (LOTO)",
-              "content_id": "Verifikasi light curtain dengan batang uji; pekerjaan penyelarasan harus dilakukan setelah berhenti (LOTO)"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "OMA-03-PPE-1",
-              "content": "ESD 손목 스트랩 + 끼임 방지 슬림핏 장갑(헐렁한 면장갑 금지)",
-              "content_en": "ESD wrist strap + slim-fit anti-pinch gloves (loose cotton gloves prohibited)",
-              "content_vi": "Dây đeo cổ tay ESD + găng tay ôm chống kẹp (cấm găng tay vải rộng)",
-              "content_th": "สายรัดข้อมือ ESD + ถุงมือฟิตป้องกันการหนีบ (ห้ามใช้ถุงมือผ้าหลวม)",
-              "content_id": "Tali pergelangan ESD + sarung tangan pas anti-jepit (sarung tangan kain longgar dilarang)"
-            }
-          ]
-        },
-        {
-          "id": "OMA-04",
-          "content": "클린룸 IPA(이소프로필알코올) 세정 작업 — 환기 및 화기 통제",
-          "content_en": "Cleanroom IPA (isopropyl alcohol) cleaning — ventilation and ignition control",
-          "content_vi": "Vệ sinh IPA (cồn isopropyl) trong phòng sạch — thông gió và kiểm soát nguồn lửa",
-          "content_th": "การทำความสะอาดด้วย IPA (ไอโซโพรพิลแอลกอฮอล์) ในห้องคลีนรูม — การระบายอากาศและควบคุมประกายไฟ",
-          "content_id": "Pembersihan IPA (isopropil alkohol) di cleanroom — ventilasi dan kontrol penyalaan",
-          "regulation": "산업안전보건기준규칙 §232 (인화성 액체), 화학물질관리법 §13",
-          "evidence_required": "photo|verbal",
-          "scenarios": [
-            {
-              "id": "OMA-04-SC-1",
-              "content": "IPA 증기 축적 + 정전기 방전 스파크 → 클린룸 화재",
-              "content_en": "IPA vapor accumulation + ESD spark → cleanroom fire",
-              "content_vi": "Tích tụ hơi IPA + tia lửa ESD → cháy phòng sạch",
-              "content_th": "การสะสมไอ IPA + ประกายไฟ ESD → ไฟไหม้คลีนรูม",
-              "content_id": "Akumulasi uap IPA + percikan ESD → kebakaran cleanroom"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "OMA-04-MIT-1",
-              "content": "IPA 보관량 1회 작업분으로 제한, 사용 후 즉시 밀폐 + 환기 차압 확인",
-              "content_en": "Limit IPA on-hand to single work batch, seal immediately after use, verify ventilation pressure differential",
-              "content_vi": "Giới hạn IPA tại chỗ chỉ đủ cho một ca, đóng kín ngay sau khi dùng, kiểm tra chênh áp thông gió",
-              "content_th": "จำกัด IPA หน้างานเท่าที่ใช้ครั้งเดียว ปิดฝาทันทีหลังใช้ ตรวจสอบความต่างความดันการระบายอากาศ",
-              "content_id": "Batasi IPA di tempat hanya untuk satu batch, segera tutup setelah digunakan, verifikasi tekanan diferensial ventilasi"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "OMA-04-PPE-1",
-              "content": "ESD 신발 + 정전기 방지 클린룸복 + 니트릴 장갑",
-              "content_en": "ESD shoes + antistatic cleanroom suit + nitrile gloves",
-              "content_vi": "Giày ESD + bộ đồ phòng sạch chống tĩnh điện + găng tay nitrile",
-              "content_th": "รองเท้า ESD + ชุดคลีนรูมป้องกันไฟฟ้าสถิต + ถุงมือไนไตรล์",
-              "content_id": "Sepatu ESD + setelan cleanroom antistatik + sarung tangan nitril"
+              "id": "CCAST-01-PPE-1",
+              "content": "알루미늄 코팅 방열복 + 방열장갑 + 안면보호구(face shield) + 안전화(고온 등급)",
+              "content_en": "Aluminized heat suit + heat gloves + face shield + high-temp safety boots",
+              "content_vi": "Áo chống nhiệt phủ nhôm + găng chống nhiệt + tấm che mặt + giày chịu nhiệt",
+              "content_th": "ชุดสะท้อนความร้อนเคลือบอะลูมิเนียม + ถุงมือกันร้อน + กระบังหน้า + รองเท้าทนความร้อน",
+              "content_id": "Pakaian tahan panas berlapis aluminium + sarung tangan + face shield + sepatu tahan panas"
             }
           ]
         }
       ]
     },
-    "FCBGA_PACKAGE_LINE": {
-      "label_ko": "FC-BGA 패키지 기판 라인",
-      "label_en": "FC-BGA Package Substrate Line",
-      "label_vi": "Dây chuyền chất nền gói FC-BGA",
-      "label_th": "สายงานซับสเตรตแพ็คเกจ FC-BGA",
-      "label_id": "Lini Substrat Paket FC-BGA",
+    "XLPE_EXTRUSION": {
+      "label_ko": "XLPE 절연 압출",
+      "label_en": "XLPE Insulation Extrusion",
+      "label_vi": "Đùn cách điện XLPE",
+      "label_th": "อัดรีดฉนวน XLPE",
+      "label_id": "Ekstrusi insulasi XLPE",
       "baseline": [
         {
-          "id": "FCB-01",
-          "content": "전기도금조(Cu/Ni/Au) 작업 — 산·강염기 노출 및 미스트 흡입 방지",
-          "content_en": "Electroplating bath (Cu/Ni/Au) — prevent acid/strong-base contact and mist inhalation",
-          "content_vi": "Bể mạ điện (Cu/Ni/Au) — ngăn tiếp xúc axit/kiềm mạnh và hít phải sương mù",
-          "content_th": "บ่อชุบไฟฟ้า (Cu/Ni/Au) — ป้องกันการสัมผัสกรด/ด่างแก่และการสูดดมละออง",
-          "content_id": "Bak elektroplating (Cu/Ni/Au) — cegah kontak asam/basa kuat dan inhalasi kabut",
-          "regulation": "산업안전보건기준규칙 §422 (관리대상 유해물질 작업장), §572 (밀폐공간 작업 절차)",
-          "evidence_required": "photo|verbal",
+          "id": "XLPE-01",
+          "content": "가교 가스 누설·고온 폴리머 화상 방지 — LEL <10% 모니터링 + 인터록 + 격리 가드",
+          "content_en": "Crosslinking-gas leak / hot-polymer burn prevention — LEL <10% monitoring, interlocks, isolation guards",
+          "content_vi": "Phòng ngừa rò khí cross-link / bỏng polymer nóng — đo LEL <10%, khóa liên động, vách cách ly",
+          "content_th": "ป้องกันก๊าซ crosslink รั่ว / โพลิเมอร์ร้อน — ตรวจวัด LEL <10% อินเตอร์ล็อก แผงกั้น",
+          "content_id": "Cegah bocor gas crosslink & luka bakar polimer — LEL <10%, interlock, sekat isolasi",
+          "regulation": "산업안전보건기준규칙 §239~245 (화기작업), §618~625 (밀폐공간)",
+          "evidence_required": "measurement|photo",
           "scenarios": [
             {
-              "id": "FCB-01-SC-1",
-              "content": "황산구리 도금조 튐 → 작업자 안면·전박 화학화상",
-              "content_en": "Copper sulfate plating bath splash → chemical burn to worker's face/forearm",
-              "content_vi": "Bể mạ đồng sulfat bắn ra → bỏng hóa chất ở mặt/cẳng tay công nhân",
-              "content_th": "บ่อชุบคอปเปอร์ซัลเฟตกระเด็น → ผิวไหม้สารเคมีที่ใบหน้า/แขนท่อนล่างของพนักงาน",
-              "content_id": "Cipratan bak plating tembaga sulfat → luka bakar kimia di wajah/lengan bawah pekerja"
+              "id": "XLPE-01-SC-1",
+              "content": "압출기 다이 청소 중 잔류 200°C 폴리머 분출, 작업자 손목·전완 화상",
+              "content_en": "Residual 200°C polymer spurts during die cleaning, burns operator's forearm",
+              "content_vi": "Polymer 200°C còn dư phun ra khi vệ sinh khuôn, bỏng cẳng tay công nhân",
+              "content_th": "โพลิเมอร์ 200°C ตกค้างพุ่งออกขณะทำความสะอาดแม่พิมพ์ ไหม้ปลายแขนคนงาน",
+              "content_id": "Polimer 200°C menyembur saat membersihkan die, membakar lengan operator"
             },
             {
-              "id": "FCB-01-SC-2",
-              "content": "도금조 미스트 흡입 → 호흡기 자극, 장기 노출 시 니켈 감작성 피부염",
-              "content_en": "Plating bath mist inhalation → respiratory irritation; long-term exposure causes nickel sensitization dermatitis",
-              "content_vi": "Hít sương mù bể mạ → kích ứng hô hấp; phơi nhiễm dài hạn gây viêm da nhạy cảm niken",
-              "content_th": "สูดดมละอองจากบ่อชุบ → ระคายเคืองทางเดินหายใจ; การสัมผัสระยะยาวทำให้เกิดผิวหนังอักเสบจากการแพ้นิกเกิล",
-              "content_id": "Inhalasi kabut bak plating → iritasi pernapasan; paparan jangka panjang menyebabkan dermatitis sensitisasi nikel"
+              "id": "XLPE-01-SC-2",
+              "content": "가교 가스(쿠멘 하이드로퍼옥사이드) 누설로 LEL 25% 도달, 폭발 위험",
+              "content_en": "Crosslinking gas (cumene hydroperoxide) leak reaches 25% LEL — explosion risk",
+              "content_vi": "Rò khí crosslink (cumene hydroperoxide) đạt 25% LEL — nguy cơ nổ",
+              "content_th": "ก๊าซ crosslink (cumene hydroperoxide) รั่วถึง 25% LEL — เสี่ยงระเบิด",
+              "content_id": "Bocor gas crosslink (cumene hydroperoxide) capai 25% LEL — risiko ledakan"
             }
           ],
           "mitigations": [
             {
-              "id": "FCB-01-MIT-1",
-              "content": "푸쉬-풀 후드 풍속 ≥ 0.4 m/s 확인 + 응급세안기·샤워기 30초 이내 도달 동선",
-              "content_en": "Verify push-pull hood face velocity ≥ 0.4 m/s; emergency eyewash/shower within 30-second reach",
-              "content_vi": "Kiểm tra vận tốc hood đẩy-kéo ≥ 0,4 m/s; vòi rửa mắt/vòi sen khẩn cấp trong tầm 30 giây",
-              "content_th": "ตรวจสอบความเร็วลม push-pull hood ≥ 0.4 m/s; ตู้ล้างตา/ฝักบัวฉุกเฉินภายใน 30 วินาที",
-              "content_id": "Verifikasi kecepatan hood push-pull ≥ 0,4 m/s; eyewash/shower darurat dalam jangkauan 30 detik"
+              "id": "XLPE-01-MIT-1",
+              "content": "다이 청소 전 압출 정지 → 압력 해소 → 30분 냉각(<60°C 확인) → 청소",
+              "content_en": "Before die cleaning: stop extruder → release pressure → cool 30 min (<60°C) → clean",
+              "content_vi": "Trước khi vệ sinh khuôn: dừng máy → xả áp → nguội 30 phút (<60°C) → vệ sinh",
+              "content_th": "ก่อนทำความสะอาดแม่พิมพ์: หยุดเครื่อง → ปล่อยแรงดัน → ลดอุณหภูมิ 30 นาที (<60°C) → ทำความสะอาด",
+              "content_id": "Sebelum membersihkan die: hentikan ekstruder → lepas tekanan → dinginkan 30 mnt (<60°C) → bersihkan"
             },
             {
-              "id": "FCB-01-MIT-2",
-              "content": "도금조 액위·온도 자동 모니터링 알람 동작 확인",
-              "content_en": "Verify plating bath level/temperature auto-monitoring alarm operation",
-              "content_vi": "Kiểm tra báo động tự động giám sát mức/nhiệt độ bể mạ",
-              "content_th": "ตรวจสอบการทำงานของสัญญาณเตือนตรวจสอบระดับ/อุณหภูมิบ่อชุบอัตโนมัติ",
-              "content_id": "Verifikasi operasi alarm pemantauan otomatis level/suhu bak plating"
+              "id": "XLPE-01-MIT-2",
+              "content": "LEL 5% 도달 시 경고, 10% 자동 환기 + 라인 정지 인터록",
+              "content_en": "LEL 5% alert, 10% auto-ventilation + line-stop interlock",
+              "content_vi": "LEL 5% cảnh báo, 10% tự thông gió + khóa liên động dừng dây chuyền",
+              "content_th": "LEL 5% เตือน 10% ระบายอากาศอัตโนมัติ + อินเตอร์ล็อกหยุดสายการผลิต",
+              "content_id": "LEL 5% peringatan, 10% ventilasi otomatis + interlock henti jalur"
             }
           ],
           "ppe": [
             {
-              "id": "FCB-01-PPE-1",
-              "content": "내산·내알칼리 PVC 앞치마 + 페이스쉴드 + 팔꿈치까지 오는 부틸 장갑",
-              "content_en": "Acid/alkali-resistant PVC apron + face shield + butyl gloves up to elbow",
-              "content_vi": "Tạp dề PVC chống axit/kiềm + tấm chắn mặt + găng tay butyl đến khuỷu tay",
-              "content_th": "ผ้ากันเปื้อน PVC ทนกรด-ด่าง + face shield + ถุงมือบิวทิลถึงข้อศอก",
-              "content_id": "Celemek PVC tahan asam/basa + pelindung wajah + sarung tangan butil hingga siku"
-            },
-            {
-              "id": "FCB-01-PPE-2",
-              "content": "산성 미스트용 호흡보호구 (APF 10 이상, 카트리지 색상 흰색·노란색 등 ANSI 표준)",
-              "content_en": "Respirator for acid mist (APF ≥ 10, ANSI-standard white/yellow cartridge)",
-              "content_vi": "Mặt nạ hô hấp cho sương mù axit (APF ≥ 10, cartridge tiêu chuẩn ANSI màu trắng/vàng)",
-              "content_th": "หน้ากากกันละอองกรด (APF ≥ 10, cartridge มาตรฐาน ANSI สีขาว/เหลือง)",
-              "content_id": "Respirator untuk kabut asam (APF ≥ 10, cartridge standar ANSI putih/kuning)"
-            }
-          ]
-        },
-        {
-          "id": "FCB-02",
-          "content": "노광(Exposure) 장비 UV·DI 광원 차폐 및 포토레지스트 취급 통제",
-          "content_en": "Exposure equipment UV/DI light shielding and photoresist handling control",
-          "content_vi": "Thiết bị phơi sáng (Exposure) — che chắn nguồn UV/DI và kiểm soát photoresist",
-          "content_th": "อุปกรณ์ exposure — กั้นแสง UV/DI และควบคุมการจัดการ photoresist",
-          "content_id": "Peralatan exposure — pelindung sumber UV/DI dan kontrol penanganan photoresist",
-          "regulation": "산업안전보건기준규칙 §86, 화학물질관리법 시행규칙 §10 (PGMEA 등 유기용제)",
-          "evidence_required": "photo|verbal",
-          "scenarios": [
-            {
-              "id": "FCB-02-SC-1",
-              "content": "포토레지스트 PGMEA 증기 흡입 → 두통·중추신경 자극",
-              "content_en": "Photoresist PGMEA vapor inhalation → headache, CNS irritation",
-              "content_vi": "Hít hơi PGMEA từ photoresist → đau đầu, kích ứng hệ thần kinh trung ương",
-              "content_th": "สูดดมไอ PGMEA จาก photoresist → ปวดศีรษะ ระคายเคืองระบบประสาทส่วนกลาง",
-              "content_id": "Inhalasi uap PGMEA dari photoresist → sakit kepala, iritasi SSP"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "FCB-02-MIT-1",
-              "content": "포토레지스트 배합·도포 작업은 흄후드 내에서만, 작업 종료 후 잔량 즉시 회수 용기 분리",
-              "content_en": "Photoresist mixing/coating in fume hood only; after work, immediately segregate residue in recovery container",
-              "content_vi": "Pha trộn/phủ photoresist chỉ trong tủ hút khí; sau công việc, lập tức tách cặn vào thùng thu hồi",
-              "content_th": "การผสม/เคลือบ photoresist ทำเฉพาะใน fume hood; หลังจบงาน แยกของเหลือลงภาชนะรับทันที",
-              "content_id": "Pencampuran/pelapisan photoresist hanya di fume hood; setelah kerja, segera pisahkan residu ke wadah pemulihan"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "FCB-02-PPE-1",
-              "content": "유기증기용 카트리지 호흡보호구 + 화학물질 저항 장갑(부틸·바이톤)",
-              "content_en": "Organic vapor cartridge respirator + chemical-resistant gloves (butyl/Viton)",
-              "content_vi": "Mặt nạ cartridge hơi hữu cơ + găng tay chống hóa chất (butyl/Viton)",
-              "content_th": "หน้ากาก cartridge ไอสารอินทรีย์ + ถุงมือทนสารเคมี (บิวทิล/Viton)",
-              "content_id": "Respirator cartridge uap organik + sarung tangan tahan bahan kimia (butil/Viton)"
-            }
-          ]
-        },
-        {
-          "id": "FCB-03",
-          "content": "리플로우(Reflow) 솔더링 라인 솔더 흄 배기 및 고온 화상 방지",
-          "content_en": "Reflow soldering line — solder fume exhaust and high-temperature burn prevention",
-          "content_vi": "Dây chuyền hàn reflow — hút khói chì hàn và ngăn bỏng nhiệt độ cao",
-          "content_th": "สายงานบัดกรี reflow — การดูดควันบัดกรีและป้องกันไฟลวกอุณหภูมิสูง",
-          "content_id": "Lini soldering reflow — pembuangan asap solder dan pencegahan luka bakar suhu tinggi",
-          "regulation": "산업안전보건기준규칙 §422, §72 (열원 차폐)",
-          "evidence_required": "photo|verbal",
-          "scenarios": [
-            {
-              "id": "FCB-03-SC-1",
-              "content": "리플로우 챔버 도어 개방 직후 잔열(약 250°C)에 손등·전박 접촉 → 2도 화상",
-              "content_en": "Contact with residual heat (~250°C) right after reflow chamber door open → second-degree burn on hand/forearm",
-              "content_vi": "Tiếp xúc nhiệt dư (~250°C) ngay sau khi mở cửa buồng reflow → bỏng độ 2 ở mu tay/cẳng tay",
-              "content_th": "สัมผัสความร้อนที่เหลือ (~250°C) ทันทีหลังเปิดประตู reflow chamber → ไฟลวกระดับ 2 ที่หลังมือ/แขนล่าง",
-              "content_id": "Kontak dengan panas sisa (~250°C) tepat setelah pintu chamber reflow dibuka → luka bakar derajat 2 di punggung tangan/lengan bawah"
-            },
-            {
-              "id": "FCB-03-SC-2",
-              "content": "솔더 흄 국소배기 미작동 시 작업자 호흡기 자극, 장기 노출로 만성 기관지염",
-              "content_en": "Without local solder fume exhaust → worker respiratory irritation, chronic bronchitis from long-term exposure",
-              "content_vi": "Không có hút cục bộ khói hàn → kích ứng hô hấp công nhân, viêm phế quản mãn tính do phơi nhiễm dài hạn",
-              "content_th": "หากไม่มีการดูดควันบัดกรีเฉพาะที่ → ระคายเคืองทางเดินหายใจ หลอดลมอักเสบเรื้อรังจากการสัมผัสระยะยาว",
-              "content_id": "Tanpa pembuangan asap solder lokal → iritasi pernapasan pekerja, bronkitis kronis dari paparan jangka panjang"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "FCB-03-MIT-1",
-              "content": "리플로우 도어 개방 후 60초 쿨링 대기 + 챔버 표면 온도 70°C 이하 확인",
-              "content_en": "After reflow door open, wait 60 s cooling and confirm chamber surface ≤ 70°C",
-              "content_vi": "Sau khi mở cửa reflow, đợi làm mát 60 giây và xác nhận bề mặt buồng ≤ 70°C",
-              "content_th": "หลังเปิดประตู reflow รอคูลลิ่ง 60 วินาที และยืนยันพื้นผิวห้อง ≤ 70°C",
-              "content_id": "Setelah pintu reflow dibuka, tunggu pendinginan 60 detik dan konfirmasi permukaan chamber ≤ 70°C"
-            },
-            {
-              "id": "FCB-03-MIT-2",
-              "content": "솔더 흄 국소배기 차압 게이지 정상 범위 확인, 필터 교체 주기 표시 부착",
-              "content_en": "Verify solder fume LEV pressure gauge in normal range; post filter-change schedule label",
-              "content_vi": "Kiểm tra đồng hồ chênh áp LEV khói hàn ở dải bình thường; dán nhãn lịch thay bộ lọc",
-              "content_th": "ตรวจสอบเกจวัดความดัน LEV ควันบัดกรีในช่วงปกติ; ติดป้ายกำหนดเปลี่ยนตัวกรอง",
-              "content_id": "Verifikasi gauge tekanan LEV asap solder pada rentang normal; pasang label jadwal ganti filter"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "FCB-03-PPE-1",
-              "content": "내열 장갑 (250°C 30초 견딤) + 보안경",
-              "content_en": "Heat-resistant gloves (withstand 250°C for 30 s) + safety glasses",
-              "content_vi": "Găng tay chịu nhiệt (chịu 250°C trong 30 giây) + kính bảo hộ",
-              "content_th": "ถุงมือทนความร้อน (ทน 250°C นาน 30 วินาที) + แว่นนิรภัย",
-              "content_id": "Sarung tangan tahan panas (tahan 250°C selama 30 detik) + kacamata pengaman"
-            }
-          ]
-        },
-        {
-          "id": "FCB-04",
-          "content": "AGV(자동 운반 차량) 동선 — 보행 통로 분리 및 비상정지 버튼 가용성",
-          "content_en": "AGV (Automated Guided Vehicle) routing — pedestrian path separation and E-Stop accessibility",
-          "content_vi": "Tuyến AGV (xe vận chuyển tự động) — tách lối đi bộ và khả năng tiếp cận nút dừng khẩn cấp",
-          "content_th": "เส้นทาง AGV (รถลำเลียงอัตโนมัติ) — แยกทางคนเดินและการเข้าถึงปุ่ม E-Stop",
-          "content_id": "Rute AGV (Automated Guided Vehicle) — pemisahan jalur pejalan kaki dan aksesibilitas tombol E-Stop",
-          "regulation": "산업안전보건기준규칙 §171 (운반기계), KOSHA GUIDE G-96-2012 (AGV 안전)",
-          "evidence_required": "photo|verbal",
-          "scenarios": [
-            {
-              "id": "FCB-04-SC-1",
-              "content": "AGV 정지 센서 오작동 + 작업자 통로 횡단 → 다리 충돌, 골절",
-              "content_en": "AGV stop sensor malfunction + worker crosses path → leg impact, fracture",
-              "content_vi": "Cảm biến dừng AGV trục trặc + công nhân băng qua đường → va chân, gãy xương",
-              "content_th": "เซนเซอร์หยุด AGV ทำงานผิดปกติ + พนักงานข้ามทาง → ขากระแทก กระดูกหัก",
-              "content_id": "Sensor henti AGV malfungsi + pekerja menyeberang jalur → tabrakan kaki, patah tulang"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "FCB-04-MIT-1",
-              "content": "AGV 노선 황색 라인 + 횡단 지점 안전 게이트, E-Stop 5 m 간격 배치 확인",
-              "content_en": "AGV path yellow line + safety gate at crossings; verify E-Stop at 5 m intervals",
-              "content_vi": "Vạch vàng tuyến AGV + cổng an toàn tại điểm băng ngang; kiểm tra E-Stop bố trí mỗi 5 m",
-              "content_th": "เส้นเหลืองเส้นทาง AGV + ประตูนิรภัยที่จุดข้าม; ตรวจสอบ E-Stop ทุก 5 m",
-              "content_id": "Garis kuning rute AGV + gerbang pengaman di titik penyeberangan; verifikasi E-Stop setiap 5 m"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "FCB-04-PPE-1",
-              "content": "고가시성 조끼 (클린룸 호환 형광 스트립) + 안전화",
-              "content_en": "Hi-vis vest (cleanroom-compatible reflective strips) + safety shoes",
-              "content_vi": "Áo gile phản quang (sọc tương thích phòng sạch) + giày bảo hộ",
-              "content_th": "เสื้อกั๊กสะท้อนแสง (แถบเข้ากันได้กับคลีนรูม) + รองเท้านิรภัย",
-              "content_id": "Rompi hi-vis (strip reflektif kompatibel cleanroom) + sepatu pengaman"
+              "id": "XLPE-01-PPE-1",
+              "content": "방열장갑 + 방열 토시 + 보안경 + 방독마스크(유기증기 정화통)",
+              "content_en": "Heat gloves + heat sleeves + safety goggles + organic-vapor respirator",
+              "content_vi": "Găng chống nhiệt + tay áo chống nhiệt + kính bảo hộ + mặt nạ lọc hơi hữu cơ",
+              "content_th": "ถุงมือกันร้อน + ปลอกแขนกันร้อน + แว่นนิรภัย + หน้ากากกรองไอระเหยอินทรีย์",
+              "content_id": "Sarung tangan + lengan tahan panas + kacamata + masker filter uap organik"
             }
           ]
         }
       ]
     },
-    "MOBILITY_SENSOR_SMT": {
-      "label_ko": "자율주행 센서 SMT 라인",
-      "label_en": "Autonomous Driving Sensor SMT Line",
-      "label_vi": "Dây chuyền SMT cảm biến tự lái",
-      "label_th": "สายงาน SMT เซนเซอร์รถยนต์ไร้คนขับ",
-      "label_id": "Lini SMT Sensor Berkendara Otonom",
+    "DRUM_WINDING": {
+      "label_ko": "케이블 권취·드럼 핸들링",
+      "label_en": "Cable Winding & Drum Handling",
+      "label_vi": "Cuốn cáp & xử lý tang cáp",
+      "label_th": "การม้วน·เคลื่อนย้ายดรัมเคเบิล",
+      "label_id": "Penggulungan & penanganan drum kabel",
       "baseline": [
         {
-          "id": "MSS-01",
-          "content": "솔더 페이스트 스크린프린터 — 스퀴지 협착 및 페이스트 화학물질 폭로 통제",
-          "content_en": "Solder paste screen printer — squeegee pinch and paste chemical exposure control",
-          "content_vi": "Máy in lưới kem hàn — kiểm soát kẹp gạt và phơi nhiễm hóa chất kem hàn",
-          "content_th": "เครื่องพิมพ์ลายตะแกรงครีมบัดกรี — ควบคุมการหนีบของ squeegee และการสัมผัสสารเคมี",
-          "content_id": "Printer screen pasta solder — kontrol jepitan squeegee dan paparan kimia pasta",
-          "regulation": "산업안전보건기준규칙 §80, §452 (관리대상 유해물질 — 납·할로겐 플럭스)",
+          "id": "DRUM-01",
+          "content": "권취 협착 방지 — 인터록·라이트커튼·양손 기동 + 권취 중 가드 개방 금지",
+          "content_en": "Winder nip-point — interlock, light curtain, two-hand control; no guard removal during operation",
+          "content_vi": "Chống kẹp tay khi cuốn — khóa liên động, light curtain, vận hành 2 tay; cấm mở cửa bảo vệ khi đang cuốn",
+          "content_th": "ป้องกันจุดบีบ — อินเตอร์ล็อก ม่านแสง ควบคุมสองมือ; ห้ามเปิดการ์ดขณะทำงาน",
+          "content_id": "Cegah titik jepit — interlock, light curtain, kontrol dua tangan; jangan buka guard saat operasi",
+          "regulation": "산업안전보건기준규칙 §87~99 (위험기계 방호조치)",
           "evidence_required": "photo|verbal",
           "scenarios": [
             {
-              "id": "MSS-01-SC-1",
-              "content": "스크린프린터 클리닝 중 인터록 우회 → 스퀴지 하강 시 손등 협착",
-              "content_en": "During screen printer cleaning, interlock bypass → squeegee descent crushes back of hand",
-              "content_vi": "Khi vệ sinh máy in lưới, bỏ qua interlock → squeegee hạ xuống kẹp mu bàn tay",
-              "content_th": "ระหว่างทำความสะอาดเครื่องพิมพ์ลายตะแกรง การข้าม interlock → squeegee ลงทับหลังมือ",
-              "content_id": "Saat membersihkan printer screen, bypass interlock → squeegee turun menghancurkan punggung tangan"
-            },
-            {
-              "id": "MSS-01-SC-2",
-              "content": "무연 솔더 페이스트 플럭스 피부 접촉 반복 → 손등 습진성 피부염",
-              "content_en": "Repeated skin contact with lead-free solder paste flux → eczematous dermatitis on back of hand",
-              "content_vi": "Tiếp xúc da lặp đi lặp lại với flux kem hàn không chì → viêm da chàm ở mu bàn tay",
-              "content_th": "การสัมผัสผิวซ้ำๆ กับฟลักซ์ครีมบัดกรีไร้สารตะกั่ว → ผิวหนังอักเสบเรื้อรังที่หลังมือ",
-              "content_id": "Kontak kulit berulang dengan fluks pasta solder bebas timbal → dermatitis eksematous di punggung tangan"
+              "id": "DRUM-01-SC-1",
+              "content": "라이트커튼 우회·인터록 부정 해제 후 손가락 협착 절단",
+              "content_en": "Operator bypasses light curtain; finger amputation in nip point",
+              "content_vi": "Vô hiệu hóa light curtain → ngón tay bị kẹp đứt",
+              "content_th": "บายพาส light curtain → นิ้วถูกหนีบขาด",
+              "content_id": "Bypass light curtain → jari teramputasi di nip"
             }
           ],
           "mitigations": [
             {
-              "id": "MSS-01-MIT-1",
-              "content": "스크린프린터 인터록 LOTO + 클리닝 작업은 전원 차단 상태에서만 수행",
-              "content_en": "LOTO screen printer interlock; cleaning only after power isolation",
-              "content_vi": "LOTO interlock máy in lưới; vệ sinh chỉ sau khi cách ly nguồn",
-              "content_th": "LOTO interlock เครื่องพิมพ์ลาย; ทำความสะอาดเฉพาะหลังตัดแหล่งจ่ายไฟ",
-              "content_id": "LOTO interlock printer screen; pembersihan hanya setelah isolasi daya"
-            },
-            {
-              "id": "MSS-01-MIT-2",
-              "content": "솔더 페이스트 잔량 회수는 일회용 와이프 사용, 사용 후 지정 폐기물 통(노란색 라벨)으로 분리",
-              "content_en": "Use single-use wipes for paste residue recovery; segregate into designated hazardous waste bin (yellow label)",
-              "content_vi": "Dùng khăn lau một lần để thu hồi cặn kem hàn; phân loại vào thùng rác nguy hại quy định (nhãn vàng)",
-              "content_th": "ใช้ผ้าเช็ดแบบใช้ครั้งเดียวสำหรับเก็บเศษครีมบัดกรี; แยกลงถังขยะอันตรายที่กำหนด (ฉลากเหลือง)",
-              "content_id": "Gunakan lap sekali pakai untuk pemulihan residu pasta; pisahkan ke tong limbah berbahaya yang ditunjuk (label kuning)"
+              "id": "DRUM-01-MIT-1",
+              "content": "인터록 우회·라이트커튼 부정해제 즉시 무관용 징계 + 매 교대 시작 시 점검 사인",
+              "content_en": "Zero-tolerance discipline for bypass; shift-start interlock test sign-off",
+              "content_vi": "Kỷ luật nghiêm khi vô hiệu hóa khóa; đầu ca kiểm tra & ký",
+              "content_th": "ลงโทษทันทีหากบายพาส; ตรวจสอบและเซ็นต้นกะ",
+              "content_id": "Sanksi tanpa toleransi; cek dan tanda tangan awal shift"
             }
           ],
           "ppe": [
             {
-              "id": "MSS-01-PPE-1",
-              "content": "ESD 니트릴 장갑 (이중 착용 권장) + 보안경",
-              "content_en": "ESD nitrile gloves (double-layer recommended) + safety glasses",
-              "content_vi": "Găng tay nitrile ESD (khuyến nghị đeo 2 lớp) + kính bảo hộ",
-              "content_th": "ถุงมือไนไตรล์ ESD (แนะนำสวมสองชั้น) + แว่นนิรภัย",
-              "content_id": "Sarung tangan nitril ESD (disarankan dua lapis) + kacamata pengaman"
+              "id": "DRUM-01-PPE-1",
+              "content": "내절단 장갑(Level D ANSI) + 안전화 + 안전모",
+              "content_en": "Cut-resistant gloves (ANSI Level D) + safety shoes + hard hat",
+              "content_vi": "Găng chống cắt (ANSI Level D) + giày bảo hộ + mũ bảo hộ",
+              "content_th": "ถุงมือกันบาด (ANSI Level D) + รองเท้านิรภัย + หมวก",
+              "content_id": "Sarung tangan anti-potong (ANSI Level D) + sepatu safety + helm"
             }
           ]
         },
         {
-          "id": "MSS-02",
-          "content": "Pick & Place 마운터 — 고속 헤드 접근 영역 차단 및 ESD 충격 방지",
-          "content_en": "Pick & Place mounter — block high-speed head approach zone and prevent ESD shock",
-          "content_vi": "Máy mounter Pick & Place — chặn khu vực tiếp cận đầu tốc độ cao và ngăn sốc ESD",
-          "content_th": "เครื่อง mounter Pick & Place — กั้นโซนเข้าใกล้หัวความเร็วสูงและป้องกันสตาติกช็อก",
-          "content_id": "Mounter Pick & Place — blok zona pendekatan kepala kecepatan tinggi dan cegah kejutan ESD",
-          "regulation": "산업안전보건기준규칙 §93 (방호장치), IEC 61340-5-1 (ESD 통제)",
-          "evidence_required": "photo|verbal",
+          "id": "DRUM-02",
+          "content": "드럼(50톤급) 이송·전도 방지 — 양중 줄걸이 검사 + 결박 표준 + 지게차 운반 시 마스트 각도",
+          "content_en": "50-t drum transport & tip-over prevention — sling inspection, securement, forklift mast angle",
+          "content_vi": "Vận chuyển & chống lật drum 50 tấn — kiểm tra cáp cẩu, neo, góc cột nâng forklift",
+          "content_th": "เคลื่อนย้ายและกันล้ม drum 50 ตัน — ตรวจสาย ผูกรัด มุมเสาฟอร์คลิฟต์",
+          "content_id": "Pemindahan & cegah jatuh drum 50t — inspeksi sling, ikat, sudut mast forklift",
+          "regulation": "산업안전보건기준규칙 §177~198 (양중·크레인)",
+          "evidence_required": "photo",
           "scenarios": [
             {
-              "id": "MSS-02-SC-1",
-              "content": "마운터 가동 중 피더 보충하려 도어 열림 → 헤드 충돌, 두부 외상",
-              "content_en": "Door opened to refill feeders while mounter runs → head impact, head trauma",
-              "content_vi": "Mở cửa để nạp lại feeder khi mounter đang chạy → va đập đầu, chấn thương đầu",
-              "content_th": "เปิดประตูเพื่อเติม feeder ขณะ mounter ทำงาน → หัวกระแทก บาดเจ็บที่ศีรษะ",
-              "content_id": "Pintu dibuka untuk mengisi ulang feeder saat mounter berjalan → tabrakan kepala, trauma kepala"
-            },
-            {
-              "id": "MSS-02-SC-2",
-              "content": "ESD 미접지 상태에서 자율주행 센서 IC 취급 → 약 5 kV 정전기 방전 시 작업자 손가락 통전 충격",
-              "content_en": "Handling AD sensor IC without ESD grounding → ~5 kV ESD discharge causes finger shock to worker",
-              "content_vi": "Xử lý IC cảm biến AD khi không nối đất ESD → phóng tĩnh điện ~5 kV gây sốc ngón tay cho công nhân",
-              "content_th": "จับ IC เซนเซอร์ AD โดยไม่ต่อสายดิน ESD → ปล่อยสตาติก ~5 kV ทำให้พนักงานช็อกที่นิ้ว",
-              "content_id": "Menangani IC sensor AD tanpa grounding ESD → debit ESD ~5 kV menyebabkan kejutan jari pekerja"
+              "id": "DRUM-02-SC-1",
+              "content": "지게차 마스트 과경사로 드럼 전도, 인근 작업자 협착",
+              "content_en": "Excessive forklift mast tilt causes drum tip-over, crushing nearby worker",
+              "content_vi": "Mast forklift nghiêng quá → drum lật, kẹp công nhân gần đó",
+              "content_th": "เสาฟอร์คลิฟต์เอียงเกิน → drum ล้มทับคนงานใกล้เคียง",
+              "content_id": "Mast forklift miring berlebihan → drum jatuh menimpa pekerja"
             }
           ],
           "mitigations": [
             {
-              "id": "MSS-02-MIT-1",
-              "content": "피더 보충은 일시정지 시퀀스(Pause)로 수행, 도어 인터록 우회 금지 (위반 시 LOTO 위반 보고)",
-              "content_en": "Refill feeders via Pause sequence; never bypass door interlock (report as LOTO violation)",
-              "content_vi": "Nạp lại feeder qua trình tự Pause; không bao giờ bỏ qua interlock cửa (báo cáo vi phạm LOTO)",
-              "content_th": "เติม feeder ผ่านลำดับ Pause; ห้ามข้าม interlock ประตูเด็ดขาด (รายงานเป็นการละเมิด LOTO)",
-              "content_id": "Isi ulang feeder via urutan Pause; jangan pernah bypass interlock pintu (laporkan sebagai pelanggaran LOTO)"
-            },
-            {
-              "id": "MSS-02-MIT-2",
-              "content": "교대 시작 시 손목 스트랩 저항 1~10 MΩ 측정 + ESD 매트 접지 확인",
-              "content_en": "At shift start — measure wrist strap resistance 1–10 MΩ and verify ESD mat grounding",
-              "content_vi": "Đầu ca — đo điện trở dây cổ tay 1–10 MΩ và kiểm tra nối đất thảm ESD",
-              "content_th": "ต้นกะ — วัดความต้านทานสายรัดข้อมือ 1–10 MΩ และตรวจสอบการต่อสายดินของแผ่น ESD",
-              "content_id": "Di awal shift — ukur resistansi tali pergelangan 1–10 MΩ dan verifikasi grounding mat ESD"
+              "id": "DRUM-02-MIT-1",
+              "content": "지게차 마스트 각도 표시기 + 운반 중 작업자 4m 이내 출입 금지",
+              "content_en": "Forklift mast-angle indicator + 4m worker exclusion zone during transport",
+              "content_vi": "Đồng hồ góc mast + cấm công nhân vào trong 4 m khi vận chuyển",
+              "content_th": "ตัวแสดงมุม mast + คนงานห่าง 4 ม. ขณะขนส่ง",
+              "content_id": "Indikator sudut mast + zona larangan 4m saat pemindahan"
             }
           ],
           "ppe": [
             {
-              "id": "MSS-02-PPE-1",
-              "content": "ESD 손목 스트랩 + ESD 신발 + ESD 정전기 방지복",
-              "content_en": "ESD wrist strap + ESD shoes + ESD antistatic garment",
-              "content_vi": "Dây đeo cổ tay ESD + giày ESD + đồ chống tĩnh điện ESD",
-              "content_th": "สายรัดข้อมือ ESD + รองเท้า ESD + ชุดป้องกันไฟฟ้าสถิต ESD",
-              "content_id": "Tali pergelangan ESD + sepatu ESD + pakaian antistatik ESD"
-            }
-          ]
-        },
-        {
-          "id": "MSS-03",
-          "content": "LiDAR 모듈 캘리브레이션 — 클래스 3R 적외선 레이저 광원 노출 통제",
-          "content_en": "LiDAR module calibration — Class 3R infrared laser exposure control",
-          "content_vi": "Hiệu chuẩn mô-đun LiDAR — kiểm soát phơi nhiễm laser hồng ngoại Class 3R",
-          "content_th": "การปรับเทียบโมดูล LiDAR — ควบคุมการสัมผัสเลเซอร์อินฟราเรด Class 3R",
-          "content_id": "Kalibrasi modul LiDAR — kontrol paparan laser inframerah Class 3R",
-          "regulation": "산업안전보건기준규칙 §86, IEC 60825-1 (레이저 안전등급), ANSI Z136.1",
-          "evidence_required": "photo|verbal",
-          "scenarios": [
-            {
-              "id": "MSS-03-SC-1",
-              "content": "캘리브레이션 중 보안경 미착용 → 905 nm 적외선 직접 노출, 눈은 가시 자극 없이 망막 손상",
-              "content_en": "No goggles during calibration → 905 nm IR direct exposure causes retinal damage without visible cue",
-              "content_vi": "Không đeo kính khi hiệu chuẩn → phơi nhiễm trực tiếp IR 905 nm gây tổn thương võng mạc mà mắt không cảm nhận được",
-              "content_th": "ไม่สวมแว่นขณะปรับเทียบ → สัมผัสตรง IR 905 nm ทำลายจอประสาทตาโดยไม่มีสัญญาณที่มองเห็นได้",
-              "content_id": "Tidak pakai kacamata saat kalibrasi → paparan langsung IR 905 nm merusak retina tanpa isyarat visual"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "MSS-03-MIT-1",
-              "content": "캘리브레이션 부스 출입 통제 + 외부 빨간 경고등 점등, 출입 명부 기록",
-              "content_en": "Restrict calibration booth access; red warning lamp lit outside; log entries",
-              "content_vi": "Hạn chế ra vào buồng hiệu chuẩn; đèn cảnh báo đỏ bên ngoài; ghi nhật ký ra vào",
-              "content_th": "จำกัดการเข้าออกบูธปรับเทียบ; ไฟเตือนสีแดงด้านนอก; บันทึกการเข้าออก",
-              "content_id": "Batasi akses booth kalibrasi; lampu peringatan merah menyala di luar; catat akses masuk"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "MSS-03-PPE-1",
-              "content": "905 nm 대응 레이저 보안경 (OD ≥ 4 @ 905 nm)",
-              "content_en": "Laser safety goggles for 905 nm (OD ≥ 4 @ 905 nm)",
-              "content_vi": "Kính bảo hộ laser cho 905 nm (OD ≥ 4 @ 905 nm)",
-              "content_th": "แว่นนิรภัยเลเซอร์สำหรับ 905 nm (OD ≥ 4 @ 905 nm)",
-              "content_id": "Kacamata pengaman laser untuk 905 nm (OD ≥ 4 @ 905 nm)"
+              "id": "DRUM-02-PPE-1",
+              "content": "안전모·안전화·고시인성 조끼·신호수 무전기",
+              "content_en": "Hard hat + safety shoes + hi-vis vest + signaller radio",
+              "content_vi": "Mũ + giày + áo phản quang + bộ đàm cho người ra hiệu",
+              "content_th": "หมวก + รองเท้า + เสื้อสะท้อนแสง + วิทยุผู้ส่งสัญญาณ",
+              "content_id": "Helm + sepatu + rompi hi-vis + radio signalman"
             }
           ]
         }
       ]
     },
-    "OLED_MASK_FABRICATION": {
-      "label_ko": "OLED 메탈 마스크(FMM) 제작",
-      "label_en": "OLED Metal Mask (FMM) Fabrication",
-      "label_vi": "Chế tạo mặt nạ kim loại OLED (FMM)",
-      "label_th": "การผลิตหน้ากากโลหะ OLED (FMM)",
-      "label_id": "Fabrikasi Masker Logam OLED (FMM)",
+    "HV_TEST_LAB": {
+      "label_ko": "HV 시험장 (부분방전·내전압)",
+      "label_en": "HV Test Lab (PD / Withstand)",
+      "label_vi": "Phòng thử HV (PD / chịu điện áp)",
+      "label_th": "ห้องทดสอบ HV (PD / Withstand)",
+      "label_id": "Lab uji HV (PD / Withstand)",
       "baseline": [
         {
-          "id": "OMF-01",
-          "content": "Invar 합금 에칭 — 염화제2철(FeCl3) 에천트 노출 및 미스트 통제",
-          "content_en": "Invar alloy etching — ferric chloride (FeCl3) etchant exposure and mist control",
-          "content_vi": "Khắc hợp kim Invar — kiểm soát phơi nhiễm và sương mù chất khắc FeCl3 (ferric chloride)",
-          "content_th": "การกัดโลหะอินวาร์ — ควบคุมการสัมผัสและละอองสารกัด FeCl3 (เฟอร์ริกคลอไรด์)",
-          "content_id": "Etsa paduan Invar — kontrol paparan dan kabut etchant FeCl3 (ferri klorida)",
-          "regulation": "산업안전보건기준규칙 §422, 화학물질관리법 §13, MSDS",
-          "evidence_required": "photo|verbal",
+          "id": "HVTEST-01",
+          "content": "잔류전하 방전 대기 — 시험전압 250 kV급, 시정수×5 이상 + 검전 + 단락접지 후 출입",
+          "content_en": "Residual-charge dwell — at 250 kV+ test, wait ≥5× RC time constant, then verify zero with tester and apply grounding before entry",
+          "content_vi": "Chờ phóng điện dư — thử 250 kV+, chờ ≥5× hằng số thời gian RC, đo điện về 0 và tiếp địa trước khi vào",
+          "content_th": "รอประจุไฟฟ้าตกค้างคาย — ที่ทดสอบ 250 kV+ รอ ≥5× ค่าคงที่เวลา RC ตรวจวัด 0V และต่อกราวด์ก่อนเข้า",
+          "content_id": "Tunggu pelepasan muatan sisa — uji 250 kV+, tunggu ≥5× konstanta waktu RC, verifikasi 0V & grounding sebelum masuk",
+          "regulation": "산업안전보건기준규칙 §301~321 (전기작업), IEC 60840 (HV 케이블 시험)",
+          "evidence_required": "measurement",
           "scenarios": [
             {
-              "id": "OMF-01-SC-1",
-              "content": "FeCl3 에천트 라인 누설 → 콘크리트 바닥 부식, 작업자 발 화상",
-              "content_en": "FeCl3 etchant line leak → concrete floor corrosion, foot burn to worker",
-              "content_vi": "Rò rỉ đường ống etchant FeCl3 → ăn mòn nền bê tông, bỏng chân công nhân",
-              "content_th": "การรั่วของท่อสารกัด FeCl3 → กัดกร่อนพื้นคอนกรีต ไหม้เท้าพนักงาน",
-              "content_id": "Kebocoran pipa etchant FeCl3 → korosi lantai beton, luka bakar kaki pekerja"
-            },
-            {
-              "id": "OMF-01-SC-2",
-              "content": "스프레이 에칭 챔버 미스트 흡입 → 호흡기 자극 및 점막 손상",
-              "content_en": "Spray etching chamber mist inhalation → respiratory irritation and mucosal damage",
-              "content_vi": "Hít sương mù buồng khắc phun → kích ứng hô hấp và tổn thương niêm mạc",
-              "content_th": "สูดดมละอองห้องกัดแบบสเปรย์ → ระคายเคืองทางเดินหายใจและเสียหายของเยื่อบุ",
-              "content_id": "Inhalasi kabut ruang etsa spray → iritasi pernapasan dan kerusakan mukosa"
+              "id": "HVTEST-01-SC-1",
+              "content": "방전 대기시간 미준수 후 잔류전하 인입 → 인입 사망 사고",
+              "content_en": "Operator enters before discharge dwell ends; residual charge causes fatal shock",
+              "content_vi": "Vào phòng trước khi hết thời gian phóng dư; điện áp dư gây tử vong",
+              "content_th": "เข้าก่อนครบเวลาคาย — แรงดันตกค้างถึงตาย",
+              "content_id": "Masuk sebelum waktu discharge selesai → kejut fatal akibat sisa muatan"
             }
           ],
           "mitigations": [
             {
-              "id": "OMF-01-MIT-1",
-              "content": "에천트 라인 매일 누설 점검 + 바닥 누액 감지 센서 동작 확인 (감지 시 자동 라인 차단)",
-              "content_en": "Daily etchant line leak check; floor leak detector operational (auto line shutdown on detection)",
-              "content_vi": "Kiểm tra rò rỉ đường ống etchant hằng ngày; cảm biến rò rỉ nền hoạt động (tự ngắt đường ống khi phát hiện)",
-              "content_th": "ตรวจสอบการรั่วของท่อสารกัดทุกวัน; เซนเซอร์ตรวจการรั่วที่พื้นทำงาน (ตัดท่ออัตโนมัติเมื่อพบ)",
-              "content_id": "Pemeriksaan kebocoran pipa etchant harian; detektor kebocoran lantai berfungsi (penutupan pipa otomatis saat terdeteksi)"
+              "id": "HVTEST-01-MIT-1",
+              "content": "전압 인가 종료 직후 자동 방전 회로 작동 → 타이머(시정수×5) 만료 후 도어 인터록 해제 → 검전기로 0V 확인 → 단락접지봉 부착 → 출입",
+              "content_en": "Auto-discharge after de-energize → door interlock releases only after timer (5× RC) → tester confirms 0 V → ground stick attached → entry",
+              "content_vi": "Tự phóng dư sau cắt điện → khóa cửa chỉ mở sau timer (5× RC) → đo 0 V → móc tiếp địa → vào",
+              "content_th": "ปลดไฟอัตโนมัติคายดิสชาร์จ → ประตูปลดล็อกหลัง timer (5× RC) → วัด 0 V → ใส่ ground stick → เข้า",
+              "content_id": "Auto-discharge setelah de-energize → interlock terbuka setelah timer (5× RC) → tester 0V → ground stick → masuk"
             },
             {
-              "id": "OMF-01-MIT-2",
-              "content": "에칭 챔버 도어 잠금 + 작업 종료 후 5분 환기 사이클 완료 전 도어 개방 금지",
-              "content_en": "Etch chamber door locked; do not open until 5-min ventilation cycle completes after work",
-              "content_vi": "Khóa cửa buồng khắc; không mở cho đến khi chu trình thông gió 5 phút hoàn tất sau công việc",
-              "content_th": "ล็อกประตูห้องกัด; ห้ามเปิดจนกว่ารอบระบายอากาศ 5 นาทีจะเสร็จหลังจบงาน",
-              "content_id": "Pintu chamber etsa terkunci; jangan dibuka sampai siklus ventilasi 5 menit selesai setelah kerja"
+              "id": "HVTEST-01-MIT-2",
+              "content": "외국인 시험원 4단계 절차(활선→정전→검전→단락접지) 모국어 SOP + 표준 손짓 신호 통일",
+              "content_en": "Foreign test crew 4-step SOP (energize→de-energize→verify→ground) in mother tongue + standardized hand signs",
+              "content_vi": "SOP 4 bước tiếng mẹ đẻ cho kỹ thuật viên nước ngoài + ký hiệu tay chuẩn",
+              "content_th": "SOP 4 ขั้นภาษาแม่สำหรับเจ้าหน้าที่ต่างชาติ + สัญญาณมือมาตรฐาน",
+              "content_id": "SOP 4 langkah bahasa ibu untuk teknisi asing + isyarat tangan standar"
             }
           ],
           "ppe": [
             {
-              "id": "OMF-01-PPE-1",
-              "content": "산성용 카트리지 호흡보호구 + 풀 페이스 마스크 + 부틸 장갑 + PVC 부츠",
-              "content_en": "Acid-rated respirator cartridge + full-face mask + butyl gloves + PVC boots",
-              "content_vi": "Cartridge mặt nạ hô hấp chống axit + mặt nạ kín mặt + găng tay butyl + ủng PVC",
-              "content_th": "cartridge หน้ากากกันกรด + หน้ากากเต็มหน้า + ถุงมือบิวทิล + รองเท้าบูท PVC",
-              "content_id": "Cartridge respirator tahan asam + masker full-face + sarung tangan butil + sepatu bot PVC"
-            }
-          ]
-        },
-        {
-          "id": "OMF-02",
-          "content": "마스크 레이저 가공 — 클래스 4 펨토초 레이저 광원 차폐 및 흄 배기",
-          "content_en": "Mask laser machining — Class 4 femtosecond laser shielding and fume exhaust",
-          "content_vi": "Gia công laser mặt nạ — che chắn laser femto giây Class 4 và hút khói",
-          "content_th": "การกลึงด้วยเลเซอร์มาส์ก — กั้นเลเซอร์เฟมโตวินาที Class 4 และการดูดควัน",
-          "content_id": "Pemesinan laser masker — pelindung laser femtosecond Class 4 dan pembuangan asap",
-          "regulation": "산업안전보건기준규칙 §86, IEC 60825-1 Class 4, ANSI Z136.1",
-          "evidence_required": "photo|verbal",
-          "scenarios": [
-            {
-              "id": "OMF-02-SC-1",
-              "content": "레이저 가공기 인터록 해제 가동 → 클래스 4 레이저 산란광 노출, 즉시 망막 손상 + 피부 화상",
-              "content_en": "Laser machine runs with interlock defeated → Class 4 laser scattered light, instant retinal damage + skin burn",
-              "content_vi": "Máy laser hoạt động khi interlock bị vô hiệu → ánh sáng laser Class 4 tán xạ, tổn thương võng mạc tức thì + bỏng da",
-              "content_th": "เครื่องเลเซอร์ทำงานโดย interlock ถูกปลด → แสงเลเซอร์ Class 4 กระจาย ทำลายจอประสาทตาทันที + ไหม้ผิวหนัง",
-              "content_id": "Mesin laser berjalan dengan interlock dilumpuhkan → cahaya hambur laser Class 4, kerusakan retina instan + luka bakar kulit"
-            },
-            {
-              "id": "OMF-02-SC-2",
-              "content": "Invar 가공 시 발생하는 금속 흄(Fe·Ni) 흡입 → 금속열병(metal fume fever)",
-              "content_en": "Inhalation of metal fume (Fe/Ni) from Invar machining → metal fume fever",
-              "content_vi": "Hít khói kim loại (Fe/Ni) từ gia công Invar → sốt khói kim loại (metal fume fever)",
-              "content_th": "การสูดดมควันโลหะ (Fe/Ni) จากการกลึงอินวาร์ → ไข้ควันโลหะ (metal fume fever)",
-              "content_id": "Inhalasi asap logam (Fe/Ni) dari pemesinan Invar → demam asap logam (metal fume fever)"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "OMF-02-MIT-1",
-              "content": "레이저 가공실 출입 전 작동 표시등(빨간 경광) 확인 + 인터록 우회 금지 — 위반 시 즉시 정지",
-              "content_en": "Before entering laser room, confirm running indicator (red beacon); never bypass interlock — immediate stop on violation",
-              "content_vi": "Trước khi vào phòng laser, kiểm tra đèn báo vận hành (đèn đỏ); không bao giờ bỏ qua interlock — dừng ngay khi vi phạm",
-              "content_th": "ก่อนเข้าห้องเลเซอร์ ตรวจสอบไฟแสดงการทำงาน (ไฟแดง); ห้ามข้าม interlock — หยุดทันทีเมื่อละเมิด",
-              "content_id": "Sebelum masuk ruang laser, konfirmasi lampu indikator (lampu merah); jangan pernah bypass interlock — hentikan segera jika dilanggar"
-            },
-            {
-              "id": "OMF-02-MIT-2",
-              "content": "흄 배기 풍속 ≥ 0.5 m/s 측정 + HEPA 필터 교체 표시 확인",
-              "content_en": "Measure fume exhaust face velocity ≥ 0.5 m/s; verify HEPA filter change indicator",
-              "content_vi": "Đo vận tốc hút khói ≥ 0,5 m/s; kiểm tra chỉ báo thay lọc HEPA",
-              "content_th": "วัดความเร็วลมดูดควัน ≥ 0.5 m/s; ตรวจสอบตัวบ่งชี้การเปลี่ยน HEPA filter",
-              "content_id": "Ukur kecepatan pembuangan asap ≥ 0,5 m/s; verifikasi indikator penggantian filter HEPA"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "OMF-02-PPE-1",
-              "content": "Class 4 펨토초 대응 레이저 보안경 (해당 파장 OD ≥ 6)",
-              "content_en": "Class 4 femtosecond laser safety goggles (OD ≥ 6 at wavelength)",
-              "content_vi": "Kính bảo hộ laser Class 4 femto giây (OD ≥ 6 tại bước sóng)",
-              "content_th": "แว่นนิรภัยเลเซอร์ Class 4 เฟมโตวินาที (OD ≥ 6 ที่ความยาวคลื่น)",
-              "content_id": "Kacamata pengaman laser Class 4 femtosecond (OD ≥ 6 pada panjang gelombang)"
-            },
-            {
-              "id": "OMF-02-PPE-2",
-              "content": "금속 흄용 P3 필터 마스크 (KF94 이상 또는 N95+P100)",
-              "content_en": "P3 filter mask for metal fume (KF94 or higher, or N95+P100)",
-              "content_vi": "Khẩu trang lọc P3 cho khói kim loại (KF94 trở lên, hoặc N95+P100)",
-              "content_th": "หน้ากากกรอง P3 สำหรับควันโลหะ (KF94 ขึ้นไป หรือ N95+P100)",
-              "content_id": "Masker filter P3 untuk asap logam (KF94 atau lebih tinggi, atau N95+P100)"
-            }
-          ]
-        },
-        {
-          "id": "OMF-03",
-          "content": "마스크 텐셔닝(인장) 공정 — 프레임 장력 해제 시 튐(snap-back) 차단",
-          "content_en": "Mask tensioning process — block snap-back when frame tension released",
-          "content_vi": "Công đoạn căng mặt nạ — chặn bật ngược khi giải phóng lực căng khung",
-          "content_th": "ขั้นตอนขึงมาส์ก — กั้นการดีดกลับเมื่อปล่อยแรงตึงของเฟรม",
-          "content_id": "Proses tensioning masker — blokir snap-back saat tegangan frame dilepas",
-          "regulation": "산업안전보건기준규칙 §93, §100 (방호장치 — 격리형 가드)",
-          "evidence_required": "photo|verbal",
-          "scenarios": [
-            {
-              "id": "OMF-03-SC-1",
-              "content": "텐셔닝 프레임 클램프 파손 → 마스크 시트 튐, 작업자 안면 자상",
-              "content_en": "Tensioning frame clamp failure → mask sheet snap-back causes facial laceration",
-              "content_vi": "Hỏng kẹp khung căng → tấm mặt nạ bật ngược gây vết rách ở mặt",
-              "content_th": "แคลมป์เฟรมขึงพัง → แผ่นมาส์กดีดกลับทำให้ใบหน้าบาดเป็นแผล",
-              "content_id": "Kegagalan klem frame tensioning → snap-back lembar masker menyebabkan luka robek di wajah"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "OMF-03-MIT-1",
-              "content": "텐셔닝 작업 시 폴리카보네이트 가드 폐쇄 확인 + 클램프 토크값 사양(±5%) 기록",
-              "content_en": "During tensioning, confirm polycarbonate guard closed; log clamp torque to spec (±5%)",
-              "content_vi": "Khi căng, xác nhận tấm gác polycarbonate đóng; ghi lực siết kẹp theo quy cách (±5%)",
-              "content_th": "ระหว่างการขึง ยืนยันว่าการ์ดโพลีคาร์บอเนตปิด; บันทึกแรงบิดแคลมป์ตามสเปก (±5%)",
-              "content_id": "Saat tensioning, konfirmasi pelindung polikarbonat tertutup; catat torsi klem sesuai spek (±5%)"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "OMF-03-PPE-1",
-              "content": "페이스쉴드 (충격용, ANSI Z87.1+) + 절단 방지 장갑 (EN 388 Cut Level 5)",
-              "content_en": "Face shield (impact-rated, ANSI Z87.1+) + cut-resistant gloves (EN 388 Cut Level 5)",
-              "content_vi": "Tấm chắn mặt (chịu va đập, ANSI Z87.1+) + găng tay chống cắt (EN 388 Cut Level 5)",
-              "content_th": "face shield (ทนแรงกระแทก ANSI Z87.1+) + ถุงมือกันบาด (EN 388 Cut Level 5)",
-              "content_id": "Pelindung wajah (tahan benturan, ANSI Z87.1+) + sarung tangan tahan potong (EN 388 Cut Level 5)"
-            }
-          ]
-        }
-      ]
-    },
-    "EV_POWER_MODULE_ASSEMBLY": {
-      "label_ko": "EV 파워모듈(인버터·OBC) 조립",
-      "label_en": "EV Power Module (Inverter/OBC) Assembly",
-      "label_vi": "Lắp ráp mô-đun điện EV (Inverter/OBC)",
-      "label_th": "การประกอบโมดูลพลังงาน EV (Inverter/OBC)",
-      "label_id": "Perakitan Modul Daya EV (Inverter/OBC)",
-      "baseline": [
-        {
-          "id": "EVP-01",
-          "content": "고전압(HV) 시험 — 600~1200 VDC 활선 작업 시 절연 보호 및 격리",
-          "content_en": "High-voltage (HV) testing — 600–1200 VDC live work insulation protection and isolation",
-          "content_vi": "Kiểm tra điện áp cao (HV) — bảo vệ cách điện và cách ly khi làm việc trực tiếp 600–1200 VDC",
-          "content_th": "การทดสอบไฟฟ้าแรงสูง (HV) — การป้องกันฉนวนและการแยกตัวเมื่อทำงานสด 600–1200 VDC",
-          "content_id": "Pengujian tegangan tinggi (HV) — perlindungan isolasi dan isolasi saat kerja hidup 600–1200 VDC",
-          "regulation": "산업안전보건기준규칙 §301 (전기 작업), §319 (정전작업), KOSHA GUIDE E-49-2011",
-          "evidence_required": "photo|verbal",
-          "scenarios": [
-            {
-              "id": "EVP-01-SC-1",
-              "content": "HV 시험 종료 후 DC 링크 캐패시터 잔류전압(>60 V) 미방전 상태에서 커넥터 분리 → 감전",
-              "content_en": "Disconnecting connector before DC link capacitor residual (>60 V) discharges after HV test → electric shock",
-              "content_vi": "Tháo connector trước khi tụ DC link xả (>60 V) sau kiểm tra HV → điện giật",
-              "content_th": "ถอด connector ก่อนที่ตัวเก็บประจุ DC link จะคายประจุ (>60 V) หลังการทดสอบ HV → ไฟดูด",
-              "content_id": "Mencabut konektor sebelum kapasitor DC link discharge (>60 V) setelah uji HV → kejutan listrik"
-            },
-            {
-              "id": "EVP-01-SC-2",
-              "content": "절연 매트·장갑 미사용 상태에서 활선 검측 → 아크 플래시 화상",
-              "content_en": "Live measurement without insulating mat/gloves → arc flash burn",
-              "content_vi": "Đo điện sống mà không dùng thảm/găng tay cách điện → bỏng do arc flash",
-              "content_th": "การวัดสายไฟสดโดยไม่ใช้แผ่นรอง/ถุงมือฉนวน → ไหม้จาก arc flash",
-              "content_id": "Pengukuran hidup tanpa mat/sarung tangan isolasi → luka bakar arc flash"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "EVP-01-MIT-1",
-              "content": "HV 시험 종료 후 자동 방전 회로 동작 확인 + 잔류전압 멀티미터로 < 60 VDC 확인 후 작업 (KOSHA GUIDE E-49)",
-              "content_en": "After HV test verify auto-discharge operation; confirm residual < 60 VDC with multimeter before work (KOSHA GUIDE E-49)",
-              "content_vi": "Sau khi kiểm tra HV, xác nhận hoạt động xả tự động; xác nhận điện áp dư < 60 VDC bằng đồng hồ đa năng trước khi làm (KOSHA GUIDE E-49)",
-              "content_th": "หลังการทดสอบ HV ตรวจสอบการทำงานของวงจรคายประจุอัตโนมัติ; ยืนยันแรงดันตกค้าง < 60 VDC ด้วยมัลติมิเตอร์ก่อนทำงาน (KOSHA GUIDE E-49)",
-              "content_id": "Setelah uji HV verifikasi auto-discharge; konfirmasi sisa < 60 VDC dengan multimeter sebelum kerja (KOSHA GUIDE E-49)"
-            },
-            {
-              "id": "EVP-01-MIT-2",
-              "content": "HV 작업 구역 안전거리(약 1 m) 표시선 + 비인가자 출입 통제, 2인 1조 원칙",
-              "content_en": "HV work zone safe-distance line (~1 m); restrict unauthorized entry; two-person team principle",
-              "content_vi": "Vạch khoảng cách an toàn khu HV (~1 m); hạn chế người không phận sự; nguyên tắc 2 người 1 tổ",
-              "content_th": "เส้นระยะปลอดภัยพื้นที่ HV (~1 m); จำกัดผู้ไม่มีอำนาจหน้าที่; หลักการ 2 คน 1 ทีม",
-              "content_id": "Garis jarak aman zona HV (~1 m); batasi akses tak berwenang; prinsip tim 2 orang"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "EVP-01-PPE-1",
-              "content": "절연 장갑 Class 0 (1000 V AC, 1500 V DC) + 절연 매트 + 아크 플래시 보호복 (4 cal/cm² 이상)",
-              "content_en": "Insulating gloves Class 0 (1000 V AC, 1500 V DC) + insulating mat + arc flash suit (≥ 4 cal/cm²)",
-              "content_vi": "Găng tay cách điện Class 0 (1000 V AC, 1500 V DC) + thảm cách điện + đồ chống arc flash (≥ 4 cal/cm²)",
-              "content_th": "ถุงมือฉนวน Class 0 (1000 V AC, 1500 V DC) + แผ่นรองฉนวน + ชุดกันอาร์กแฟลช (≥ 4 cal/cm²)",
-              "content_id": "Sarung tangan isolasi Class 0 (1000 V AC, 1500 V DC) + mat isolasi + setelan arc flash (≥ 4 cal/cm²)"
-            }
-          ]
-        },
-        {
-          "id": "EVP-02",
-          "content": "파워모듈 본딩(SiC 칩 부착) — 무연 솔더 + 플럭스 흄 배기 및 고온 화상 방지",
-          "content_en": "Power module bonding (SiC chip attach) — lead-free solder + flux fume exhaust and high-temp burn prevention",
-          "content_vi": "Gắn chip SiC mô-đun điện — kem hàn không chì + hút khói flux và ngăn bỏng nhiệt",
-          "content_th": "การยึดชิป SiC ของโมดูลพลังงาน — บัดกรีไร้สารตะกั่ว + ดูดควันฟลักซ์และป้องกันไหม้อุณหภูมิสูง",
-          "content_id": "Bonding modul daya (SiC chip attach) — solder bebas timbal + pembuangan asap fluks dan pencegahan luka bakar suhu tinggi",
-          "regulation": "산업안전보건기준규칙 §72, §422",
-          "evidence_required": "photo|verbal",
-          "scenarios": [
-            {
-              "id": "EVP-02-SC-1",
-              "content": "본딩 챔버 도어 열림 시 약 280°C 핫플레이트 접촉 → 손바닥 3도 화상",
-              "content_en": "Contact with ~280°C hotplate when bonding chamber door opens → third-degree burn on palm",
-              "content_vi": "Tiếp xúc bàn nóng ~280°C khi mở cửa buồng bonding → bỏng độ 3 ở lòng bàn tay",
-              "content_th": "สัมผัสฮอตเพลต ~280°C เมื่อเปิดประตูห้อง bonding → ไฟลวกระดับ 3 ที่ฝ่ามือ",
-              "content_id": "Kontak dengan hotplate ~280°C saat pintu chamber bonding terbuka → luka bakar derajat 3 di telapak tangan"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "EVP-02-MIT-1",
-              "content": "본딩 챔버 도어 인터록 — 표면 온도 70°C 이하 도달 전 도어 잠금 유지",
-              "content_en": "Bonding chamber door interlock — keep door locked until surface ≤ 70°C",
-              "content_vi": "Interlock cửa buồng bonding — giữ khóa cửa cho đến khi bề mặt ≤ 70°C",
-              "content_th": "interlock ประตูห้อง bonding — ล็อกประตูจนกว่าพื้นผิวจะ ≤ 70°C",
-              "content_id": "Interlock pintu chamber bonding — kunci pintu sampai permukaan ≤ 70°C"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "EVP-02-PPE-1",
-              "content": "내열 가죽 장갑(300°C 60초 견딤) + 보안경",
-              "content_en": "Heat-resistant leather gloves (300°C 60 s) + safety glasses",
-              "content_vi": "Găng tay da chịu nhiệt (300°C trong 60 giây) + kính bảo hộ",
-              "content_th": "ถุงมือหนังทนความร้อน (300°C 60 วินาที) + แว่นนิรภัย",
-              "content_id": "Sarung tangan kulit tahan panas (300°C 60 detik) + kacamata pengaman"
-            }
-          ]
-        },
-        {
-          "id": "EVP-03",
-          "content": "EOL(End-of-Line) 시험대 — 회전기계(다이나모) 가동 영역 격리",
-          "content_en": "EOL (End-of-Line) test rig — isolate rotating dynamometer area",
-          "content_vi": "Trạm kiểm tra EOL (End-of-Line) — cách ly khu vực dyno quay",
-          "content_th": "ชุดทดสอบ EOL (End-of-Line) — แยกพื้นที่ dynamometer หมุน",
-          "content_id": "Rig uji EOL (End-of-Line) — isolasi area dinamometer berputar",
-          "regulation": "산업안전보건기준규칙 §100 (회전체 방호), §93",
-          "evidence_required": "photo|verbal",
-          "scenarios": [
-            {
-              "id": "EVP-03-SC-1",
-              "content": "다이나모 가동 중 케이블 연결 확인하려 가드 안 진입 → 회전축에 작업복 말림, 회전체 접촉",
-              "content_en": "Entering guard area to check cable while dyno runs → garment caught in rotating shaft, contact with rotor",
-              "content_vi": "Vào trong tấm gác để kiểm tra cáp khi dyno đang chạy → trang phục bị cuốn vào trục quay, tiếp xúc rotor",
-              "content_th": "เข้าในพื้นที่การ์ดเพื่อตรวจสายเคเบิลขณะ dyno ทำงาน → ชุดทำงานถูกดึงเข้าแกนหมุน สัมผัสกับโรเตอร์",
-              "content_id": "Memasuki area pelindung untuk memeriksa kabel saat dyno berjalan → pakaian terjerat poros putar, kontak dengan rotor"
-            }
-          ],
-          "mitigations": [
-            {
-              "id": "EVP-03-MIT-1",
-              "content": "EOL 가드 도어 인터록 작동 확인 + 가드 안 진입 전 LOTO 절차(라벨링 포함)",
-              "content_en": "Verify EOL guard door interlock; before entering guard area execute LOTO (incl. labeling)",
-              "content_vi": "Kiểm tra interlock cửa gác EOL; trước khi vào khu gác, thực hiện LOTO (kèm dán nhãn)",
-              "content_th": "ตรวจสอบ interlock ประตูการ์ด EOL; ก่อนเข้าพื้นที่การ์ด ทำ LOTO (รวมการติดป้าย)",
-              "content_id": "Verifikasi interlock pintu pelindung EOL; sebelum memasuki area pelindung lakukan LOTO (termasuk pelabelan)"
-            }
-          ],
-          "ppe": [
-            {
-              "id": "EVP-03-PPE-1",
-              "content": "타이트한 작업복(소매 단추 잠금) + 안전화 + 보안경",
-              "content_en": "Snug-fit workwear (sleeves buttoned) + safety shoes + safety glasses",
-              "content_vi": "Quần áo ôm sát (cài cúc tay áo) + giày bảo hộ + kính bảo hộ",
-              "content_th": "ชุดทำงานพอดีตัว (ติดกระดุมแขนเสื้อ) + รองเท้านิรภัย + แว่นนิรภัย",
-              "content_id": "Pakaian kerja pas badan (kancing lengan terpasang) + sepatu pengaman + kacamata pengaman"
+              "id": "HVTEST-01-PPE-1",
+              "content": "절연 장갑(Class 4 36 kV) + 절연화 + 아크플래시 PPE(CAT 4, IEEE 1584 계산)",
+              "content_en": "Insulating gloves (Class 4 36 kV) + insulating boots + arc-flash PPE (CAT 4 per IEEE 1584)",
+              "content_vi": "Găng cách điện (Class 4 36 kV) + giày cách điện + PPE arc-flash (CAT 4 theo IEEE 1584)",
+              "content_th": "ถุงมือฉนวน (Class 4 36 kV) + รองเท้าฉนวน + PPE arc-flash (CAT 4 ตาม IEEE 1584)",
+              "content_id": "Sarung tangan isolasi (Class 4 36 kV) + sepatu isolasi + PPE arc-flash (CAT 4 per IEEE 1584)"
             }
           ]
         }
