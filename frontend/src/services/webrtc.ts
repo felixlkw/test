@@ -135,7 +135,10 @@ export class WebRTCSession {
       this.workTypeId,
       this.preparedSummary,
     );
-    const sdpRes = await fetch('https://api.openai.com/v1/realtime', {
+    // 2026-05-21 — OpenAI가 preview Realtime API 차단. SDP exchange도 GA
+    // 경로(/v1/realtime/calls)로 강제 이전. 모델은 ephemeral key의 session
+    // config(backend llm.py)에 핀되어 있어 ?model= query string 불필요.
+    const sdpRes = await fetch('https://api.openai.com/v1/realtime/calls', {
       method: 'POST',
       body: offer.sdp,
       headers: {

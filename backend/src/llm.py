@@ -24,10 +24,14 @@ from . import prompt
 # Lazy initialization: do NOT crash at import time so /api/health works even
 # when OPENAI_API_KEY is missing or not yet injected by Railway.
 # ---------------------------------------------------------------------------
-OPENAI_REALTIME_SESSIONS_URL = "https://api.openai.com/v1/realtime/sessions"
+# 2026-05-21 — OpenAI가 preview /v1/realtime/sessions 엔드포인트를 강제 차단.
+# 에러: "The Realtime Beta API is no longer supported. Please use /v1/realtime
+# for the GA API." (code: beta_api_shape_disabled). GA 엔드포인트로 강제 이전.
+# voice=ballad / speed=1.30 / model=gpt-realtime-1.5는 GA 호환 그대로 유지.
+OPENAI_REALTIME_SESSIONS_URL = "https://api.openai.com/v1/realtime/client_secrets"
 OPENAI_TRANSCRIPTION_URL = "https://api.openai.com/v1/audio/transcriptions"
 OPENAI_CHAT_COMPLETIONS_URL = "https://api.openai.com/v1/chat/completions"
-OPENAI_REALTIME_MODEL = "gpt-4o-realtime-preview"
+OPENAI_REALTIME_MODEL = "gpt-realtime-1.5"
 OPENAI_TRANSCRIPTION_MODEL = "whisper-1"
 OPENAI_CHAT_MODEL = "gpt-4o"
 # Phase chat-PR1 — text-only fallback transport. Per chat_mode_prompt_adaptation §E,
@@ -35,7 +39,8 @@ OPENAI_CHAT_MODEL = "gpt-4o"
 # Operators can override per-call via chat_completion(model=...).
 OPENAI_CHAT_MINI_MODEL = "gpt-4o-mini"
 OPENAI_REALTIME_VOICE = "ballad"
-OPENAI_REALTIME_SPEED = 1.35
+# 2026-05-20 felix HITL: 활기찬 한국어 안전전문가 톤(prompt.py) + 호흡 여유의 균형. 1.35 → 1.30.
+OPENAI_REALTIME_SPEED = 1.30
 OPENAI_REALTIME_TIMEOUT = 10.0
 OPENAI_TRANSCRIPTION_TIMEOUT = 60.0
 # PR A_v2-1 — chat-completions for /api/recommend-hazards (JSON mode).
@@ -1165,42 +1170,60 @@ async def generate_webrtc_key(
     headers = _get_headers()
 
     async with httpx.AsyncClient() as client:
+        # GA Realtime API session shape (2026-05-21 강제 이전):
+        # - audio fields nested under audio.input / audio.output
+        # - voice/speed → audio.output, noise_reduction/transcription/turn_detection → audio.input
+        # - modalities → output_modalities
+        # - body는 {"session": {"type": "realtime", ...}}로 래핑
+        # - 응답: GA top-level {"value": "ek_...", ...} (preview는 {"client_secret":{"value":...}})
+        transcription_cfg = {
+            "model": OPENAI_TRANSCRIPTION_MODEL,
+            "language": transcription_lang_code,
+        }
+        if transcription_prompt:
+            transcription_cfg["prompt"] = transcription_prompt
+
         session_config = {
+            "type": "realtime",
             "model": OPENAI_REALTIME_MODEL,
-            "voice": OPENAI_REALTIME_VOICE,
-            "input_audio_noise_reduction": {
-                "type": stt_preset["noise_reduction"],
-            },
-            "input_audio_transcription": {
-                "model": OPENAI_TRANSCRIPTION_MODEL,
-                "language": transcription_lang_code,
-                **({"prompt": transcription_prompt} if transcription_prompt else {}),
-            },
-            "modalities": ["audio", "text"],
             "instructions": instructions,
-            "speed": OPENAI_REALTIME_SPEED,
-            "turn_detection": {
-                "type": "server_vad",
-                "threshold": stt_preset["vad_threshold"],
+            "output_modalities": ["audio"],
+            "audio": {
+                "input": {
+                    "noise_reduction": {"type": stt_preset["noise_reduction"]},
+                    "transcription": transcription_cfg,
+                    "turn_detection": {
+                        "type": "server_vad",
+                        "threshold": stt_preset["vad_threshold"],
+                    },
+                },
+                "output": {
+                    "voice": OPENAI_REALTIME_VOICE,
+                    "speed": OPENAI_REALTIME_SPEED,
+                },
             },
         }
-        
+
         # Only add tools if any are available
         if tools:
             session_config["tool_choice"] = "auto"
             session_config["tools"] = tools
-        
+
+        ga_body = {"session": session_config}
+
         resp = await client.post(
             OPENAI_REALTIME_SESSIONS_URL,
             headers=headers,
-            json=session_config,
+            json=ga_body,
             timeout=OPENAI_REALTIME_TIMEOUT,
         )
         if resp.status_code != 200:
             logger.error(resp.text)
             raise HTTPException(status_code=resp.status_code, detail=resp.text)
         data = resp.json()
-        key = data.get("client_secret", {}).get("value")
+        # GA: {"value": "ek_..."} top-level. preview: {"client_secret":{"value":...}}.
+        # 양쪽 모두 수용 (transition 안전망).
+        key = data.get("value") or data.get("client_secret", {}).get("value")
         return key
 
 
