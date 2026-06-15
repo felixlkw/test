@@ -482,17 +482,25 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
         }
         // PR B (c6 §3.III) — first response delta(audio or text). recordFirstToken은
         // pending이 없으면 no-op이라 같은 응답 내 두 번째 delta는 무시된다.
+        // 2026-06-15 — Realtime GA 마이그레이션 회귀 fix: GA가 transcript/text
+        // 이벤트를 response.output_audio_transcript.* / response.output_text.* 로
+        // rename. preview 이름만 listen하면 음성은 나오는데 자막(assistant 텍스트)이
+        // 표시되지 않음. preview + GA 양쪽 dual-listen 으로 transition-safe.
         case "response.audio_transcript.delta":
         case "response.text.delta":
+        case "response.output_audio_transcript.delta": // GA
+        case "response.output_text.delta": // GA
           recordFirstToken();
           return;
         case "response.audio_transcript.done":
+        case "response.output_audio_transcript.done": // GA
           setMessages((prev) => [
             ...prev,
             { role: "assistant", text: e.transcript as string },
           ]);
           return;
         case "response.text.done":
+        case "response.output_text.done": // GA
           setMessages((prev) => [
             ...prev,
             { role: "assistant", text: e.text as string },
