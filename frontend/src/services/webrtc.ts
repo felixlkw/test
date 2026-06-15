@@ -172,14 +172,14 @@ export class WebRTCSession {
     };
     this.dataChannel.send(JSON.stringify(event));
 
-    // Create response with appropriate modalities
-    const responseEvent = {
-      type: 'response.create',
-      response: {
-        modalities: audioResponse ? ['text', 'audio'] : ['text']
-      }
-    };
-    this.dataChannel.send(JSON.stringify(responseEvent));
+    // 2026-06-15 — Realtime GA 회귀 fix ("대화가 곧 시작됩니다"에서 멈춤):
+    // GA의 response.create는 더 이상 `modalities`를 받지 않는다. 출력 모달리티는
+    // ephemeral key의 session config(llm.py: output_modalities: ["audio"])에 핀됨.
+    // deprecated `modalities`를 보내면 GA가 response를 silently drop → 최초 인사
+    // (dataChannel.onopen → sendTextMessage)가 발사되지 않아 messages가 비어 있고
+    // 화면이 "대화가 곧 시작됩니다"에서 멈춘다. 빈 객체로 발사해 session default 적용.
+    void audioResponse; // legacy 시그니처 보존 — 모달리티는 session config에 위임.
+    this.dataChannel.send(JSON.stringify({ type: 'response.create' }));
   }
 
   /**
