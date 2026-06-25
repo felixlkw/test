@@ -20,10 +20,12 @@ function readDefaultDomain(): SessionDomain | undefined {
   try {
     const v = localStorage.getItem(DEFAULT_DOMAIN_KEY);
     if (
-      v === "manufacturing" ||
-      v === "construction" ||
-      v === "heavy_industry" ||
-      v === "semiconductor"
+      (v === "manufacturing" ||
+        v === "construction" ||
+        v === "heavy_industry" ||
+        v === "semiconductor") &&
+      // 숨겨진 도메인이 default로 저장돼 있어도 무시 — 시트(가시 도메인만)로 폴백.
+      isDomainVisible(v)
     ) {
       return v;
     }
@@ -48,6 +50,9 @@ const DOMAIN_HINTS_BY_TENANT: Record<string, Partial<Record<SessionDomain, strin
     construction: "팹/라인 신축·증설·클린룸 시공",
     heavy_industry: "클린룸 장비·노광/검사·도금 PM",
     semiconductor: "",
+  },
+  gs_construction: {
+    construction: "건축·토목·플랜트 시공",
   },
 };
 
@@ -149,7 +154,7 @@ export default function HomeScreen() {
           <PwcMark size={22} />
           <span className="h-4 w-px bg-pwc-border" aria-hidden="true" />
           <span className="text-[13px] font-bold tracking-wide uppercase text-pwc-ink">
-            Safety Vision
+            SafeMate
           </span>
         </div>
         <button
@@ -268,7 +273,7 @@ export default function HomeScreen() {
       </section>
 
       <footer className="mt-auto px-6 pb-6 text-[11px] text-pwc-ink-mute">
-        Safety Vision · LG Innotek Industrial Safety PoC
+        SafeMate · 산업안전 데모
       </footer>
 
       {showDomainSheet && (

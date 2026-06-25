@@ -25,7 +25,7 @@ import {
   type RetentionOption,
 } from "../services/retention";
 
-// Tenant-aware visible-domain list. 비가시 도메인(예: LG Innotek의 semiconductor)은
+// Tenant-aware visible-domain list. 비가시 도메인(예: GS건설의 비건설 도메인)은
 // 상태 초기화 / 토글 행 / 기본 도메인 드롭다운 모두에서 노출 자체를 제거.
 const VISIBLE_DOMAINS = ALL_DOMAINS.filter(isDomainVisible);
 
@@ -35,7 +35,11 @@ const DEFAULT_DOMAIN_KEY = "safemate.ui.defaultDomain";
 function getDefaultDomain(): SessionDomain | "" {
   try {
     const v = localStorage.getItem(DEFAULT_DOMAIN_KEY);
-    if (v === "manufacturing" || v === "construction" || v === "heavy_industry" || v === "semiconductor") {
+    if (
+      (v === "manufacturing" || v === "construction" || v === "heavy_industry" || v === "semiconductor") &&
+      // 숨겨진 도메인이 저장돼 있으면 "선택 안 함"으로 정리.
+      isDomainVisible(v)
+    ) {
       return v;
     }
     return "";

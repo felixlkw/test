@@ -490,7 +490,7 @@ export async function generateSessionPdf(
     color: PWC_ORANGE,
   });
   let cursor: DrawCursor = { page, y: PAGE_H - MARGIN_Y - 20 };
-  cursor = drawText(doc, cursor, "Safety Vision · TBM 보고서", {
+  cursor = drawText(doc, cursor, "SafeMate · TBM 보고서", {
     font,
     size: 22,
     color: PWC_INK,
@@ -656,7 +656,7 @@ export async function generateSessionPdf(
   const pages = doc.getPages();
   for (let i = 0; i < pages.length; i += 1) {
     const p = pages[i];
-    p.drawText(`Safety Vision · ${i + 1} / ${pages.length}`, {
+    p.drawText(`SafeMate · ${i + 1} / ${pages.length}`, {
       x: MARGIN_X,
       y: 24,
       size: 8,
@@ -1109,7 +1109,7 @@ export async function generateBroadcastReportPdf(
   cursor.y -= 4;
   drawDivider(cursor.page, cursor.y, PWC_ORANGE);
   cursor.y -= 12;
-  cursor = drawKv(doc, cursor, "회사", "Safety Vision · LG Innotek", fonts);
+  cursor = drawKv(doc, cursor, "회사", "SafeMate · PwC", fonts);
   cursor = drawKv(
     doc,
     cursor,
@@ -1240,7 +1240,7 @@ export async function generateBroadcastReportPdf(
   const pages = doc.getPages();
   for (let i = 0; i < pages.length; i += 1) {
     const p = pages[i];
-    p.drawText(`Safety Vision · TBM Broadcast Report · ${i + 1} / ${pages.length}`, {
+    p.drawText(`SafeMate · TBM Broadcast Report · ${i + 1} / ${pages.length}`, {
       x: MARGIN_X,
       y: 24,
       size: 8,

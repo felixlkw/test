@@ -117,9 +117,25 @@ LG_INNOTEK = TenantConfig(
 )
 
 
+GS_CONSTRUCTION = TenantConfig(
+    id="gs_construction",
+    company_name="GS건설",
+    app_name="SafeMate",
+    domain_labels={
+        "manufacturing": "제조",
+        "construction": "건설",
+        "heavy_industry": "중공업",
+        "semiconductor": "반도체",
+    },
+    # 건설만 노출 — 나머지 3개 도메인은 UI에서 숨김(서버 키는 유효 유지).
+    hidden_domains=frozenset({"manufacturing", "heavy_industry", "semiconductor"}),
+)
+
+
 TENANTS: dict[str, TenantConfig] = {
     DEFAULT.id: DEFAULT,
     LG_INNOTEK.id: LG_INNOTEK,
+    GS_CONSTRUCTION.id: GS_CONSTRUCTION,
 }
 
 

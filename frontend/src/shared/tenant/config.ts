@@ -102,9 +102,31 @@ const LG_INNOTEK: TenantConfig = {
   },
 };
 
+// GS건설 PoC — 브랜드 로고/스타일은 main 베이스(PwC/SafeMate)에 맞추고, 도메인은
+// 건설(construction)만 노출한다. domainLabels는 main 기본값과 동일(제조/건설/중공업/
+// 반도체) — 숨김 도메인 라벨은 렌더되지 않으므로 그대로 둬도 무방.
+const GS_CONSTRUCTION: TenantConfig = {
+  id: "gs_construction",
+  companyName: "GS건설",
+  appName: "SafeMate",
+  domainLabels: {
+    manufacturing: "제조",
+    construction: "건설",
+    heavy_industry: "중공업",
+    semiconductor: "반도체",
+  },
+  hiddenDomains: new Set<SessionDomain>([
+    "manufacturing",
+    "heavy_industry",
+    "semiconductor",
+  ]),
+  ehsRecommendedQuestions: {},
+};
+
 const TENANTS: Record<string, TenantConfig> = {
   [DEFAULT.id]: DEFAULT,
   [LG_INNOTEK.id]: LG_INNOTEK,
+  [GS_CONSTRUCTION.id]: GS_CONSTRUCTION,
 };
 
 const ACTIVE_ID =
