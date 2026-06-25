@@ -52,7 +52,10 @@ const DOMAIN_HINTS_BY_TENANT: Record<string, Partial<Record<SessionDomain, strin
     semiconductor: "",
   },
   gs_construction: {
-    construction: "건축·토목·플랜트 시공",
+    manufacturing: "",
+    construction: "아파트 골조·마감 / 토목·기초",
+    heavy_industry: "",
+    semiconductor: "",
   },
 };
 

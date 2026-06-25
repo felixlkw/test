@@ -129,6 +129,27 @@ GS_CONSTRUCTION = TenantConfig(
     },
     # 건설만 노출 — 나머지 3개 도메인은 UI에서 숨김(서버 키는 유효 유지).
     hidden_domains=frozenset({"manufacturing", "heavy_industry", "semiconductor"}),
+    domain_context_overlay={
+        "construction": (
+            "Domain: GS construction apartment/residential building project — "
+            "RC frame work (rebar fabrication, formwork & shoring, concrete "
+            "placement and curing), earthwork and earth-retaining/excavation, "
+            "scaffolding and gang-form/climbing-form operation, tower-crane "
+            "lifting, and MEP/electrical/interior finishing. Priority hazards: "
+            "falls from height (floor openings, slab edges, scaffold, gang "
+            "form), collapse (excavation and earth-retaining failure, formwork "
+            "shoring failure, concrete pump-car overturn), struck-by/caught-in "
+            "(construction machinery, lifted loads), confined space (manholes, "
+            "pits, CO buildup from coal-briquette heaters used for winter "
+            "concrete curing), electrical shock (temporary power), and fire "
+            "(hot-work sparks). Typical permits: WORKING_AT_HEIGHT, LIFTING, "
+            "EXCAVATION, CONFINED_SPACE, HOT_WORK. Weather gates: wind "
+            ">=10 m/s caution, >=15 m/s stop tower-crane lifting; thunderstorm "
+            "or heavy rain suspends outdoor and rooftop work. Collect prior "
+            "info: building/dong and floor, shift, contractor mix, tower-crane "
+            "and pump-car usage, and any new material or process change today."
+        ),
+    },
 )
 
 
