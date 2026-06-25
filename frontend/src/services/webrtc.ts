@@ -107,7 +107,29 @@ async function getEphemeralKey(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error('Failed to get ephemeral key');
+  if (!res.ok) {
+    // 배포(Railway) 현장에서 실제 실패 원인을 콘솔에 남기기 위해 상태코드 +
+    // 백엔드 detail 을 메시지에 실어 던진다. "ephemeral key" 문자열은 유지해
+    // useTbmSession 의 auth_quota 분류와 호환을 보장한다.
+    //   - 500 "OPENAI_API_KEY is not configured ..." → Railway 환경변수 누락
+    //   - 429 / insufficient_quota                   → OpenAI 결제·한도 소진
+    let detail = '';
+    try {
+      const text = await res.text();
+      try {
+        const parsed = JSON.parse(text);
+        detail =
+          typeof parsed?.detail === 'string' ? parsed.detail : text;
+      } catch {
+        detail = text;
+      }
+    } catch {
+      // 본문을 읽을 수 없는 경우(네트워크 중단 등) detail 없이 상태코드만 노출.
+    }
+    throw new Error(
+      `Failed to get ephemeral key (${res.status})${detail ? `: ${detail}` : ''}`,
+    );
+  }
   const { key } = await res.json();
   return key;
 }
