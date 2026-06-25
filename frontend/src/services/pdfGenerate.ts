@@ -596,10 +596,15 @@ export async function generateSessionPdf(
     for (const it of items) {
       const mark = getChecklistMark(it);
       const skipLabel = it.skipped ? " (건너뜀)" : "";
+      // 적응형(a) 감사추적: 강등(required===false) baseline은 "(권장)"으로 명시
+      // 기록 — silent drop 금지(불변식 1). 미점검이면 mark가 [ ]라 "권장(미점검)"
+      // 으로 읽힌다.
+      const demoteLabel =
+        it.is_baseline && it.required === false ? " (권장)" : "";
       // PR-6b: pickContent — 영속 ChecklistItem.content는 prepare 시점에 이미
       // 사용자 언어로 해소된 string. pickContent 폴백으로 동일 결과(no-op).
       const text = pickContent(it, lang) || it.content;
-      cursor = drawText(doc, cursor, `${mark} ${text}${skipLabel}`, {
+      cursor = drawText(doc, cursor, `${mark} ${text}${demoteLabel}${skipLabel}`, {
         font,
         size: 11,
         color: it.skipped ? PWC_INK_MUTE : PWC_INK,
@@ -940,7 +945,12 @@ function drawChecklistProgress(
   c.y -= 2;
   for (const it of items) {
     const mark = getChecklistMark(it);
-    const baselineLabel = it.is_baseline ? " (필수)" : "";
+    // 적응형(a): 강등 baseline은 "(권장)", 그 외 baseline은 "(필수)" (불변식 1: 표기 유지).
+    const baselineLabel = it.is_baseline
+      ? it.required === false
+        ? " (권장)"
+        : " (필수)"
+      : "";
     const skipLabel = it.skipped ? " (건너뜀)" : "";
     const text = pickContent(it, language) || it.content;
     c = drawText(doc, c, `${mark} ${text}${baselineLabel}${skipLabel}`, {

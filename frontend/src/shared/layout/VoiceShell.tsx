@@ -571,7 +571,17 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     const ctx = currentPreparedContext;
     const labelOrId = currentWorkTypeLabel ?? currentWorkTypeId ?? "";
     const ctxParts: string[] = [];
+    // 적응형 opening(c): 작업환경 슬롯(작업장소·작업내용·장비)을 먼저 합류시켜
+    // backend가 첫 발화에서 그 환경을 인용하게 한다. priorInfo는 PrepareScreen이
+    // hydration mirror로 채운 4 슬롯 + LLM collect_prior_information 결과.
+    if (priorInfo.workLocation) ctxParts.push(`작업장소: ${priorInfo.workLocation}`);
+    if (priorInfo.workContentDetails)
+      ctxParts.push(`작업내용: ${priorInfo.workContentDetails}`);
     if (ctx?.worker_count !== undefined) ctxParts.push(`작업자 ${ctx.worker_count}명`);
+    else if (priorInfo.numberOfWorkers !== undefined)
+      ctxParts.push(`작업자 ${priorInfo.numberOfWorkers}명`);
+    if (priorInfo.equipmentDetails)
+      ctxParts.push(`장비: ${priorInfo.equipmentDetails}`);
     if (ctx?.shift) ctxParts.push(`교대 ${ctx.shift}`);
     if (ctx?.wind_speed_mps !== undefined) ctxParts.push(`풍속 ${ctx.wind_speed_mps} m/s`);
     if (ctx?.new_material) ctxParts.push(`신규 자재 ${ctx.new_material}`);
@@ -587,7 +597,26 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
       baseline.length > 0 || !!labelOrId || !!contextSummary;
     if (!hasAnything) return undefined;
 
-    const top = baseline.slice(0, 3).map((b) => b.content);
+    // 적응형(c): 단순 slice(0,3) 대신 required 우선 + context 매칭 정렬.
+    //   - required===false(강등) 항목은 뒤로.
+    //   - 현장정보 텍스트와 어휘가 겹치는 항목을 앞으로(현장 특이성 반영).
+    // stable sort라 동순위는 원래 순서 유지. top 3만 인용 힌트로 전달.
+    const ctxLower = contextSummary.toLowerCase();
+    const scored = baseline.map((b, i) => {
+      const demoted = b.required === false ? 1 : 0;
+      const content = (b.content || "").toLowerCase();
+      // 6자 이상 토큰이 현장정보 요약에 등장하면 매칭으로 간주(짧은 토큰 노이즈 배제).
+      const matched = content
+        .split(/[\s,·:()]+/)
+        .some((tok) => tok.length >= 6 && ctxLower.includes(tok))
+        ? 0
+        : 1;
+      return { b, i, demoted, matched };
+    });
+    scored.sort(
+      (x, y) => x.demoted - y.demoted || x.matched - y.matched || x.i - y.i,
+    );
+    const top = scored.slice(0, 3).map((s) => s.b.content);
     return {
       // PR B+ NEW-H5: 사용자 친화 한국어 라벨 우선, 없으면 영문 id, 둘 다 없으면 빈 문자열.
       work_type_label: labelOrId,
@@ -602,6 +631,7 @@ export default function VoiceShell({ sessionId, initialMode, initialDomain }: Ap
     currentPreparedContext,
     currentWorkTypeId,
     currentWorkTypeLabel,
+    priorInfo,
   ]);
 
   // ── chat session (Phase chat-PR2) ──────────────────────

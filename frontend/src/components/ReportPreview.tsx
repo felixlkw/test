@@ -129,7 +129,14 @@ export function ReportPreview({
                 {incomplete.length > 0 && (
                   <ul className="text-xs text-pwc-ink-mute space-y-0.5 mt-1.5">
                     {incomplete.map((c, i) => (
-                      <li key={`i-${i}`}>· {c.content} (미기입)</li>
+                      <li key={`i-${i}`}>
+                        {/* 적응형(a): 강등 baseline은 "(권장·미점검)"으로 명시 —
+                            silent drop 금지(불변식 1). 그 외 미완료는 기존 "(미기입)". */}
+                        · {c.content}{" "}
+                        {c.is_baseline && c.required === false
+                          ? "(권장·미점검)"
+                          : "(미기입)"}
+                      </li>
                     ))}
                   </ul>
                 )}

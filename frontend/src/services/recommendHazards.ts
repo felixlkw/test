@@ -59,7 +59,11 @@ export interface RecommendHazardsRequestBody {
 export interface RecommendHazardsResponse {
   /** baseline 항목. Phase 2.x PR-1 부터 각 항목 안에 per-item scenarios /
    *  mitigations / ppe 옵셔널 배열이 추가됐다 (1:N 매핑). 이전 PR F era
-   *  클라이언트는 baseline 안의 per-item 필드를 읽지 않아도 정상 동작. */
+   *  클라이언트는 baseline 안의 per-item 필드를 읽지 않아도 정상 동작.
+   *
+   *  적응형(a): 각 baseline 항목은 옵셔널 `required` / `context_deprioritized`
+   *  (PreparedBaselineItem 참조)를 실을 수 있다. legacy backend가 미반환하면
+   *  undefined → createBaselineChecklistItems가 required=true(필수)로 해석. */
   baseline: PreparedBaselineItem[];
   conditional: PreparedConditionalItem[];
   suggested_questions: string[];

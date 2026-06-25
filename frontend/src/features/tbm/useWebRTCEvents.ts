@@ -229,6 +229,10 @@ export function useWebRTCEvents(args: UseWebRTCEventsArgs) {
           // PR A 보강: PrepareScreen이 prefill한 baseline 항목(is_baseline=true)은
           // 절대 잃어버리면 안 됨. LLM이 baseline content를 args에 같이 보낼 수도
           // 있어 dedup(content trim 일치) 후 baseline 우선 유지.
+          // 적응형(a): baseline 항목을 통째로 보존하므로 required/
+          // context_deprioritized 강등 플래그도 그대로 살아남는다(불변식 1: 통째
+          // 삭제 금지). LLM string[]에는 플래그가 없으니 동기화할 것도 없음 —
+          // 보존만으로 충분.
           if (args.items && Array.isArray(args.items)) {
             const llmItems = args.items as string[];
             setChecklist((prev) => {

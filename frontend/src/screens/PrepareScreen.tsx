@@ -240,6 +240,38 @@ export default function PrepareScreen() {
     };
   }, [aiContextEnabled, context]);
 
+  // 적응형(a): /api/recommend-hazards 에 보내는 컨텍스트. contextPayload(영속 6
+  // 코어 필드)에 현장정보 3 슬롯(work_location/work_content_details/
+  // equipment_details)을 합치고 충실도 신호 context_rich(핵심 슬롯 2+ → true)를
+  // 더한다. 이 객체는 API 전용 — prepared_context 영속에는 쓰지 않아 IndexedDB
+  // 스키마(6 코어 필드)를 건드리지 않는다. 3 슬롯만 채운 경우(6 코어 비어
+  // contextPayload=undefined)도 추천에 닿도록 별도로 has 판정한다.
+  const recommendContext = useMemo<PreparedContext | undefined>(() => {
+    if (!aiContextEnabled) return undefined;
+    const wl = context.workLocation?.trim() || undefined;
+    const wc = context.workContentDetails?.trim() || undefined;
+    const eq = context.equipmentDetails?.trim() || undefined;
+    const base = contextPayload;
+    if (!base && !wl && !wc && !eq) return undefined;
+    // 불변식 4 — 충실도 게이트: 현장 서술 슬롯 충족 수를 센다(2+ → rich).
+    const filledSlots = [
+      base?.worker_count !== undefined,
+      base?.wind_speed_mps !== undefined,
+      !!base?.new_material,
+      !!base?.special_notes,
+      !!wl,
+      !!wc,
+      !!eq,
+    ].filter(Boolean).length;
+    return {
+      ...(base ?? {}),
+      ...(wl ? { work_location: wl } : {}),
+      ...(wc ? { work_content_details: wc } : {}),
+      ...(eq ? { equipment_details: eq } : {}),
+      context_rich: filledSlots >= 2,
+    };
+  }, [aiContextEnabled, context, contextPayload]);
+
   // 1단 — 정적 카탈로그 즉시 로드. work_type 미스 시 backend 호출로 폴백.
   // 카탈로그 로드는 Vite dynamic import()라 첫 호출은 chunk fetch가 필요할
   // 수도 있으나 압축 후 ~10 KB 이내로 ≤300ms 보장.
@@ -271,7 +303,7 @@ export default function PrepareScreen() {
           work_type_id: selectedWorkTypeId,
           domain,
           language,
-          context: contextPayload,
+          context: recommendContext,
         });
         if (reqIdRef.current !== myId) return;
         setRecommend(res);
@@ -283,7 +315,7 @@ export default function PrepareScreen() {
     } finally {
       if (reqIdRef.current === myId) setRecommendLoading(false);
     }
-  }, [domain, selectedWorkTypeId, language, contextPayload]);
+  }, [domain, selectedWorkTypeId, language, recommendContext]);
 
   // 머지 — 보강 응답 도착 시 호출. id 기반 dedup, 동일 baseline은 LLM 응답으로
   // 교체(per-item 갱신), 신규 baseline/conditional은 prepend/append.
@@ -293,12 +325,16 @@ export default function PrepareScreen() {
       next: RecommendHazardsResponse,
     ): RecommendHazardsResponse => {
       if (!prev) return next;
-      const baselineMap = new Map<string, PreparedBaselineItem>();
-      // 기존 카탈로그 baseline 먼저 — 응답 순서 보존
-      for (const b of prev.baseline) baselineMap.set(b.id, b);
-      // LLM 응답으로 교체(같은 id) + 신규 추가
-      for (const b of next.baseline) baselineMap.set(b.id, b);
-      const baseline = Array.from(baselineMap.values());
+      // 적응형(a): LLM이 내려준 순서(rerank)·required 플래그를 보존해야 한다.
+      // 이전엔 prev(정적 카탈로그) 순서를 먼저 고정해 rerank가 무력화됐다. 이제
+      // next 순서를 우선 채택하고, next에 없는 prev id만 뒤에 보존(불변식 1:
+      // silent drop 금지). backend 보존 가드가 seed baseline을 모두 재첨부하므로
+      // prev-only 잔여는 드물지만, 남으면 화면에서 사라지지 않게 유지한다.
+      const nextIds = new Set(next.baseline.map((b) => b.id));
+      const baseline: PreparedBaselineItem[] = [
+        ...next.baseline,
+        ...prev.baseline.filter((b) => !nextIds.has(b.id)),
+      ];
 
       const condMap = new Map<string, PreparedConditionalItem>();
       for (const c of prev.conditional) condMap.set(c.id, c);
@@ -344,7 +380,7 @@ export default function PrepareScreen() {
           work_type_id: selectedWorkTypeId,
           domain,
           language,
-          context: contextPayload,
+          context: recommendContext,
           refresh_seed: opts?.refresh ? Date.now() : undefined,
           // v0.2.4 PR-feedback-2: backend Augmentation Mode 활성화. prev가 없는
           // 첫 호출에는 빈 배열을 보내 backend는 일반 모드로 동작 — 후방 호환.
@@ -363,7 +399,7 @@ export default function PrepareScreen() {
         if (reqIdRef.current === myId) setAugmenting(false);
       }
     },
-    [domain, selectedWorkTypeId, language, contextPayload, recommend, mergeAugment],
+    [domain, selectedWorkTypeId, language, recommendContext, recommend, mergeAugment],
   );
 
   // 도메인/작업유형 변경 시: 1단 즉시 로드. 2단은 사용자 입력 또는 "다시 받기"
@@ -375,11 +411,12 @@ export default function PrepareScreen() {
   }, [domain, selectedWorkTypeId]);
 
   // PrepareContextForm 변경 → 1.5s debounce → 2단 호출.
-  // contextPayload undefined → form 비어있음 → 호출 X.
+  // recommendContext undefined → form(6 코어 + 현장 3 슬롯 모두) 비어있음 → 호출 X.
   // recommend null → 1단 미완 → 호출 X (중첩 가드).
+  // 적응형(a): 현장정보 3 슬롯만 채워도 recommendContext가 생성되어 보강이 발동.
   useEffect(() => {
     if (!domain || !selectedWorkTypeId) return;
-    if (!contextPayload) return;
+    if (!recommendContext) return;
     if (!recommend) return;
     if (debounceTimerRef.current !== null) {
       window.clearTimeout(debounceTimerRef.current);
@@ -396,7 +433,7 @@ export default function PrepareScreen() {
     };
     // recommend는 머지 후 새 객체가 되어 무한 루프 위험 — 명시 비포함.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contextPayload, domain, selectedWorkTypeId]);
+  }, [recommendContext, domain, selectedWorkTypeId]);
 
   // "다시 받기" 핸들러 — 5s cooldown 적용 + 카운트다운 표기.
   // v0.2.5 PR-feedback-4 — 강제 보강 호출은 form debounce(1.5s)와 별도 경로라

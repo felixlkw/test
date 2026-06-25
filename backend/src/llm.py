@@ -337,15 +337,20 @@ def _build_baseline_checklist(domain: str | None, work_type_id: str | None) -> s
 
     lines: list[str] = []
     lines.append(
-        f"Required baseline items (must include in create_dynamic_checklist) for "
+        f"Recommended baseline items for create_dynamic_checklist "
+        f"(required는 [필수] 표기, context-deprioritized는 [권장] advisory) for "
         f"work_type='{label_ko}' ({work_type_id}):"
     )
     for b in baseline:
         bid = b.get("id", "")
         content = b.get("content", "")
         reg = b.get("regulation")
+        # 적응형: catalog 항목은 기본 필수. required=False(강등)일 때만 [권장].
+        # regulation 보유 항목은 항상 [필수](불변식 2).
+        is_required = True if reg else b.get("required", True)
+        prio = "[필수]" if is_required else "[권장]"
         suffix = f" [{reg}]" if reg else ""
-        lines.append(f"- {bid}: {content}{suffix}")
+        lines.append(f"- {prio} {bid}: {content}{suffix}")
     if conditional:
         lines.append(
             "Conditional items (include only when the if-condition matches user's "
@@ -531,6 +536,11 @@ async def recommend_hazards(
     catalog = _load_catalog(domain)
     if catalog is None:
         return None
+
+    # 적응형(a): 입력 충실도 신호. 프론트가 현장정보 핵심 슬롯 2+ 충족 시 True로
+    # context dict에 실어 보낸다. 빈약(<2)하거나 미전달이면 False → baseline 강등
+    # 금지(불변식 4 폴백: 충실히 입력했을 때만 완화).
+    context_rich = bool(context.get("context_rich")) if isinstance(context, dict) else False
 
     work_types = catalog.get("work_types", {}) or {}
     entry = work_types.get(work_type_id)
@@ -725,6 +735,23 @@ async def recommend_hazards(
         seen_ids.add(bid)
         labeled = {k: v for k, v in item.items()}
         labeled["source"] = "catalog" if bid in seed_ids else "llm"
+        # 적응형(a): required / context_deprioritized 정규화 (불변식 1·2·4).
+        #   - regulation 보유 → 항상 required=True (강등 금지, 불변식 2 hard rule).
+        #   - context_rich 일 때만 LLM의 context_deprioritized 강등을 수용(불변식 4:
+        #     충실 입력 시에만 완화). 강등 시 required=False + 플래그 유지.
+        #   - context_rich 아니면 LLM이 잘못 단 강등 플래그를 제거해 full baseline
+        #     동작 보존(레거시 호환).
+        has_reg = bool(labeled.get("regulation"))
+        if has_reg:
+            labeled["required"] = True
+            labeled.pop("context_deprioritized", None)
+        elif context_rich and bool(labeled.get("context_deprioritized")):
+            labeled["required"] = False
+            labeled["context_deprioritized"] = True
+        else:
+            # 비-rich 또는 미강등: 강등 흔적 제거, required 미세팅(프론트=필수 default).
+            labeled.pop("context_deprioritized", None)
+            labeled.pop("required", None)
         # Phase 2.x PR-1: per-item scenarios / mitigations / ppe.
         per_scen = _normalize_simple_items(
             item.get("scenarios"), f"{bid}-sc"
@@ -773,6 +800,20 @@ async def recommend_hazards(
                 continue
             recovered = {k: v for k, v in seed_item.items()}
             recovered["source"] = "catalog"
+            # 적응형(a) 보존 가드 (불변식 1·2): LLM이 떨어뜨린 seed baseline은
+            # 삭제하지 않고 복원한다.
+            #   - context_rich + 비-regulation: 강등 복원(required=False,
+            #     context_deprioritized=True, source="catalog-restored" 감사 표식).
+            #     rich 모드에서 LLM이 누락 = 맥락상 낮은 우선순위로 판단 → 강등(삭제 X).
+            #   - regulation 보유: required=True 재강제(불변식 2 — 절대 강등 금지).
+            #   - 비-rich: 레거시 동작 — required 미세팅(프론트=필수), source="catalog".
+            if recovered.get("regulation"):
+                recovered["required"] = True
+                recovered.pop("context_deprioritized", None)
+            elif context_rich:
+                recovered["required"] = False
+                recovered["context_deprioritized"] = True
+                recovered["source"] = "catalog-restored"
             # Splice per-item arrays from the catalog seed (may be empty if
             # the catalog file does not yet carry per-item data).
             seed_scen = _normalize_simple_items(

@@ -268,16 +268,27 @@ export function ChecklistPanel({
                             건너뜀
                           </span>
                         )}
-                        {item.is_baseline && (
-                          <span
-                            className="inline-flex items-center gap-1 shrink-0 mt-[2px] px-1.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold bg-pwc-orange/15 text-pwc-orange-deep border border-pwc-orange/30"
-                            title="준비 단계에서 자동 포함된 필수 점검 항목"
-                            aria-label="필수 항목"
-                          >
-                            <IconLock size={10} />
-                            <span>필수</span>
-                          </span>
-                        )}
+                        {item.is_baseline &&
+                          (item.required === false ? (
+                            // 적응형 강등 항목 — "권장"(현장정보 기반). 화면엔
+                            // 남지만(불변식 1) 자물쇠/필수 강조는 빼서 시각적 강등.
+                            <span
+                              className="inline-flex items-center gap-1 shrink-0 mt-[2px] px-1.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold bg-pwc-bg-card text-pwc-ink-soft border border-pwc-border"
+                              title="현장 정보 기반으로 우선순위가 낮아진 권장 점검 항목 (감사 추적상 유지됨)"
+                              aria-label="권장 항목"
+                            >
+                              <span>권장</span>
+                            </span>
+                          ) : (
+                            <span
+                              className="inline-flex items-center gap-1 shrink-0 mt-[2px] px-1.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-bold bg-pwc-orange/15 text-pwc-orange-deep border border-pwc-orange/30"
+                              title="준비 단계에서 자동 포함된 필수 점검 항목"
+                              aria-label="필수 항목"
+                            >
+                              <IconLock size={10} />
+                              <span>필수</span>
+                            </span>
+                          ))}
                       </div>
                       {item.is_baseline && item.regulation && (
                         <div className="text-[11px] text-pwc-ink-mute mt-1">

@@ -82,6 +82,9 @@ function buildInitialMessage(mode: 'tbm' | 'ehs', language: EphemeralLanguage): 
     `IMPORTANT — speak ONLY in ${langName} for this entire response. Do not use any other language.`,
     `Greet the user warmly in ${langName}, announce that you'll start today's TBM (toolbox meeting) together,`,
     `and then ask the first prior-information question (work location) per the configured procedure.`,
+    // 적응형 opening(c): [Prepare Stage Result] 블록에 작업장소·작업내용이 이미
+    // 있으면 재질문하지 말고 그 현장정보를 짧게 확인하며 시작.
+    `If the prepared site info in the system instructions already includes the work location or work content, do NOT re-ask it — briefly confirm that environment and continue.`,
     `Keep it short — one short greeting sentence + one question. Display proper cues at proper times.`,
     KICKOFF_HINT_TBM[language],
   ].join(' ');

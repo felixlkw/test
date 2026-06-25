@@ -47,7 +47,12 @@ export function useBroadcastReadiness(
 ): BroadcastReadinessState {
   return useMemo<BroadcastReadinessState>(() => {
     // 1) baseline checklist 100% — baseline 0건이면 자동 충족.
-    const baselineItems = checklist.filter((c) => c.is_baseline === true);
+    // 적응형: required===false(현장정보 기반 강등 항목)는 종료 게이트에서 제외.
+    // 강등 항목은 화면엔 남지만(불변식 1) "필수 완료" 조건엔 묶이지 않는다.
+    // required undefined/true 는 기존대로 필수(legacy 가드).
+    const baselineItems = checklist.filter(
+      (c) => c.is_baseline === true && c.required !== false,
+    );
     const missingChecklistCount = baselineItems.filter(
       (c) => !c.completed,
     ).length;

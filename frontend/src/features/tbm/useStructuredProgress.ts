@@ -41,7 +41,11 @@ export function useStructuredProgress(
   structured: StructuredChecklist,
 ): UseStructuredProgressResult {
   return useMemo(() => {
-    const baselineItems = checklist.filter((c) => c.is_baseline === true);
+    // 적응형: required===false(강등) 항목은 진행률 가중치 분모에서 제외.
+    // useBroadcastReadiness 와 동일 필터로 게이트 정합 유지. undefined/true=필수.
+    const baselineItems = checklist.filter(
+      (c) => c.is_baseline === true && c.required !== false,
+    );
     const checklistRatio =
       baselineItems.length === 0
         ? 1

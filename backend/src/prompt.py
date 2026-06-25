@@ -289,25 +289,55 @@ def build_recommend_hazards_prompt(
     # v0.2.4 PR-feedback-2 — Augmentation Mode block (conditional inject).
     # Skipped entirely when prior_baseline_ids is None / empty list so that
     # legacy v0.2.3 callers (no prior_*_ids) get a byte-identical prompt.
+    # 적응형(a): 입력 충실도 신호. 프론트가 현장정보 핵심 슬롯 2+ 충족 시 True.
+    # context dict 안에 실려온다(없으면 False → 보수적 full-baseline 동작).
+    context_rich = bool(context.get("context_rich")) if isinstance(context, dict) else False
+
     augmentation_block = ""
     if prior_baseline_ids:
         prior_baseline_json = json.dumps(prior_baseline_ids, ensure_ascii=False)
         prior_conditional_json = json.dumps(
             list(prior_conditional_ids or []), ensure_ascii=False
         )
+        # 적응형(a): context_rich 분기. 현장정보가 충실하면 무관 baseline을 강등
+        # (삭제 X, id 보존)하고 site-specific hazard를 primary로 승격한다.
+        # 빈약하면 기존 보존-only 동작(full baseline 유지) — 불변식 4 폴백.
+        if context_rich:
+            adaptive_clause = (
+                "  2) Site context is RICH. Reconstruct priority around it:\n"
+                "     - Baseline items UNRELATED to the reported site context: mark them\n"
+                "       \"context_deprioritized\": true and \"required\": false. KEEP the\n"
+                "       item (same id, same content) in your output — demote, never delete.\n"
+                "     - Site-specific hazards implied by the context: promote to the top as\n"
+                "       primary, and you MAY add 1-2 NEW baseline items (id=\"LLM-1\"/\"LLM-2\")\n"
+                "       or conditional items (id=\"LLM-COND-*\") that the context demands.\n"
+                "     - HARD RULE (불변식 2): any item that carries a \"regulation\" value\n"
+                "       MUST stay \"required\": true — NEVER demote a regulation-backed item.\n"
+                "     - HARD RULE (불변식 1): EVERY prior baseline id above MUST appear in\n"
+                "       your response. None may silently disappear.\n"
+                "     - Refine per-item scenarios/mitigations/ppe when context demands it\n"
+                "       (e.g., wind_speed_mps > 10 -> wind-specific fall scenario).\n"
+            )
+        else:
+            adaptive_clause = (
+                "  2) Site context is sparse. Use the user's reported context\n"
+                "     (worker_count, wind, equipment) to:\n"
+                "     - Reorder by relevance (most context-relevant first). Do NOT demote\n"
+                "       or drop any baseline item — keep the full baseline as required.\n"
+                "     - Add 1-2 NEW conditional items the user has NOT seen, id=\"LLM-COND-*\".\n"
+                "     - Add 1-2 incident_cases the user has NOT seen.\n"
+                "     - Refine per-item scenarios/mitigations/ppe ONLY when context demands it.\n"
+            )
         augmentation_block = (
             "[Augmentation Mode — User has already seen these items]\n"
             f"The user is currently viewing baseline ids: {prior_baseline_json}\n"
             f"                  and conditional ids: {prior_conditional_json}.\n"
             "DO NOT re-describe these items in different words. Instead:\n"
-            "  1) Keep these baseline items in your output AS-IS (same id, same content).\n"
-            "  2) Use the user's reported context (worker_count, wind, equipment) to:\n"
-            "     - Reorder by relevance (most context-relevant first).\n"
-            "     - Add 1-2 NEW conditional items the user has NOT seen, with id=\"LLM-COND-*\".\n"
-            "     - Add 1-2 incident_cases the user has NOT seen.\n"
-            "     - Refine per-item scenarios/mitigations/ppe ONLY when context demands it\n"
-            "       (e.g., wind_speed_mps > 10 -> add wind-specific scenario for fall hazards).\n"
-            "  3) If context is empty/sparse, return baseline unchanged + at most 1 new\n"
+            "  1) Keep these baseline items in your output (same id, same content). You may\n"
+            "     change their relative order and the required/context_deprioritized flags\n"
+            "     per the rule below, but never rename or merge ids.\n"
+            + adaptive_clause
+            + "  3) If context is empty/sparse, return baseline unchanged + at most 1 new\n"
             "     conditional. Do not invent.\n"
             "\n"
         )
@@ -487,10 +517,14 @@ BASELINE_CHECKLIST_RULE = (
     "[Baseline Checklist Rule]\n"
     "When prepared_hazards or baseline items are provided (see the "
     "'Required baseline items' block below), the dynamic checklist created via "
-    "`create_dynamic_checklist` MUST include all baseline item contents (you "
-    "may rephrase them naturally in the user's language). Do NOT skip baseline "
-    "items even if the user appears to have already addressed them — they "
-    "remain visible until manually completed via complete_checklist_item.\n"
+    "`create_dynamic_checklist` SHOULD reflect the baseline item contents (you "
+    "may rephrase them naturally in the user's language).\n"
+    "Adaptive priority: items marked [필수]/required=true are recommended for "
+    "inclusion and stay visible until completed. Items marked "
+    "[권장]/context-deprioritized (required=false) are ADVISORY — surface them "
+    "when the site context makes them relevant, but do not mechanically push the "
+    "leader through them. NEVER silently drop a baseline item from view; a "
+    "deprioritized item is demoted, not deleted.\n"
     "Conditional items: include only when the stated if-condition matches the "
     "user's reported context (equipment, weather, gas concentration, etc.).\n"
     "Cycle 4 free-flow rule still applies — react to what the user actually "
@@ -698,12 +732,23 @@ BROADCAST_MODE_RULE = (
     "brush late additions off with phrases like '이미 정리됐어요' / '모든 "
     "내용이 잘 정리된 것 같습니다' — that makes the leader feel their input "
     "was unwanted. Late prior_info is normal and valuable.\n"
-    "2. First utterance: \"오늘 {work_type_label} 작업이고, 주요 위험은 "
-    "① {h1} ② {h2} ③ {h3}입니다. 작업자분들과 함께 한 항목씩 짚어가며 "
-    "확인해볼까요?\" (or in the configured response language). The phrasing "
-    "is PRESENT-PROGRESSIVE — invites a live walk-through, NOT a post-hoc "
-    "report. Avoid future-tense '전파하시겠어요?' (which implies broadcast "
-    "is yet to happen elsewhere).\n"
+    "2. First utterance — CONTEXT-FIRST (site environment leads, not a fixed "
+    "hazard recital):\n"
+    "   - If the [Prepare Stage Result] block carries site context "
+    "(work_location / work_content_details / worker_count), OPEN by citing that "
+    "actual work environment, then invite a live walk-through. Korean example: "
+    "\"오늘 {work_location}에서 {work_content_details} 작업, {worker_count}명이 "
+    "함께 하시는군요. 현장 상황 짚어가며 같이 확인해볼까요?\" Do NOT recite a "
+    "rigid '주요 위험은 ①②③입니다' list when you have real context to lead with.\n"
+    "   - critical hazard categories (추락 / 굴착·붕괴 / 밀폐·질식 / 감전 / "
+    "양중·낙하·협착 / 화기·화재 / 중장비) that apply to this work MUST be woven "
+    "into the conversation and confirmed at least once — naturally, NOT read "
+    "aloud as a numbered script. Never let a critical category silently disappear.\n"
+    "   - If site context is empty, fall back to opening with 1~2 baseline "
+    "hazards (\"오늘 {work_type_label} 작업이고, {h1} 등을 같이 확인해볼까요?\").\n"
+    "   The phrasing is PRESENT-PROGRESSIVE — invites a live walk-through, NOT a "
+    "post-hoc report. Avoid future-tense '전파하시겠어요?' (which implies "
+    "broadcast is yet to happen elsewhere).\n"
     "3. Wait for user confirmation/edit:\n"
     "   - Short affirmatives \"네\" / \"확인\" / \"들었어요\" / \"OK\" / "
     "\"전파했어요\" / \"확인 완료\" / \"all briefed\" → ACCEPT and treat as "
@@ -875,14 +920,17 @@ def _format_prepared_summary_block(prepared_summary: dict | None) -> str:
         + f"Has full baseline (>=3 items): {'yes' if has_full_baseline else 'no'}\n"
         + "\n"
         + "지침 / Instructions:\n"
-        + "- 사용자에게 첫 인사 후, 위 baseline 항목 중 1~2개를 자연스럽게 언급하며 시작하세요. "
-          "(예: \"오늘 {label}이고 {h0} 등이 필수네요. 풍속은 어떤가요?\" 식으로.)\n".replace(
+        + "- 첫 인사 후, User context에 값이 있으면 그 작업환경(작업장소·작업내용·작업자수 등)을 "
+          "먼저 인용하며 시작하세요. baseline 항목은 context와 자연스럽게 연결될 때만 언급합니다. "
+          "(예: \"오늘 {label} 현장이시군요. 상황 같이 짚어볼까요?\" 식으로 — 단정적 \"~가 필수네요\" "
+          "낭독은 피하세요.)\n".replace(
               "{label}", work_type_label or "이번 작업"
-          ).replace(
-              "{h0}", hazard_lines[0].lstrip(" -") if hazard_lines else "필수 점검"
           )
-        + "- User context에 값이 있으면 그 조건을 짧은 확인 질문으로 자연스럽게 짚어주세요. "
-          "값이 \"미입력\"이면 작업 컨텍스트 자체를 강제로 묻지 말고 free-flow로 진행하세요.\n"
+        + "- critical 카테고리(추락/굴착·붕괴/밀폐·질식/감전/양중·낙하·협착/화기·화재/중장비)에 "
+          "해당하는 위험은 누락 없이 대화에 자연스럽게 녹여 최소 1회 확인하세요. 번호 매겨 낭독하지 말고, "
+          "현장 상황과 엮어 짚습니다.\n"
+        + "- User context가 \"미입력\"이면 작업 컨텍스트를 강제로 묻지 말고, baseline 1~2개로 "
+          "자연스럽게 시작한 뒤 free-flow로 진행하세요.\n"
         + "- Output language for your greeting follows the configured response language above. "
           "Cycle 4 free-flow rule applies — react to what the user actually says before progressing. "
           "Never mechanically march through the baseline; treat it as guidance, not a script.\n"

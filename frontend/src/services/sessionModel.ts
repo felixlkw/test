@@ -313,6 +313,13 @@ export interface PreparedBaselineItem {
   regulation?: string;
   evidence_required?: string;
   source: "catalog" | "llm";
+  // 적응형 위험추천(a) — 현장정보 충실 시 backend가 내려주는 우선순위 플래그.
+  //   required === false → context_deprioritized 강등("권장"). 응답에서 절대
+  //     사라지지 않고(불변식 1) id 보존, 필수 게이트에서만 빠진다.
+  //   regulation 보유 항목은 backend·프론트 양쪽에서 required=true 재강제(불변식 2).
+  //   legacy backend 미반환 시 undefined → createBaselineChecklistItems가 필수로 해석.
+  required?: boolean;
+  context_deprioritized?: boolean;
   // Phase 2.x PR-1 — per-item mapping. Each baseline hazard MAY carry its own
   // 1~2 scenarios / mitigations / ppe items linked to that hazard. Older
   // backend payloads (PR F era) leave these undefined; new clients prefer the
@@ -368,6 +375,15 @@ export interface PreparedContext {
   new_material?: string;
   special_notes?: string;
   previous_incident_keywords?: string[];
+  // 적응형(a) — 현장정보 핵심 슬롯. /api/recommend-hazards 호출 payload에만 실리고
+  // prepared_context 영속(6 코어 필드)에는 포함하지 않는다(PrepareScreen 참조).
+  // 옵셔널이라 IndexedDB v2 스키마 무변경.
+  work_location?: string;
+  work_content_details?: string;
+  equipment_details?: string;
+  // 입력 충실도 신호(불변식 4) — 핵심 슬롯 2개 이상 충족 시 true. backend가 이 값으로
+  // baseline 강등 분기를 켠다. 빈약(<2)하면 false → full baseline 폴백.
+  context_rich?: boolean;
 }
 
 export function newSessionId(): string {
